@@ -22,6 +22,14 @@ public class PauseMenu : MonoBehaviour
         {
             ActivatePauseMenu();
         }
+        
+        // TEST to activate vsync + rendering at only 60 fps
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            QualitySettings.vSyncCount = 1;
+            Application.targetFrameRate = 60;
+            Debug.Log("Vsync active");
+        }
     }
 
     public void SetVolume(float volume)
