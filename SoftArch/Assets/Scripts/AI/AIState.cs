@@ -7,9 +7,12 @@ using UnityEngine;
 public class AIState : MonoBehaviour
 {
     [SerializeField]
+    private CharController master;
+    [SerializeField]
     private float attentionSpan;
     [SerializeField]
     private float idleSpeed, followSpeed;
+    
 
     private Context context;
     
@@ -17,7 +20,7 @@ public class AIState : MonoBehaviour
     void Start()
     {
         //context = new Context(new IdleState(gameObject));
-        context = new Context(new IdleState(gameObject, attentionSpan, idleSpeed, followSpeed));
+        context = new Context(new IdleState(gameObject, attentionSpan, idleSpeed, followSpeed, master, false));
     }
 
     void Update()

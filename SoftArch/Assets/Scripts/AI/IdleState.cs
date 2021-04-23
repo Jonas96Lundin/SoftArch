@@ -6,13 +6,15 @@ using UnityEngine;
 /// </summary>
 public class IdleState : State
 {
-	public IdleState(GameObject ai, float attentionSpan, float idleSpeed, float followSpeed)
+	public IdleState(GameObject ai, float attentionSpan, float idleSpeed, float catchUpSpeed, CharController master, bool followMaster)
 	{
 		this.ai = ai;
 		this.attentionSpan = attentionSpan;
 		this.idleSpeed = idleSpeed;
-		this.followSpeed = followSpeed;
-		speed = idleSpeed;
+		this.catchUpSpeed = catchUpSpeed;
+		speed = catchUpSpeed;
+		this.master = master;
+		this.followMaster = followMaster;
 	}
 	public IdleState(GameObject ai)
     {
@@ -21,36 +23,30 @@ public class IdleState : State
 
     public override void UpdateState()
     {
-		//ai.Move(3);
-		//ai.transform.position = new Vector3(ai.transform.position.x + horizontal, transform.position.y + vertical, transform.position.z);
-		Debug.Log(attentionSpan);
+		if (MasterInput())
+			return;
+		
         //Change when timer
 		if(timeToChange <= 0)
 		{
-			Debug.Log("hallo000000");
 			ChangeDirection();
 		}
-			
-
 		timeToChange -= Time.deltaTime;
-        //Move
+
         Move(speed);
+
 
 		if (Mathf.Abs(Camera.main.transform.position.x - ai.transform.position.x) > 20)
 		{
 			//_context.TransitionTo(new FollowState(ai));
-			_context.TransitionTo(new FollowState(ai, attentionSpan,idleSpeed, followSpeed));
+			_context.TransitionTo(new CatchUpState(ai, attentionSpan,idleSpeed, catchUpSpeed, master, false));
 		}
 	}
 
     public override void ChangeDirection()
     {
-		Debug.Log("hgunnar");
-		//Random direction
-		//ai.transform.forward = new Vector3(0, 0, 0);
 		RandomDirection();
 		timeToChange = attentionSpan;
-        //ai.transform.rotation.Set(0, 90, 0, 0);
 	}
 
 	protected void RandomDirection()
@@ -62,7 +58,6 @@ public class IdleState : State
 			{
 				TurnForward();
 				speed = 0f;
-
 				break;
 			}
 			else if (newDir == 1)
@@ -79,23 +74,6 @@ public class IdleState : State
 			}
 		}
 	}
-
-	//protected void TurnForward()
-	//{
-	//	ai.transform.eulerAngles = new Vector3(0f, 0f, 0f);
-	//}
-	//protected void TurnBack()
-	//{
-	//	ai.transform.eulerAngles = new Vector3(0f, 180f, 0f);
-	//}
-	//protected void TurnRight()
-	//{
-	//	ai.transform.eulerAngles = new Vector3(0f, 90f, 0f);
-	//}
-	//protected void TurnLeft()
-	//{
-	//	ai.transform.eulerAngles = new Vector3(0f, -90f, 0f);
-	//}
 
 	//public override void HandleCollision(Collider other)
 	//{
