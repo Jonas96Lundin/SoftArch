@@ -4,41 +4,99 @@ using UnityEngine;
  */
 public class CharController : MonoBehaviour
 {
-    const float velocityHorizontal = 5.0f, // The character will not add force on movement if the absolute velocity would be higher than this variable
-                forceJump = 500.0f,
-                groundDetectRayLength = 1.1f,
-                breakMaxVelocity = 1f;
-    const ForceMode horizontalForceMode = ForceMode.VelocityChange;
+    /*
+     * Variables
+     */
+    Rigidbody rb;
+
+    const float defaultMaxVelocityHorizontal = 4.0f,
+                defaultForceJump = 250.0f,
+                groundDetectRayLength = 1.1f;
+
+    [SerializeField]
+    float maxVelocityHorizontal = 4.0f, // The character will not add force on movement if the absolute velocity would be higher than this variable
+          forceJump = 250.0f;
+
     bool jumpOnFixedUpdate = false,
-         brakeIsAllowed = true; // The character will not brake if this is false and glide further. Is usefull when applying forces on character and not have the force abruptly stop.
-    bool enableBreakWhenVelocityIsZero = false;
-    bool moveLeftOnFixedUpdate = false,
-         moveRightOnFixedUpdate = false;
-    
-    Vector3 addedForces = Vector3.zero;
+         moveOnFixedUpdate = false,
+         addExtraForcesOnFixedUpdate = false;
 
-    public bool GetSetBrakeIsAllowed { get => brakeIsAllowed; set => brakeIsAllowed = value; }
+    // Variables used every Fixed Update
+    Vector3 addedForces = Vector3.zero; // Forces added by other scripts through AddForce method 
+    float currentVelocityHorizontal = 0; // Change in x velocity
+
+    /*
+     * Methods
+     */
+    private void Awake() => rb = GetComponent<Rigidbody>();
+    /*
+     * Public Methods
+     */
     /// <summary>
-    /// The character will not brake if this is called, and will glide further. Is usefull when applying forces on character and not have the force abruptly stop. Friction/movement and other forces will still stop the player.
+    /// Returns true if rigidbody is moving horizontally
     /// </summary>
-    /// <param name="enableBreakWhenVelocityIsZero">Break is automatically turned on when the player has stopped</param>
-    public void DoNotBrake(bool enableBreakWhenVelocityIsZero)
+    public bool RBHorizontalMovementActive => rb.velocity.x != 0;
+    /// <summary>
+    /// Returns true if rigidbody is moving to the right
+    /// </summary>
+    public bool RBRightMovementActive => rb.velocity.x > 0;
+    /// <summary>
+    /// Returns true if rigidbody is moving to the left
+    /// </summary>
+    public bool RBLeftMovementActive => rb.velocity.x > 0;
+    /// <summary>
+    /// Returns true if user input is moving rigidbody horizontally
+    /// </summary>
+    public bool InputHorizontalMovementActive => moveOnFixedUpdate;
+    /// <summary>
+    /// Returns true if user input is moving rigidbody to the right
+    /// </summary>
+    public bool InputRightMovementActive => currentVelocityHorizontal > 0;
+    /// <summary>
+    /// Returns true if user input is moving rigidbody to the left
+    /// </summary>
+    public bool InputLeftMovementActive => currentVelocityHorizontal < 0;
+    /// <summary>
+    /// Returns the velocity that will be applied to player the next fixed update.
+    /// </summary>
+    public float InputMovement => GetClampedVelocity(rb.velocity.x, currentVelocityHorizontal, maxVelocityHorizontal);
+
+    /// <summary>
+    /// Changes the velocity limit that can be achieved through player input into default value.
+    /// The max velocity can still be overtaken through external forces or by calling AddForce()
+    /// </summary>
+    public void ChangeMaxVelocityHorizontalIntoDefaultValue() => maxVelocityHorizontal = defaultMaxVelocityHorizontal;
+    /// <summary>
+    /// Changes the velocity limit that can be achieved through player input.
+    /// The max velocity can still be overtaken through external forces or by calling AddForce()
+    /// </summary>
+    /// <param name="value">Replacement velocity</param>
+    public void ChangeMaxVelocityHorizontal(float value) => maxVelocityHorizontal = value;
+    /// <summary>
+    /// Changes the force used while jumping into default value.
+    /// </summary>
+    public void ChangeForceJumpIntoDefaultValue() => forceJump = defaultForceJump;
+    /// <summary>
+    /// Changes the force used while jumping.
+    /// </summary>
+    /// <param name="value">Replacement force</param>
+    public void ChangeForceJump(float value) => forceJump = value;
+    /// <summary>
+    /// Add force to rigidbody. They will be processed on FixedUpdate.
+    /// Filtertype used is ForceMode.Force
+    /// </summary>
+    /// <param name="force">Force to apply</param>
+    public void AddForce(Vector3 force)
     {
-        brakeIsAllowed = false;
-        this.enableBreakWhenVelocityIsZero = enableBreakWhenVelocityIsZero;
+        addExtraForcesOnFixedUpdate = true;
+        addedForces += force;
     }
-    /// <summary>
-    /// Manually allow the character to brake.
-    /// </summary>
-    public void EnableBrake() => brakeIsAllowed = true;
 
+    /*
+     * Update Methods
+     */
     private void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
-        {
-            AddForce(new Vector3(400, 100));
-        }
-        Rigidbody rigidbody = GetComponent<Rigidbody>();
         //Jump
         if (!jumpOnFixedUpdate)
         {
@@ -50,103 +108,83 @@ public class CharController : MonoBehaviour
             }
         }
         // Movement
-        float movement = Input.GetAxis("Horizontal");
-        if (!moveRightOnFixedUpdate && movement > 0)
+        float inputX = Input.GetAxisRaw("Horizontal");
+        if (!moveOnFixedUpdate && inputX != 0)
         {
-            moveRightOnFixedUpdate = true;
-        }
-        else if (!moveLeftOnFixedUpdate && movement < 0)
-        {
-            moveLeftOnFixedUpdate = true;
-        }
-        //brake
-        if (!brakeIsAllowed) // If not alowed to brake
-        {
-            if (enableBreakWhenVelocityIsZero && rigidbody.velocity.x == 0) // If to turn on brake when character stops
-            {
-                enableBreakWhenVelocityIsZero = false;
-                brakeIsAllowed = true;
-            }
+            moveOnFixedUpdate = true;
+            currentVelocityHorizontal = inputX * maxVelocityHorizontal;
         }
     }
+
     void FixedUpdate()
     {
-        Rigidbody rigidbody = GetComponent<Rigidbody>();
-
         // Movement
-        if (moveRightOnFixedUpdate)
+        if (moveOnFixedUpdate)
         {
-            MoveRight(ref rigidbody);
-            moveRightOnFixedUpdate = false;
+            Move(ref rb);
+            moveOnFixedUpdate = false;
+            currentVelocityHorizontal = 0;
         }
-        else if (moveLeftOnFixedUpdate)
-        {
-            MoveLeft(ref rigidbody);
-            moveLeftOnFixedUpdate = false;
-        }
-        else // If not moving
-        {
-            if (brakeIsAllowed) // If allowed to brake
-            {
-                Brake(ref rigidbody);
-            }
-        }
+        
         // Jump
         if (jumpOnFixedUpdate)
         {
-            Jump(ref rigidbody);
+            Jump(ref rb);
             jumpOnFixedUpdate = false;
         }
 
         // Extra forces
-        AddExtraForces(ref rigidbody);
-        addedForces = Vector3.zero; // Clear added forces
+        if (addExtraForcesOnFixedUpdate)
+        {
+            AddExtraForces(ref rb);
+            addedForces = Vector3.zero; // Clear added forces
+            addExtraForcesOnFixedUpdate = false;
+        }
     }
-    void Brake(ref Rigidbody rigidbody) => rigidbody.AddForce(Vector2.right * CalculateNextVelocity(rigidbody.velocity.x, (-1)*rigidbody.velocity.x, breakMaxVelocity), horizontalForceMode);
-    /// <summary>
-    /// Add force to rigidbody. They will be processed on FixedUpdate.
-    /// Filtertype used is ForceMode.Force
-    /// </summary>
-    /// <param name="force">Force to apply</param>
-    public void AddForce(Vector3 force) => addedForces += force;
-    /// <summary>
-    /// Applies a force to rigidbody. The direction of force is relative to Vector Right.
-    /// </summary>
-    /// <param name="rigidbody">The Rigidbody to receive forces</param>
-    void MoveLeft(ref Rigidbody rigidbody) => rigidbody.AddForce(Vector2.right * CalculateNextVelocity(rigidbody.velocity.x, -velocityHorizontal, velocityHorizontal), horizontalForceMode);
-    /// <summary>
-    /// Applies a force to rigidbody. The direction of force is relative to Vector Right.
-    /// </summary>
-    /// <param name="rigidbody">The Rigidbody to receive forces</param>
-    void MoveRight(ref Rigidbody rigidbody) => rigidbody.AddForce(Vector2.right * CalculateNextVelocity(rigidbody.velocity.x, velocityHorizontal, velocityHorizontal), horizontalForceMode);
-    /// <summary>
-    /// Applies a force to rigidbody. The direction of force is relative to the gameobjects transforms up.
-    /// </summary>
-    /// <param name="rigidbody">The Rigidbody to receive forces</param>
-    void Jump(ref Rigidbody rigidbody) => rigidbody.AddForce(transform.up * forceJump);
+
+    /*
+     * Force Methods
+     */
     /// <summary>
     /// Add all forces added by the "AddForce" method.
     /// </summary>
     /// <param name="rigidbody"></param>
     void AddExtraForces(ref Rigidbody rigidbody) => rigidbody.AddForce(addedForces, ForceMode.Force);
     /// <summary>
-    /// Calculate the next velocity. Verifies so the velocity stays within max velocity.
+    /// Applies a force to rigidbody. The direction of force is relative to Vector Right.
+    /// </summary>
+    /// <param name="rigidbody">The Rigidbody to receive forces</param>
+    void Move(ref Rigidbody rigidbody) => rigidbody.AddForce(Vector2.right * GetClampedVelocity(rigidbody.velocity.x, currentVelocityHorizontal, maxVelocityHorizontal), ForceMode.VelocityChange);
+    /// <summary>
+    /// Applies a force to rigidbody. The direction of force is relative to the gameobjects transforms up.
+    /// </summary>
+    /// <param name="rigidbody">The Rigidbody to receive forces</param>
+    void Jump(ref Rigidbody rigidbody) => rigidbody.AddForce(transform.up * forceJump);
+
+    /*
+     * MISC Methods
+     */
+    /// <summary>
+    /// Calculate the next velocity. Verifies so the velocity stays within max velocity after adding "additionalVelocity".
+    /// The returned velocity should replace the "additionalVelocity". 
+    /// For example, if "velocityBefore" + "additionalVelocity" is within max velocity range, the returned velocity will be the same as "additionalVelocity". 
+    /// Or if outside range, the returned velocity is the velocity missing to reach max velocity.
     /// </summary>
     /// <param name="velocityFrom">The current Velocity</param>
     /// <param name="additionalVelocity">How much to increase Velocity</param>
     /// <param name="maxVelocity">Maximum velocity. The returned Velocity can NOT be Less than (-maxVelocity) or Larger than (maxVelocity)</param>
-    /// <returns>Returns next velocity. Returns 0 if velocity is above maxVelocity.</returns>
-    float CalculateNextVelocity(float velocityFrom, float additionalVelocity, float maxVelocity)
+    /// <returns>Returns next velocity to add to current velocity. Returns 0 if above maxVelocity range.</returns>
+    float GetClampedVelocity(float velocityBefore, float additionalVelocity, float maxVelocity)
     {
         if (additionalVelocity > 0) // Direction of added velocity is to the Right
         {
-            if (velocityFrom >= maxVelocity) // Velocity is already above max
+            if (velocityBefore >= maxVelocity) // Velocity is already above max
             {
                 return 0;
             }
-            else if (velocityFrom + additionalVelocity > maxVelocity) // Velocity + added Velocity is above max
+            else if (velocityBefore + additionalVelocity > maxVelocity) // Velocity + added Velocity is above max
             {
-                return maxVelocity - velocityFrom; // Return the difference in velocity to achieve max velocity
+                return maxVelocity - velocityBefore; // Return the difference in velocity to achieve max velocity
             }
             else // Velocity + added Velocity is within velocityrange
             {
@@ -155,13 +193,13 @@ public class CharController : MonoBehaviour
         }
         else // Direction of added velocity is to the Left
         {
-            if (velocityFrom <= -maxVelocity) // Velocity is already below min
+            if (velocityBefore <= -maxVelocity) // Velocity is already below min
             {
                 return 0;
             }
-            else if (velocityFrom + additionalVelocity < -maxVelocity) // Velocity + added Velocity is below min
+            else if (velocityBefore + additionalVelocity < -maxVelocity) // Velocity + added Velocity is below min
             {
-                return (-maxVelocity) - velocityFrom; // Return the difference in velocity to achieve max velocity
+                return (-maxVelocity) - velocityBefore; // Return the difference in velocity to achieve max velocity
             }
             else // Velocity + added Velocity is within velocityrange
             {
