@@ -76,7 +76,7 @@ public class FollowState : State
 		//ai.transform.position = Vector3.MoveTowards(ai.transform.position, new Vector3(master.transform.position.x + 4, ai.transform.position.y, ai.transform.position.z), 1);
 		//float masterVelocity = ((master.transform.position - masterPosition).magnitude) / Time.deltaTime;
 		//masterPosition = master.transform.position;
-		if (master.moveLeftOnFixedUpdate)
+		if (master.RBLeftMovementActive)
 		{
 			float distance = (master.transform.position.x - ai.transform.position.x) / 10;
 			velocityHorizontal = 10 * distance;
@@ -112,7 +112,7 @@ public class FollowState : State
 				//timeToChange = attentionSpan / 2;
 			}
 		}
-		else if (master.moveRightOnFixedUpdate)
+		else if (master.RBRightMovementActive)
 		{
 
 			float distance = (master.transform.position.x - ai.transform.position.x) / 10;

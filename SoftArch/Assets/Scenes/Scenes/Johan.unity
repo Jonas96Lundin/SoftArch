@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028328, g: 0.22571322, b: 0.30692163, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465782, g: 0.49641252, b: 0.5748167, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -172,10 +172,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.6, y: 0.6}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &26347894
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -224,7 +220,7 @@ SpriteRenderer:
   m_Size: {x: 120, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &47896817
@@ -273,10 +269,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 1, y: 1}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 1
 --- !u!65 &47896820
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -476,10 +468,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.8, y: 0.8}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &103354053
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -575,10 +563,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.6, y: 0.6}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &257730936
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -674,10 +658,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.7, y: 0.7}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &289811145
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -780,10 +760,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 4, y: 4}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 1
 --- !u!65 &330020725
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1002,10 +978,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.05, y: 0.05}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &652264455
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1132,7 +1104,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9af6c8e4e92cd14438331574d9bc6d86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1982939949}
 --- !u!114 &674784346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1218,10 +1189,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.2, y: 0.2}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &722052788
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1270,7 +1237,7 @@ SpriteRenderer:
   m_Size: {x: 120, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &836319423
@@ -1501,10 +1468,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.8, y: 0.8}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &937475044
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1553,7 +1516,7 @@ SpriteRenderer:
   m_Size: {x: 120, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1007397137
@@ -1588,10 +1551,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 1, y: 1}
-  infiniteHorizontal: 0
-  infiniteVertical: 0
-  object3D: 1
 --- !u!65 &1007397139
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1717,10 +1676,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 1, y: 1}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &1102246357
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1769,7 +1724,7 @@ SpriteRenderer:
   m_Size: {x: 120, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1264095039
@@ -1816,10 +1771,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.4, y: 0.4}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &1264095042
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1920,10 +1871,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 4, y: 4}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &1306352689
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1972,7 +1919,7 @@ SpriteRenderer:
   m_Size: {x: 120, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1315866568
@@ -2225,7 +2172,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!54 &1376685974
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2496,10 +2443,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.1, y: 0.1}
-  infiniteHorizontal: 1
-  infiniteVertical: 1
-  object3D: 0
 --- !u!212 &1502123300
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2600,10 +2543,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.25, y: 0.25}
-  infiniteHorizontal: 1
-  infiniteVertical: 1
-  object3D: 0
 --- !u!212 &1530644003
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2652,7 +2591,7 @@ SpriteRenderer:
   m_Size: {x: 120, y: 120}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1540832933
@@ -2699,10 +2638,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.07, y: 0.07}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &1540832936
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2751,7 +2686,7 @@ SpriteRenderer:
   m_Size: {x: 120, y: 10}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1601156088
@@ -2803,10 +2738,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.3, y: 0.3}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &1601156091
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2855,7 +2786,7 @@ SpriteRenderer:
   m_Size: {x: 120, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1839373602
@@ -2942,10 +2873,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.6, y: 0.6}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &1955322969
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3026,13 +2953,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1982939948}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be27e16e7c09d5b4589fffb02b269d6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveLeftOnFixedUpdate: 0
-  moveRightOnFixedUpdate: 0
+  maxVelocityHorizontal: 10
+  forceJump: 250
 --- !u!54 &1982939950
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3136,16 +3063,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1982939948}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efbea98e29f2ff644aef79fbbd93c6aa, type: 3}
+  m_Script: {fileID: 11500000, guid: 794b527384de3a84b80fc860da72a3f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 5
-  JumpHeight: 2
-  GroundDistance: 0.2
-  DashDistance: 5
-  Ground:
-    serializedVersion: 2
-    m_Bits: 8
+  leftClickEffectEnabled: 1
+  rightClickEffectEnabled: 1
 --- !u!1 &2023741551
 GameObject:
   m_ObjectHideFlags: 0
@@ -3195,10 +3117,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.1, y: 0.1}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &2023741554
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3247,7 +3165,7 @@ SpriteRenderer:
   m_Size: {x: 120, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &2040894063
@@ -3294,10 +3212,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.3, y: 0.3}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &2040894066
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3398,10 +3312,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.8, y: 0.8}
-  infiniteHorizontal: 1
-  infiniteVertical: 0
-  object3D: 0
 --- !u!212 &2115032368
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3450,6 +3360,6 @@ SpriteRenderer:
   m_Size: {x: 120, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
