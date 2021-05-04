@@ -68,6 +68,11 @@ public class CharController : MonoBehaviour
                 brakeIsAllowed = true;
             }
         }
+        Time.fixedDeltaTime = 0.01f;
+        if (movement == 0) // If allowed to brake
+        {
+            rigidbody.velocity = new Vector3(0, rigidbody.velocity.y, 0);
+        }
     }
     void FixedUpdate()
     {
@@ -102,7 +107,7 @@ public class CharController : MonoBehaviour
         AddExtraForces(ref rigidbody);
         addedForces = Vector3.zero; // Clear added forces
     }
-    void Brake(ref Rigidbody rigidbody) => rigidbody.AddForce(Vector2.right * CalculateNextVelocity(rigidbody.velocity.x, (-1)*rigidbody.velocity.x, breakMaxVelocity), horizontalForceMode);
+    void Brake(ref Rigidbody rigidbody) => rigidbody.AddForce(2*Vector2.right * CalculateNextVelocity(rigidbody.velocity.x, (-1)*rigidbody.velocity.x, breakMaxVelocity), horizontalForceMode);
     /// <summary>
     /// Add force to rigidbody. They will be processed on FixedUpdate.
     /// Filtertype used is ForceMode.Force
