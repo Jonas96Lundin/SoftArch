@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 /// <summary>
 /// Kodad av: Johan Melkersson
 /// </summary>
@@ -8,126 +9,65 @@ public class IdleState : State
 {
 
 
-
-	public IdleState(GameObject ai, float attentionSpan, float idleSpeed, float catchUpSpeed, CharController master, bool followMaster)
+	public IdleState(MeshRenderer mesh, NavMeshAgent agent, CharController master, float attentionSpan, float idleSpeed, float catchUpSpeed)
 	{
-		this.ai = ai;
+		this.mesh = mesh;
+		this.agent = agent;
+		this.master = master;
+		//rb = agent.GetComponent<Rigidbody>();
+
 		this.attentionSpan = attentionSpan;
 		this.idleSpeed = idleSpeed;
 		this.catchUpSpeed = catchUpSpeed;
-		this.master = master;
-		this.followMaster = followMaster;
-		timeToChange = 0;
-		//velocityHorizontal = idleSpeed;
-	}
-	public IdleState(GameObject ai)
-	{
-		this.ai = ai;
+		this.agent.speed = idleSpeed;
+
+		timeToChange = attentionSpan;
 	}
 
 	public override void UpdateState()
 	{
 		if (MasterInput())
 			return;
-		//Rigidbody rigidbody = ai.GetComponent<Rigidbody>();
-		////Jump
-		//if (!jumpOnFixedUpdate)
-		//{
-		//	Physics.Raycast(ai.transform.position, Vector2.down, out RaycastHit info, groundDetectRayLength); // Raycast down
-		//	bool isOnGround = info.collider != null;
-		//	if (isOnGround) // Jump restrictions
-		//	{
-		//		//jumpOnFixedUpdate = Input.GetButtonDown("Jump"); // Jump on user input
-		//	}
-		//}
-		//// Movement
-		//float movement = Input.GetAxis("Horizontal");
-		//if (!moveRightOnFixedUpdate && movement > 0)
-		//{
-		//	moveRightOnFixedUpdate = true;
-		//}
-		//else if (!moveLeftOnFixedUpdate && movement < 0)
-		//{
-		//	moveLeftOnFixedUpdate = true;
-		//}
-		//Brake
-		//if (!brakeIsAllowed) // If not alowed to brake
-		//{
-		//	if (enableBreakWhenVelocityIsZero && rigidbody.velocity.x == 0) // If to turn on brake when character stops
-		//	{
-		//		enableBreakWhenVelocityIsZero = false;
-		//		brakeIsAllowed = true;
-		//	}
-		//}
 
-		//Change when timer
-		if (timeToChange <= 0)
+		if (Mathf.Abs(master.transform.position.x - agent.transform.position.x) > 30)
 		{
-			ChangeDirection();
+			_context.TransitionTo(new CatchUpState(mesh, agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			return;
+		}
+
+		if (!moveOnFixedUpdate)
+		{
+			if (timeToChange <= 0)
+			{
+				SetTargetPosition();
+				timeToChange = attentionSpan;
+				moveOnFixedUpdate = true;
+			}
 		}
 		timeToChange -= Time.deltaTime;
-
-		//Move(speed);
-
-
-		if (Mathf.Abs(Camera.main.transform.position.x - ai.transform.position.x) > 20)
-		{
-			//_context.TransitionTo(new FollowState(ai));
-			_context.TransitionTo(new CatchUpState(ai, attentionSpan, idleSpeed, catchUpSpeed, master, false));
-		}
 	}
 
-	public override void ChangeDirection()
-	{
-		RandomDirection();
-		timeToChange = attentionSpan;
-	}
-
-	protected void RandomDirection()
+	public override void SetTargetPosition()
 	{
 		while (true)
 		{
 			int newDir = Random.Range(0, 3);
 			if (newDir == 0)
 			{
-				TurnForward();
+				targetPos = new Vector3(agent.transform.position.x - 5, agent.transform.position.y, 0);
 				break;
 			}
 			else if (newDir == 1)
 			{
-				TurnRight();
-				velocityHorizontal = idleSpeed;
+				targetPos = new Vector3(agent.transform.position.x + 5, agent.transform.position.y, 0);
 				break;
 			}
 			else if (newDir == 2)
 			{
-				TurnLeft();
-				//moveRightOnFixedUpdate = false;
-				//moveLeftOnFixedUpdate = true;
-				//brakeIsAllowed = false;
-				velocityHorizontal = idleSpeed;
+				targetPos = agent.transform.position;
+				//TurnForward();
 				break;
 			}
 		}
 	}
-
-	//public override void HandleCollision(Collider other)
-	//{
-	//    if (nextPos == Vector3.zero && other.gameObject.tag == "CrossRoad")
-	//    {
-	//        //RandomDirection(other.gameObject.GetComponent<TurnPoint>().canTurnForward, other.gameObject.GetComponent<TurnPoint>().canTurnBack,
-	//        //    other.gameObject.GetComponent<TurnPoint>().canTurnRight, other.gameObject.GetComponent<TurnPoint>().canTurnLeft);
-
-	//        RandomDirection(other.gameObject.GetComponent<CrossRoad>().canTurnForward, other.gameObject.GetComponent<CrossRoad>().canTurnBack,
-	//            other.gameObject.GetComponent<CrossRoad>().canTurnRight, other.gameObject.GetComponent<CrossRoad>().canTurnLeft);
-
-	//        if (Physics.Raycast(ai.transform.position, ai.transform.TransformDirection(Vector3.forward), out hit, 100, turnPointMask))
-	//        {
-	//            nextPos = hit.collider.transform.position;
-	//        }
-	//        //Enter Patrol
-	//        ai.GetComponent<Renderer>().material.color = new Color(0, 1, 0, 0.5f);
-	//        _context.TransitionTo(new PatrolState(ai));
-	//    }
-	//}
 }

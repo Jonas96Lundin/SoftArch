@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 /// <summary>
 /// Kodad av: Johan Melkersson
 /// </summary>
+
+[RequireComponent(typeof(NavMeshAgent), typeof(MeshRenderer))]
 public class AIState : MonoBehaviour
 {
     [SerializeField]
@@ -11,16 +14,20 @@ public class AIState : MonoBehaviour
     [SerializeField]
     private float attentionSpan;
     [SerializeField]
-    private float idleSpeed, followSpeed;
-    
+    private float idleSpeed, catchUpSpeed;
+    [SerializeField]
+    private NavMeshAgent agent;
+    [SerializeField]
+    private MeshRenderer mesh;
 
-    private Context context;
+
+    private OldContext context;
     
 
     void Start()
     {
         //context = new Context(new IdleState(gameObject));
-        context = new Context(new IdleState(gameObject, attentionSpan, idleSpeed, followSpeed, master, false));
+        context = new OldContext(new OldIdleState(gameObject, master, false, attentionSpan, idleSpeed, catchUpSpeed, agent, mesh));
     }
 
     void Update()
@@ -33,8 +40,13 @@ public class AIState : MonoBehaviour
         context.FixedUpdateContext();
 	}
 
+	private void OnDrawGizmos()
+	{
+        context.OnDrawGizmos();
+	}
 	//private void OnTriggerEnter(Collider other)
 	//{
 	//    context.HandleCollision(other);
 	//}
+
 }

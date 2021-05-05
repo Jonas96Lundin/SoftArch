@@ -1,69 +1,49 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CatchUpState : State
 {
-	public CatchUpState(GameObject ai, float attentionSpan, float idleSpeed, float catchUpSpeed, CharController master, bool followMaster)
+	public CatchUpState(MeshRenderer mesh, NavMeshAgent agent, CharController master, float attentionSpan, float idleSpeed, float catchUpSpeed)
 	{
-		this.ai = ai;
+		this.mesh = mesh;
+		this.agent = agent;
+		this.master = master;
+		//rb = agent.GetComponent<Rigidbody>();
+
 		this.attentionSpan = attentionSpan;
 		this.idleSpeed = idleSpeed;
 		this.catchUpSpeed = catchUpSpeed;
-		velocityHorizontal = catchUpSpeed;
-		this.master = master;
-		this.followMaster = followMaster;
-	}
-	public CatchUpState(GameObject ai)
-	{
-		this.ai = ai;
+		this.agent.speed = catchUpSpeed;
 	}
 	public override void UpdateState()
 	{
 		if (MasterInput())
 			return;
 
-		ChangeDirection();
-		//Move(speed);
+		if (!moveOnFixedUpdate)
+		{
+			SetTargetPosition();
+			moveOnFixedUpdate = true;
+		}
 	}
 
-	public override void ChangeDirection()
+	public override void SetTargetPosition()
 	{
-		
-		
-		if (ai.transform.position.x > master.transform.position.x)
+		float distance = agent.transform.position.x - master.transform.position.x;
+		if (distance < -3f)
 		{
-			if (!moveLeftOnFixedUpdate)
-				TurnLeft();
+			targetPos = new Vector3(master.transform.position.x - 2, master.transform.position.y, master.transform.position.z);
 		}
-		else if (ai.transform.position.x < master.transform.position.x)
+		else if (distance > 3f)
 		{
-			if (!moveRightOnFixedUpdate)
-				TurnRight();
+			targetPos = new Vector3(master.transform.position.x + 2, master.transform.position.y, master.transform.position.z);
 		}
 		else
 		{
-			TurnForward();
+			_context.TransitionTo(new IdleState(mesh, agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			return;
 		}
-
-
-		if (followMaster)
-		{
-			if (Mathf.Abs(master.transform.position.x - ai.transform.position.x) < 4)
-			{
-				Debug.Log("FollowState");
-				_context.TransitionTo(new FollowState(ai, attentionSpan, idleSpeed, catchUpSpeed, master, true));
-			}			
-		}
-		else if (Mathf.Abs(master.transform.position.x - ai.transform.position.x) < 2)
-		{
-			Debug.Log("IdleState");
-			//_context.TransitionTo(new IdleState(ai));
-			_context.TransitionTo(new IdleState(ai, attentionSpan, idleSpeed, catchUpSpeed, master, false));
-		}
-
-		//Vector2 direction = ((Vector2)Camera.main.transform.position - (Vector2)ai.transform.position).normalized;
-		//ai.transform.eulerAngles = new Vector3(0f, -90f, 0f);
-		//ai.transform.eulerAngles = (ai.transform.position - Camera.main.transform.position).normalized * 360f;
 	}
 }
