@@ -21,6 +21,7 @@ public class IdleState : State
 		this.catchUpSpeed = catchUpSpeed;
 		this.agent.speed = idleSpeed;
 
+		targetPos = agent.transform.position;
 		timeToChange = attentionSpan;
 	}
 

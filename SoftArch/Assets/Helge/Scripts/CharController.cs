@@ -43,7 +43,7 @@ public class CharController : MonoBehaviour
     /// <summary>
     /// Returns true if rigidbody is moving to the left
     /// </summary>
-    public bool RBLeftMovementActive => rb.velocity.x > 0;
+    public bool RBLeftMovementActive => rb.velocity.x < 0;
     /// <summary>
     /// Returns true if user input is moving rigidbody horizontally
     /// </summary>

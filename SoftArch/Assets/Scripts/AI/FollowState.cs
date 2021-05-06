@@ -35,13 +35,15 @@ public class FollowState : State
 	public override void SetTargetPosition()
 	{
 		float distance = agent.transform.position.x - master.transform.position.x;
-		if (distance < -3.9)
+		if (distance < 3)
 		{
-			targetPos = new Vector3(master.transform.position.x - 4, master.transform.position.y, master.transform.position.z);
+			if (!master.RBLeftMovementActive)
+				targetPos = new Vector3(master.transform.position.x - 4, master.transform.position.y, master.transform.position.z);
 		}
-		else if (distance > 3.9)
+		else if (distance > 3)
 		{
-			targetPos = new Vector3(master.transform.position.x + 4, master.transform.position.y, master.transform.position.z);
+			if (!master.RBRightMovementActive)
+				targetPos = new Vector3(master.transform.position.x + 4, master.transform.position.y, master.transform.position.z);
 		}
 		else
 		{
