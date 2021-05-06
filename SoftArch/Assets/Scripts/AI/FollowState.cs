@@ -17,6 +17,7 @@ public class FollowState : State
 		this.attentionSpan = attentionSpan;
 		this.idleSpeed = idleSpeed;
 		this.catchUpSpeed = catchUpSpeed;
+
 		this.agent.speed = catchUpSpeed;
 	}
 
@@ -28,26 +29,36 @@ public class FollowState : State
 		if (!moveOnFixedUpdate)
 		{
 			SetTargetPosition();
-			moveOnFixedUpdate = true;
 		}
 	}
 
 	public override void SetTargetPosition()
 	{
 		float distance = agent.transform.position.x - master.transform.position.x;
-		if (distance < 3)
+
+		if (distance < -3.0f)
 		{
-			if (!master.RBLeftMovementActive)
-				targetPos = new Vector3(master.transform.position.x - 4, master.transform.position.y, master.transform.position.z);
+			if (!master.RBLeftMovementActive || distance < -(followDistance + 1))
+			{
+				targetPos = new Vector3(master.transform.position.x - followDistance, master.transform.position.y, master.transform.position.z);
+				moveOnFixedUpdate = true;
+			}
 		}
-		else if (distance > 3)
+		else if (distance > 3.0f)
 		{
-			if (!master.RBRightMovementActive)
-				targetPos = new Vector3(master.transform.position.x + 4, master.transform.position.y, master.transform.position.z);
+			if (!master.RBRightMovementActive || distance > (followDistance +1 ))
+			{
+				targetPos = new Vector3(master.transform.position.x + followDistance, master.transform.position.y, master.transform.position.z);
+				moveOnFixedUpdate = true;
+			}
 		}
 		else
 		{
-			targetPos = agent.transform.position;
+			if (targetPos != agent.transform.position)
+			{
+				targetPos = agent.transform.position;
+				moveOnFixedUpdate = true;
+			}
 		}
 	}
 }

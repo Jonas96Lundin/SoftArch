@@ -42,7 +42,6 @@ public class IdleState : State
 			{
 				SetTargetPosition();
 				timeToChange = attentionSpan;
-				moveOnFixedUpdate = true;
 			}
 		}
 		timeToChange -= Time.deltaTime;
@@ -56,17 +55,19 @@ public class IdleState : State
 			if (newDir == 0)
 			{
 				targetPos = new Vector3(agent.transform.position.x - 5, agent.transform.position.y, 0);
+				moveOnFixedUpdate = true;
 				break;
 			}
 			else if (newDir == 1)
 			{
 				targetPos = new Vector3(agent.transform.position.x + 5, agent.transform.position.y, 0);
+				moveOnFixedUpdate = true;
 				break;
 			}
 			else if (newDir == 2)
 			{
 				targetPos = agent.transform.position;
-				//TurnForward();
+				TurnForward();
 				break;
 			}
 		}

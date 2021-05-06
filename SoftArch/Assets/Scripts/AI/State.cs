@@ -7,6 +7,7 @@ using UnityEngine.AI;
 /// </summary>
 public abstract class State
 {
+	//Johan//
 	//Context
 	protected Context _context;
 	//Master
@@ -15,12 +16,15 @@ public abstract class State
 	protected NavMeshAgent agent;
 	protected MeshRenderer mesh;
 	protected Vector3 targetPos;
-
 	//Static varialbles
-	protected float speed, idleSpeed = 3.0f, catchUpSpeed = 8.0f, followSpeed = 5.0f;
-	protected float attentionSpan = 1;
-	protected float timeToChange;
 	protected static bool followMaster;
+	//Tweakable variables
+	protected const float followDistance = 4.0f;
+	protected float attentionSpan = 1.0f;
+	protected float idleSpeed = 4.0f,
+					catchUpSpeed = 10.0f;
+	//Other Variables
+	protected float timeToChange;
 
 	//Helge
 	/*
@@ -155,10 +159,10 @@ public abstract class State
 	//Johan
 	public abstract void SetTargetPosition();
 
-	//protected void TurnForward()
-	//{
-	//	agent.transform.eulerAngles = new Vector3(0f, 0f, 0f);
-	//}
+	protected void TurnForward()
+	{
+		agent.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+	}
 	//protected void TurnBack()
 	//{
 	//	agent.transform.eulerAngles = new Vector3(0f, 180f, 0f);

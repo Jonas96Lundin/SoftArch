@@ -25,20 +25,16 @@ public class CatchUpState : State
 		if (!moveOnFixedUpdate)
 		{
 			SetTargetPosition();
-			moveOnFixedUpdate = true;
 		}
 	}
 
 	public override void SetTargetPosition()
 	{
 		float distance = agent.transform.position.x - master.transform.position.x;
-		if (distance < -3f)
+		if (distance < -followDistance || distance > followDistance)
 		{
-			targetPos = new Vector3(master.transform.position.x - 2, master.transform.position.y, master.transform.position.z);
-		}
-		else if (distance > 3f)
-		{
-			targetPos = new Vector3(master.transform.position.x + 2, master.transform.position.y, master.transform.position.z);
+			targetPos = master.transform.position;
+			moveOnFixedUpdate = true;
 		}
 		else
 		{
