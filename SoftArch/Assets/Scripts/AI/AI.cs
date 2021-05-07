@@ -18,7 +18,7 @@ public class AI : MonoBehaviour
     [SerializeField]
     private float attentionSpan;
     [SerializeField]
-    private float idleSpeed, catchUpSpeed;    
+    private float idleSpeed, catchUpSpeed;
 
     private Context context;
 
