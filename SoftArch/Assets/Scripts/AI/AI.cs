@@ -12,11 +12,8 @@ public class AI : MonoBehaviour
 {
 	[SerializeField]
 	private AI ai;
-    //private MeshRenderer mesh;
     [SerializeField]
     private NavMeshAgent agent;
-    [SerializeField]
-    private AgentLinkMover linkMover;
     [SerializeField]
     private CharController master;
     [SerializeField]

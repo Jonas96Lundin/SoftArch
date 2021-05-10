@@ -38,6 +38,7 @@ public class CatchUpState : State
 		}
 		else
 		{
+			targetPos = agent.nextPosition;
 			_context.TransitionTo(new IdleState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
 			return;
 		}
