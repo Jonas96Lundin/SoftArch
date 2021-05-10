@@ -1,90 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 /// <summary>
 /// Kodad av: Johan Melkersson
 /// </summary>
 public class FollowState : State
 {
-	public FollowState(GameObject ai, float attentionSpan, float idleSpeed ,float catchUpSpeed, CharController master, bool followMaster)
+	public FollowState(NavMeshAgent agent, CharController master, float attentionSpan, float idleSpeed, float catchUpSpeed)
 	{
-		this.ai = ai;
+		this.agent = agent;
+		this.master = master;
+
 		this.attentionSpan = attentionSpan;
 		this.idleSpeed = idleSpeed;
 		this.catchUpSpeed = catchUpSpeed;
-		speed = catchUpSpeed;
-		this.master = master;
-		this.followMaster = followMaster;
-		masterPosition = master.transform.position;
+
+		this.agent.speed = catchUpSpeed;
 	}
-	public FollowState(GameObject ai)
-	{
-		this.ai = ai;
-	}
+
 	public override void UpdateState()
-	{
-		ChangeDirection();
-
-		//Match player speed???
-		masterSpeed = master.transform.position.x - masterPosition.x;
-		masterPosition = master.transform.position;
-
-		masterSpeed = 20;
-		Move(masterSpeed);
-
-		//Vector3 deltaMovement = masterPosition - master.transform.position;
-		//ai.transform.position += new Vector3(deltaMovement.x * parallaxEffect.x, deltaMovement.y * parallaxEffect.y, 0);
-		//lastCameraPos = cameraTransform.position;
-	}
-
-	public override void ChangeDirection()
 	{
 		if (MasterInput())
 			return;
 
-		if (moveRight)
+		if (!moveOnFixedUpdate)
 		{
-			if (ai.transform.position.x > master.transform.position.x)
-			{
-				TurnLeft();
-			}
+			SetTargetPosition();
 		}
-		else if (moveLeft)
-		{
-			if (ai.transform.position.x < master.transform.position.x)
-			{
-				TurnRight();
-			}
-		}
-		else
-		{
-			if (ai.transform.position.x > master.transform.position.x)
-			{
-				TurnLeft();
-			}
-			else if (ai.transform.position.x < master.transform.position.x)
-			{
-				TurnRight();
-			}
-			else
-			{
-				Debug.Log("Turn Up or Down?");
-			}
-		}
-
-		
-
-
-		//if (Mathf.Abs(master.transform.position.x - ai.transform.position.x) < 4)
-		//{
-		//	//_context.TransitionTo(new IdleState(ai));
-		//	_context.TransitionTo(new IdleState(ai, attentionSpan, idleSpeed, catchUpSpeed, master));
-		//}
-
-		//Vector2 direction = ((Vector2)Camera.main.transform.position - (Vector2)ai.transform.position).normalized;
-		//ai.transform.eulerAngles = new Vector3(0f, -90f, 0f);
-		//ai.transform.eulerAngles = (ai.transform.position - Camera.main.transform.position).normalized * 360f;
 	}
 
+	public override void SetTargetPosition()
+	{
+		float distance = agent.transform.position.x - master.transform.position.x;
 
+		if (distance < -followDistance)
+		{
+			if (!master.RBLeftMovementActive || distance < -(followDistance + 1))
+			{
+				targetPos = new Vector3(master.transform.position.x - followDistance, master.transform.position.y, master.transform.position.z);
+				moveOnFixedUpdate = true;
+			}
+
+		}
+		else if (distance > followDistance)
+		{
+			if (!master.RBRightMovementActive || distance > (followDistance + 1))
+			{
+				targetPos = new Vector3(master.transform.position.x + followDistance, master.transform.position.y, master.transform.position.z);
+				moveOnFixedUpdate = true;
+			}
+		}
+	}
 }

@@ -6,7 +6,6 @@ using UnityEngine;
 /// </summary>
 public class Context
 {
-
     private State _state = null;
 
     public Context(State state)
@@ -25,8 +24,16 @@ public class Context
         _state.UpdateState();
     }
 
-    //public void HandleCollision(Collider other)
-    //{
-    //    _state.HandleCollision(other);
-    //}
+    public void FixedUpdateContext()
+	{
+        _state.FixedUpdateState();
+
+    }
+
+    //?
+    public void OnDrawGizmos()
+	{
+        _state.OnDrawGizmos();
+
+    }
 }

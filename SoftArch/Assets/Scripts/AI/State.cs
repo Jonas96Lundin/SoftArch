@@ -1,126 +1,109 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 /// <summary>
 /// Kodad av: Johan Melkersson
 /// </summary>
 public abstract class State
 {
+	//Johan//
+	//Context
+	protected Context _context;
+	//Master
+	protected CharController master;
+	//NavMesh
+	protected NavMeshAgent agent;
+	protected Vector3 targetPos;
 
-    protected Context _context;
-    protected GameObject ai;
+	//Static varialbles
+	protected static bool followMaster;
+	//Tweakable variables
+	protected const float followDistance = 4.0f;
+	protected float attentionSpan = 1.0f;
+	protected float idleSpeed = 4.0f,
+					catchUpSpeed = 10.0f;
+	//Other Variables
+	protected float timeToChange;
 
-    protected CharController master;
-    protected Vector3 masterPosition;
-    protected float masterSpeed;
-
-    protected float speed, idleSpeed, catchUpSpeed/*, followSpeed*/;
-    protected float attentionSpan;
-    protected float timeToChange;
-
-    protected bool moveRight, moveLeft/*, jump*/;
-    protected bool followMaster;
-
-
-    //protected Vector3 moveDirection;
-
-    //protected static int wallMask = 1 << 8;
-    //protected static int playerMask = 1 << 9;
-    //protected static int turnPointMask = 1 << 10;
-    //protected static int comboMask = wallMask | playerMask;
-
-    //protected float layerMaskHitDistance;
-    //protected RaycastHit hit;
-
-    //protected static Vector3 lastSeenPos;
-    //protected static Vector3 nextPos;
-
-    //protected static string nextTurn;
+	protected bool isJumping;
+	protected Vector3 startJumpPos, endJumpPos;
+	protected float hightDifference;
 
 
+	protected bool jumpOnFixedUpdate = false,
+				   moveOnFixedUpdate = false;
 
 
+	public void SetContext(Context context)
+	{
+		_context = context;
+	}
+	public abstract void UpdateState();
 
-
-
-
-
-    public void SetContext(Context context)
-    {
-        _context = context;
-    }
-
-    public abstract void UpdateState();
-
-    public abstract void ChangeDirection();
-
-    protected void TurnForward()
-    {
-        Debug.Log("Turn Forward");
-        ai.transform.eulerAngles = new Vector3(0f, 0f, 0f);
-        moveRight = false;
-        moveLeft = false;
-    }
-    protected void TurnBack()
-    {
-        Debug.Log("Turn Back");
-        ai.transform.eulerAngles = new Vector3(0f, 180f, 0f);
-        moveRight = false;
-        moveLeft = false;
-    }
-    protected void TurnRight()
-    {
-        Debug.Log("Turn Right");
-        ai.transform.eulerAngles = new Vector3(0f, 90f, 0f);
-        moveRight = true;
-        moveLeft = false;
-    }
-    protected void TurnLeft()
-    {
-        Debug.Log("Turn Left");
-        ai.transform.eulerAngles = new Vector3(0f, -90f, 0f);
-        moveRight = false;
-        moveLeft = true;
-    }
-
-    protected void Move(float speed)
-    {
-        Vector3 velocity = ai.transform.forward * speed;
-        ai.transform.position += velocity * Time.deltaTime;
+	public void FixedUpdateState()
+	{
+		if (moveOnFixedUpdate)
+		{
+			agent.SetDestination(targetPos);
+			moveOnFixedUpdate = false;
+		}
 	}
 
-    protected bool MasterInput()
+	public abstract void SetTargetPosition();
+
+	protected void TurnForward()
 	{
-		if (Input.GetButtonDown("Follow"))
+		agent.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+	}
+	//protected void TurnBack()
+	//{
+	//	agent.transform.eulerAngles = new Vector3(0f, 180f, 0f);
+	//}
+	//protected void TurnRight()
+	//{
+	//	agent.transform.eulerAngles = new Vector3(0f, 90f, 0f);
+	//}
+	//protected void TurnLeft()
+	//{
+	//	agent.transform.eulerAngles = new Vector3(0f, -90f, 0f);
+	//}
+
+	protected bool MasterInput()
+	{
+		if (Input.GetKeyDown("f"))
 		{
-            followMaster = !followMaster;
+			followMaster = !followMaster;
+			//
+			Debug.Log(followMaster.ToString());
+			//
 			if (followMaster)
 			{
-                if (Mathf.Abs(master.transform.position.x - ai.transform.position.x) < 4)
-                {
-                    //_context.TransitionTo(new IdleState(ai));
-                    _context.TransitionTo(new FollowState(ai, attentionSpan, idleSpeed, catchUpSpeed, master, true));
-                }
-                else
-                {
-                    _context.TransitionTo(new CatchUpState(ai, attentionSpan, idleSpeed, catchUpSpeed, master, true));
-                }
-            }
+				_context.TransitionTo(new FollowState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			}
+			else if (Mathf.Abs(master.transform.position.x - agent.transform.position.x) < 10)
+			{
+				_context.TransitionTo(new IdleState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			}
 			else
 			{
-                if (Mathf.Abs(master.transform.position.x - ai.transform.position.x) < 10)
-                {
-                    //_context.TransitionTo(new IdleState(ai));
-                    _context.TransitionTo(new IdleState(ai, attentionSpan, idleSpeed, catchUpSpeed, master, false));
-                }
-                else
-                {
-                    _context.TransitionTo(new CatchUpState(ai, attentionSpan, idleSpeed, catchUpSpeed, master, false));
-                }
-            }
-            return true;
-        }
+				_context.TransitionTo(new CatchUpState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			}
+			moveOnFixedUpdate = false;
+			return true;
+		}
+		return false;
+	}
 
-        return false;
+	public void OnDrawGizmos()
+	{
+		if (agent.isStopped)
+		{
+			Gizmos.color = Color.green;
+			foreach (var point in agent.path.corners)
+			{
+				Gizmos.DrawSphere(point, 0.25f);
+			}
+		}
 	}
 }
