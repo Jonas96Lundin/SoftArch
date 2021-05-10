@@ -6,13 +6,17 @@ using UnityEngine.AI;
 /// Kodad av: Johan Melkersson
 /// </summary>
 
-[RequireComponent(typeof(NavMeshAgent), typeof(MeshRenderer))]
+//[RequireComponent(typeof(NavMeshAgent))]
+//[RequireComponent(typeof(NavMeshAgent), typeof(MeshRenderer))]
 public class AI : MonoBehaviour
 {
-    [SerializeField]
-    private MeshRenderer mesh;
+	[SerializeField]
+	private AI ai;
+    //private MeshRenderer mesh;
     [SerializeField]
     private NavMeshAgent agent;
+    [SerializeField]
+    private AgentLinkMover linkMover;
     [SerializeField]
     private CharController master;
     [SerializeField]
@@ -24,7 +28,7 @@ public class AI : MonoBehaviour
 
     void Start()
     {
-        context = new Context(new IdleState(mesh, agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+        context = new Context(new FollowState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
     }
 
     void Update()
@@ -38,8 +42,8 @@ public class AI : MonoBehaviour
     }
 
     //?
-    private void OnDrawGizmos()
-    {
-        context.OnDrawGizmos();
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    context.OnDrawGizmos();
+    //}
 }

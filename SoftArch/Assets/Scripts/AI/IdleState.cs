@@ -9,12 +9,10 @@ public class IdleState : State
 {
 
 
-	public IdleState(MeshRenderer mesh, NavMeshAgent agent, CharController master, float attentionSpan, float idleSpeed, float catchUpSpeed)
+	public IdleState(NavMeshAgent agent, CharController master, float attentionSpan, float idleSpeed, float catchUpSpeed)
 	{
-		this.mesh = mesh;
 		this.agent = agent;
 		this.master = master;
-		//rb = agent.GetComponent<Rigidbody>();
 
 		this.attentionSpan = attentionSpan;
 		this.idleSpeed = idleSpeed;
@@ -29,10 +27,9 @@ public class IdleState : State
 	{
 		if (MasterInput())
 			return;
-
 		if (Mathf.Abs(master.transform.position.x - agent.transform.position.x) > 30)
 		{
-			_context.TransitionTo(new CatchUpState(mesh, agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			_context.TransitionTo(new CatchUpState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
 			return;
 		}
 

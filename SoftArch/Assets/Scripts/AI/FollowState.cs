@@ -7,12 +7,10 @@ using UnityEngine.AI;
 /// </summary>
 public class FollowState : State
 {
-	public FollowState(MeshRenderer mesh, NavMeshAgent agent, CharController master, float attentionSpan, float idleSpeed, float catchUpSpeed)
+	public FollowState(NavMeshAgent agent, CharController master, float attentionSpan, float idleSpeed, float catchUpSpeed)
 	{
-		this.mesh = mesh;
 		this.agent = agent;
 		this.master = master;
-		//rb = agent.GetComponent<Rigidbody>();
 
 		this.attentionSpan = attentionSpan;
 		this.idleSpeed = idleSpeed;
@@ -36,27 +34,20 @@ public class FollowState : State
 	{
 		float distance = agent.transform.position.x - master.transform.position.x;
 
-		if (distance < -3.0f)
+		if (distance < -followDistance)
 		{
 			if (!master.RBLeftMovementActive || distance < -(followDistance + 1))
 			{
 				targetPos = new Vector3(master.transform.position.x - followDistance, master.transform.position.y, master.transform.position.z);
 				moveOnFixedUpdate = true;
 			}
+
 		}
-		else if (distance > 3.0f)
+		else if (distance > followDistance)
 		{
-			if (!master.RBRightMovementActive || distance > (followDistance +1 ))
+			if (!master.RBRightMovementActive || distance > (followDistance + 1))
 			{
 				targetPos = new Vector3(master.transform.position.x + followDistance, master.transform.position.y, master.transform.position.z);
-				moveOnFixedUpdate = true;
-			}
-		}
-		else
-		{
-			if (targetPos != agent.transform.position)
-			{
-				targetPos = agent.transform.position;
 				moveOnFixedUpdate = true;
 			}
 		}

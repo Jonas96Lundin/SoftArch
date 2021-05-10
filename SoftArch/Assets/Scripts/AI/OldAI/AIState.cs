@@ -40,10 +40,10 @@ public class AIState : MonoBehaviour
         context.FixedUpdateContext();
 	}
 
-	private void OnDrawGizmos()
-	{
-        context.OnDrawGizmos();
-	}
+	//private void OnDrawGizmos()
+	//{
+ //       context.OnDrawGizmos();
+	//}
 	//private void OnTriggerEnter(Collider other)
 	//{
 	//    context.HandleCollision(other);
