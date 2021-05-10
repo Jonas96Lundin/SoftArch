@@ -5,9 +5,6 @@ using UnityEngine.AI;
 /// <summary>
 /// Kodad av: Johan Melkersson
 /// </summary>
-
-//[RequireComponent(typeof(NavMeshAgent))]
-//[RequireComponent(typeof(NavMeshAgent), typeof(MeshRenderer))]
 public class AI : MonoBehaviour
 {
 	[SerializeField]
