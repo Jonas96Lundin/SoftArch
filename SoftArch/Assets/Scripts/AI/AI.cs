@@ -25,7 +25,7 @@ public class AI : MonoBehaviour
 
     void Start()
     {
-        context = new Context(new FollowState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+        context = new Context(new IdleState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
     }
 
     void Update()
