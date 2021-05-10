@@ -7,6 +7,7 @@ public class CharController : MonoBehaviour
     /*
      * Variables
      */
+    SlopeDetector sd;
     Rigidbody rb;
 
     const float defaultMaxVelocityHorizontal = 4.0f,
@@ -23,12 +24,19 @@ public class CharController : MonoBehaviour
 
     // Variables used every Fixed Update
     Vector3 addedForces = Vector3.zero; // Forces added by other scripts through AddForce method 
-    float currentVelocityHorizontal = 0; // Change in x velocity
+    float additionalVelocityHorizontal = 0; // Change in x velocity
 
+    //Debug variables
+    [SerializeField]
+    readonly bool debugRayMovementDirection = false;
     /*
      * Methods
      */
-    private void Awake() => rb = GetComponent<Rigidbody>();
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        sd = GetComponent<SlopeDetector>();
+    }
     /*
      * Public Methods
      */
@@ -51,15 +59,15 @@ public class CharController : MonoBehaviour
     /// <summary>
     /// Returns true if user input is moving rigidbody to the right
     /// </summary>
-    public bool InputRightMovementActive => currentVelocityHorizontal > 0;
+    public bool InputRightMovementActive => additionalVelocityHorizontal > 0;
     /// <summary>
     /// Returns true if user input is moving rigidbody to the left
     /// </summary>
-    public bool InputLeftMovementActive => currentVelocityHorizontal < 0;
+    public bool InputLeftMovementActive => additionalVelocityHorizontal < 0;
     /// <summary>
     /// Returns the velocity that will be applied to player the next fixed update.
     /// </summary>
-    public float InputMovement => GetClampedVelocity(rb.velocity.x, currentVelocityHorizontal, maxVelocityHorizontal);
+    public Vector2 InputMovement => GetMovement(rb.velocity, additionalVelocityHorizontal, sd.GetAngleOfSlope(additionalVelocityHorizontal > 0), maxVelocityHorizontal);
 
     /// <summary>
     /// Changes the velocity limit that can be achieved through player input into default value.
@@ -100,9 +108,7 @@ public class CharController : MonoBehaviour
         //Jump
         if (!jumpOnFixedUpdate)
         {
-            Physics.Raycast(transform.position, Vector2.down, out RaycastHit info, groundDetectRayLength); // Raycast down
-            bool isOnGround = info.collider != null;
-            if (isOnGround) // Jump restrictions
+            if (sd.IsOnGround()) // Jump restrictions
             {
                 jumpOnFixedUpdate = Input.GetButtonDown("Jump"); // Jump on user input
             }
@@ -112,7 +118,7 @@ public class CharController : MonoBehaviour
         if (!moveOnFixedUpdate && inputX != 0)
         {
             moveOnFixedUpdate = true;
-            currentVelocityHorizontal = inputX * maxVelocityHorizontal;
+            additionalVelocityHorizontal = inputX * maxVelocityHorizontal;
         }
     }
 
@@ -123,9 +129,8 @@ public class CharController : MonoBehaviour
         {
             Move(ref rb);
             moveOnFixedUpdate = false;
-            currentVelocityHorizontal = 0;
+            additionalVelocityHorizontal = 0;
         }
-        
         // Jump
         if (jumpOnFixedUpdate)
         {
@@ -154,27 +159,39 @@ public class CharController : MonoBehaviour
     /// Applies a force to rigidbody. The direction of force is relative to Vector Right.
     /// </summary>
     /// <param name="rigidbody">The Rigidbody to receive forces</param>
-    void Move(ref Rigidbody rigidbody) => rigidbody.AddForce(Vector2.right * GetClampedVelocity(rigidbody.velocity.x, currentVelocityHorizontal, maxVelocityHorizontal), ForceMode.VelocityChange);
+    void Move(ref Rigidbody rigidbody) => rigidbody.AddForce(GetMovement(rigidbody.velocity, additionalVelocityHorizontal, sd.GetAngleOfSlope(additionalVelocityHorizontal > 0), maxVelocityHorizontal), ForceMode.VelocityChange);
     /// <summary>
     /// Applies a force to rigidbody. The direction of force is relative to the gameobjects transforms up.
     /// </summary>
     /// <param name="rigidbody">The Rigidbody to receive forces</param>
     void Jump(ref Rigidbody rigidbody) => rigidbody.AddForce(transform.up * forceJump);
-
+    Vector2 GetDirection(bool movingRight)
+    {
+        float rotation = sd.GetAngleOfSlope(movingRight);
+        Debug.DrawRay(transform.position, new Vector2(Mathf.Cos(rotation), Mathf.Sin(rotation)) * transform.localScale.x, Color.red, Time.deltaTime);
+        return new Vector2(Mathf.Cos(rotation), Mathf.Sin(rotation));
+    }
     /*
      * MISC Methods
      */
-    /// <summary>
-    /// Calculate the next velocity. Verifies so the velocity stays within max velocity after adding "additionalVelocity".
-    /// The returned velocity should replace the "additionalVelocity". 
-    /// For example, if "velocityBefore" + "additionalVelocity" is within max velocity range, the returned velocity will be the same as "additionalVelocity". 
-    /// Or if outside range, the returned velocity is the velocity missing to reach max velocity.
-    /// </summary>
-    /// <param name="velocityFrom">The current Velocity</param>
-    /// <param name="additionalVelocity">How much to increase Velocity</param>
-    /// <param name="maxVelocity">Maximum velocity. The returned Velocity can NOT be Less than (-maxVelocity) or Larger than (maxVelocity)</param>
-    /// <returns>Returns next velocity to add to current velocity. Returns 0 if above maxVelocity range.</returns>
-    float GetClampedVelocity(float velocityBefore, float additionalVelocity, float maxVelocity)
+    Vector2 GetMovement(Vector2 velocityBefore, float additionalVelocity, float additionalVelocityAngle, float maxVelocity)
+    {
+        float additionalVelocityX = Mathf.Cos(additionalVelocityAngle) * additionalVelocity,
+              additionalVelocityY = Mathf.Sin(additionalVelocityAngle) * additionalVelocity;
+        float maxVelocityX = Mathf.Abs(Mathf.Cos(additionalVelocityAngle) * maxVelocity),
+              maxVelocityY = Mathf.Abs(Mathf.Sin(additionalVelocityAngle) * maxVelocity);
+
+        Vector2 movement = new Vector2
+        {
+            x = ClampVelocity(velocityBefore.x, additionalVelocityX, maxVelocityX),
+            y = ClampVelocity(velocityBefore.y, additionalVelocityY, maxVelocityY)
+        };
+
+        if(debugRayMovementDirection)
+            Debug.DrawRay(transform.position, movement, Color.red, Time.deltaTime);
+        return movement;
+    }
+    float ClampVelocity(float velocityBefore, float additionalVelocity, float maxVelocity)
     {
         if (additionalVelocity > 0) // Direction of added velocity is to the Right
         {
