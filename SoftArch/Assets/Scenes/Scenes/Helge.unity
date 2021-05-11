@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028355, g: 0.22571374, b: 0.30692255, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -235,6 +235,8 @@ GameObject:
   - component: {fileID: 374328740}
   - component: {fileID: 374328741}
   - component: {fileID: 374328745}
+  - component: {fileID: 374328743}
+  - component: {fileID: 374328742}
   m_Layer: 0
   m_Name: testPlayer
   m_TagString: Untagged
@@ -267,7 +269,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 374328734}
   m_Material: {fileID: 13400000, guid: 45d4b0e88702e1041acc5a1306449250, type: 2}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
@@ -350,6 +352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxVelocityHorizontal: 4
   forceJump: 250
+  debugRayMovementDirection: 1
 --- !u!114 &374328741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,6 +367,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftClickEffectEnabled: 1
   rightClickEffectEnabled: 1
+--- !u!114 &374328742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374328734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ffe0dd73c556ef44b22c87a222919b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!135 &374328743
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374328734}
+  m_Material: {fileID: 13400000, guid: 45d4b0e88702e1041acc5a1306449250, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: -0.5, z: 0}
 --- !u!136 &374328744
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -374,10 +402,10 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 1627649773e3906469f4c8fb4c2b908f, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.53
   m_Height: 1.95
   m_Direction: 1
-  m_Center: {x: 0, y: 0.05, z: 0}
+  m_Center: {x: 0, y: 0.1, z: 0}
 --- !u!114 &374328745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -385,7 +413,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 374328734}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df810ab7bb37ba840804af6843e1e658, type: 3}
   m_Name: 
@@ -768,6 +796,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6325295630013132403, guid: 23cee77740aa3f846b021b1be8a396ef, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325295630013132403, guid: 23cee77740aa3f846b021b1be8a396ef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -807,9 +839,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6325295630013132408, guid: 23cee77740aa3f846b021b1be8a396ef, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6325295630013132409, guid: 23cee77740aa3f846b021b1be8a396ef, type: 3}
       propertyPath: m_Name
       value: Platform Example
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325295630013132414, guid: 23cee77740aa3f846b021b1be8a396ef, type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325295630013132414, guid: 23cee77740aa3f846b021b1be8a396ef, type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325295630013132414, guid: 23cee77740aa3f846b021b1be8a396ef, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325295630013132414, guid: 23cee77740aa3f846b021b1be8a396ef, type: 3}
+      propertyPath: m_Center.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325295630013132415, guid: 23cee77740aa3f846b021b1be8a396ef, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23cee77740aa3f846b021b1be8a396ef, type: 3}

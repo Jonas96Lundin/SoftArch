@@ -7,7 +7,7 @@ public class CharController : MonoBehaviour
     /*
      * Variables
      */
-    SlopeDetector sd;
+    SlopeDetectorSpherical sd;
     Rigidbody rb;
 
     const float defaultMaxVelocityHorizontal = 4.0f,
@@ -28,14 +28,14 @@ public class CharController : MonoBehaviour
 
     //Debug variables
     [SerializeField]
-    readonly bool debugRayMovementDirection = false;
+    bool debugRayMovementDirection = false;
     /*
      * Methods
      */
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        sd = GetComponent<SlopeDetector>();
+        sd = GetComponent<SlopeDetectorSpherical>();
     }
     /*
      * Public Methods
@@ -67,7 +67,7 @@ public class CharController : MonoBehaviour
     /// <summary>
     /// Returns the velocity that will be applied to player the next fixed update.
     /// </summary>
-    public Vector2 InputMovement => GetMovement(rb.velocity, additionalVelocityHorizontal, sd.GetAngleOfSlope(additionalVelocityHorizontal > 0), maxVelocityHorizontal);
+    //public Vector2 InputMovement => GetMovement(rb.velocity, additionalVelocityHorizontal, sd.GetAngleOfSlope(additionalVelocityHorizontal > 0), maxVelocityHorizontal);
 
     /// <summary>
     /// Changes the velocity limit that can be achieved through player input into default value.
@@ -124,19 +124,27 @@ public class CharController : MonoBehaviour
 
     void FixedUpdate()
     {
+        float movementAngle = sd.GetAngleOfSlope(additionalVelocityHorizontal > 0);
+        Vector2 movementForces = Vector2.zero;
+        
         // Movement
         if (moveOnFixedUpdate)
         {
-            Move(ref rb);
+            movementForces += GetMovement(rb.velocity, additionalVelocityHorizontal, movementAngle, maxVelocityHorizontal);
+            //Move(ref rb, movementAngle);
             moveOnFixedUpdate = false;
             additionalVelocityHorizontal = 0;
         }
+
         // Jump
         if (jumpOnFixedUpdate)
         {
-            Jump(ref rb);
+            movementForces.y += 5f;
+            //Jump(ref rb);
             jumpOnFixedUpdate = false;
         }
+
+        AddForce(ref movementForces, ref rb);
 
         // Extra forces
         if (addExtraForcesOnFixedUpdate)
@@ -159,18 +167,14 @@ public class CharController : MonoBehaviour
     /// Applies a force to rigidbody. The direction of force is relative to Vector Right.
     /// </summary>
     /// <param name="rigidbody">The Rigidbody to receive forces</param>
-    void Move(ref Rigidbody rigidbody) => rigidbody.AddForce(GetMovement(rigidbody.velocity, additionalVelocityHorizontal, sd.GetAngleOfSlope(additionalVelocityHorizontal > 0), maxVelocityHorizontal), ForceMode.VelocityChange);
+    //void Move(ref Rigidbody rigidbody, float angle) => rigidbody.AddForce(GetMovement(rigidbody.velocity, additionalVelocityHorizontal, angle, maxVelocityHorizontal), ForceMode.VelocityChange);
+    void AddForce(ref Vector2 forceVector, ref Rigidbody rigidbody) => rb.AddForce(forceVector, ForceMode.VelocityChange);
     /// <summary>
     /// Applies a force to rigidbody. The direction of force is relative to the gameobjects transforms up.
     /// </summary>
     /// <param name="rigidbody">The Rigidbody to receive forces</param>
     void Jump(ref Rigidbody rigidbody) => rigidbody.AddForce(transform.up * forceJump);
-    Vector2 GetDirection(bool movingRight)
-    {
-        float rotation = sd.GetAngleOfSlope(movingRight);
-        Debug.DrawRay(transform.position, new Vector2(Mathf.Cos(rotation), Mathf.Sin(rotation)) * transform.localScale.x, Color.red, Time.deltaTime);
-        return new Vector2(Mathf.Cos(rotation), Mathf.Sin(rotation));
-    }
+
     /*
      * MISC Methods
      */
