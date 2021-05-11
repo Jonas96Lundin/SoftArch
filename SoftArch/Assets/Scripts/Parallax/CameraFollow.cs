@@ -1,28 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Kodad av: Johan Melkersson
+/// </summary>
 public class CameraFollow : MonoBehaviour
 {
     [SerializeField]
-    private CharController player;
+    private CharController follow;
 
     Vector3 cameraoffset;
-    // Start is called before the first frame update
+
     void Start()
     {
-        cameraoffset = new Vector3(transform.position.x - player.transform.position.x, transform.position.y - player.transform.position.y, transform.position.z - player.transform.position.z);
+        cameraoffset = new Vector3(transform.position.x - follow.transform.position.x, transform.position.y - follow.transform.position.y, transform.position.z - follow.transform.position.z);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //Vector3 deltaMovement = lastCameraPos - cameraTransform.position;
-        //transform.position += new Vector3(deltaMovement.x * parallaxEffect.x, deltaMovement.y * parallaxEffect.y, 0);
-        //lastCameraPos = cameraTransform.position;
-
-        //transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 13, player.transform.position.z - 30);
-
-        transform.position = player.transform.position + cameraoffset;
+        transform.position = follow.transform.position + cameraoffset;
     }
 }
