@@ -6,7 +6,10 @@ using UnityEngine;
 /// </summary>
 public class FlipGravity : MonoBehaviour
 {
-    bool flippedGravity = false;
+    [SerializeField] bool flippedGravity = false;
+
+    public bool GetSetFlippedGravity { get => flippedGravity; set => flippedGravity = value; }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,14 +19,9 @@ public class FlipGravity : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (!flippedGravity)
         {
-            Debug.Log("Space");
-            flippedGravity = !flippedGravity;
-            if (!flippedGravity)
-            {
-                gameObject.GetComponent<Rigidbody>().useGravity = true;
-            }
+            gameObject.GetComponent<Rigidbody>().useGravity = true;
         }
     }
 
@@ -33,7 +31,6 @@ public class FlipGravity : MonoBehaviour
         {
             gameObject.GetComponent<Rigidbody>().useGravity = false;
             gameObject.GetComponent<Rigidbody>().AddForce(-Physics.gravity);
-
         }
     }
 }

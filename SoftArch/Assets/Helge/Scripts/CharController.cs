@@ -7,7 +7,7 @@ public class CharController : MonoBehaviour
     /*
      * Variables
      */
-    SlopeDetectorSpherical sd;
+    SlopeDetector sd;
     Rigidbody rb;
 
     const float defaultMaxVelocityHorizontal = 4.0f,
@@ -35,7 +35,7 @@ public class CharController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        sd = GetComponent<SlopeDetectorSpherical>();
+        sd = GetComponent<SlopeDetector>();
     }
     /*
      * Public Methods
