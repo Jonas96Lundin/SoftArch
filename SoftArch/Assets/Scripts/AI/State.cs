@@ -5,6 +5,7 @@ using UnityEngine.AI;
 /// <summary>
 /// Kodad av: Johan Melkersson
 /// </summary>
+
 public abstract class State
 {
 	//Johan//
@@ -45,7 +46,10 @@ public abstract class State
 	{
 		if (moveOnFixedUpdate)
 		{
-			agent.SetDestination(targetPos);
+			if (agent.isOnNavMesh)
+			{
+				agent.SetDestination(targetPos);
+			}
 			moveOnFixedUpdate = false;
 		}
 	}
@@ -91,6 +95,10 @@ public abstract class State
 			}
 			moveOnFixedUpdate = false;
 			return true;
+		}
+		else if (Input.GetKeyDown("g"))
+		{
+			agent.GetComponent<AgentLinkMover>().invertedGarvity = !agent.GetComponent<AgentLinkMover>().invertedGarvity;
 		}
 		return false;
 	}

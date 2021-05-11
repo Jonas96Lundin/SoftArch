@@ -16,6 +16,8 @@ public class AgentLinkMover : MonoBehaviour
     public OffMeshLinkMoveMethod m_Method = OffMeshLinkMoveMethod.Parabola;
     public AnimationCurve m_Curve = new AnimationCurve();
 
+    public bool invertedGarvity;
+
     IEnumerator Start()
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
@@ -51,7 +53,17 @@ public class AgentLinkMover : MonoBehaviour
     {
         OffMeshLinkData data = agent.currentOffMeshLinkData;
         Vector3 startPos = agent.transform.position;
-        Vector3 endPos = data.endPos + Vector3.up * agent.baseOffset;
+        Vector3 endPos = data.endPos;
+
+        if (!invertedGarvity)
+		{
+            endPos += Vector3.up * agent.baseOffset;
+        }
+		else
+		{
+            endPos += Vector3.down * agent.baseOffset;
+        }
+        
         float normalizedTime = 0.0f;
         while (normalizedTime < 1.0f)
         {

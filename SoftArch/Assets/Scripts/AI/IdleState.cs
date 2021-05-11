@@ -64,7 +64,6 @@ public class IdleState : State
 			else if (newDir == 2)
 			{
 				targetPos = agent.transform.position;
-				TurnForward();
 				break;
 			}
 		}
