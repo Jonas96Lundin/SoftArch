@@ -30,6 +30,10 @@ public class Context
 
     }
 
+    public void HandleCollision(Collision collision)
+	{
+        _state.HandleCollision(collision);
+    }
     //?
     public void OnDrawGizmos()
 	{

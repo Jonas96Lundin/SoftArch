@@ -18,18 +18,20 @@ public abstract class State
 	protected Vector3 targetPos;
 
 	//Static varialbles
-	protected static bool followMaster;
+	protected static bool followMaster, closeToMaster;
 	//Tweakable variables
 	protected const float followDistance = 4.0f;
 	protected float attentionSpan = 1.0f;
-	protected float idleSpeed = 4.0f,
-					catchUpSpeed = 10.0f;
+	protected float idleSpeed = 3.0f,
+					catchUpSpeed = 10.0f,
+					followSpeed = 4.0f;
 	//Other Variables
 	protected float timeToChange;
 
-	protected bool isJumping;
+	protected static bool isJumping, isFalling, invertedGravity = true;
 	protected Vector3 startJumpPos, endJumpPos;
 	protected float hightDifference;
+	protected float fallTime = 1.0f, fallenTime;
 
 
 	protected bool jumpOnFixedUpdate = false,
@@ -49,17 +51,17 @@ public abstract class State
 			if (agent.isOnNavMesh)
 			{
 				agent.SetDestination(targetPos);
+				moveOnFixedUpdate = false;
 			}
-			moveOnFixedUpdate = false;
 		}
 	}
 
 	public abstract void SetTargetPosition();
 
-	protected void TurnForward()
-	{
-		agent.transform.eulerAngles = new Vector3(0f, 0f, 0f);
-	}
+	//protected void TurnForward()
+	//{
+	//	agent.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+	//}
 	//protected void TurnBack()
 	//{
 	//	agent.transform.eulerAngles = new Vector3(0f, 180f, 0f);
@@ -78,9 +80,6 @@ public abstract class State
 		if (Input.GetKeyDown("f"))
 		{
 			followMaster = !followMaster;
-			//
-			Debug.Log(followMaster.ToString());
-			//
 			if (followMaster)
 			{
 				_context.TransitionTo(new FollowState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
@@ -98,9 +97,29 @@ public abstract class State
 		}
 		else if (Input.GetKeyDown("g"))
 		{
-			agent.GetComponent<AgentLinkMover>().invertedGarvity = !agent.GetComponent<AgentLinkMover>().invertedGarvity;
+			agent.enabled = false;
+			agent.GetComponent<Rigidbody>().useGravity = true;
+			isFalling = true;
+			invertedGravity = !invertedGravity;
+
+			//fallenTime = 0;
 		}
 		return false;
+	}
+
+	public void HandleCollision(Collision collision)
+	{
+		if (!agent.isOnNavMesh && collision.collider.CompareTag("WalkableObject"))
+		{
+			agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
+			agent.GetComponent<Rigidbody>().useGravity = false;
+			agent.enabled = true;
+			isFalling = false;
+			targetPos = agent.transform.position;
+
+			//fallenTime = 0;
+
+		}
 	}
 
 	public void OnDrawGizmos()

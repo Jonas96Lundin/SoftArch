@@ -33,23 +33,29 @@ public class FollowState : State
 	public override void SetTargetPosition()
 	{
 		float distance = agent.transform.position.x - master.transform.position.x;
-
-		if (distance < -followDistance)
+		if (Mathf.Abs(distance) > (2 * followDistance))
+		{
+			targetPos = master.transform.position;
+			agent.speed = catchUpSpeed;
+		}
+		else if (distance < -followDistance)
 		{
 			if (!master.RBLeftMovementActive || distance < -(followDistance + 1))
 			{
 				targetPos = new Vector3(master.transform.position.x - followDistance, master.transform.position.y, master.transform.position.z);
+				agent.speed = followSpeed;
 				moveOnFixedUpdate = true;
 			}
-
 		}
 		else if (distance > followDistance)
 		{
 			if (!master.RBRightMovementActive || distance > (followDistance + 1))
 			{
 				targetPos = new Vector3(master.transform.position.x + followDistance, master.transform.position.y, master.transform.position.z);
+				agent.speed = followSpeed;
 				moveOnFixedUpdate = true;
 			}
 		}
+		Debug.Log(agent.speed);
 	}
 }

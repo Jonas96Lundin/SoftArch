@@ -35,9 +35,14 @@ public class AI : MonoBehaviour
         context.FixedUpdateContext();
     }
 
-    //?
-    //private void OnDrawGizmos()
-    //{
-    //    context.OnDrawGizmos();
-    //}
+	//?
+	//private void OnDrawGizmos()
+	//{
+	//    context.OnDrawGizmos();
+	//}
+
+	private void OnCollisionEnter(Collision collision)
+	{
+		context.HandleCollision(collision);
+	}
 }

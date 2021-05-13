@@ -16,7 +16,7 @@ public class AgentLinkMover : MonoBehaviour
     public OffMeshLinkMoveMethod m_Method = OffMeshLinkMoveMethod.Parabola;
     public AnimationCurve m_Curve = new AnimationCurve();
 
-    public bool invertedGarvity;
+    public bool invertedJump;
 
     IEnumerator Start()
     {
@@ -55,7 +55,7 @@ public class AgentLinkMover : MonoBehaviour
         Vector3 startPos = agent.transform.position;
         Vector3 endPos = data.endPos;
 
-        if (!invertedGarvity)
+        if (!invertedJump)
 		{
             endPos += Vector3.up * agent.baseOffset;
         }
