@@ -17,6 +17,10 @@ public abstract class State
 	protected NavMeshAgent agent;
 	protected Vector3 targetPos;
 
+	protected RaycastHit hit;
+	protected static int playerMask = 1 << 6;
+	protected LayerMask playMask = 2;
+
 	//Static varialbles
 	protected static bool followMaster, closeToMaster;
 	//Tweakable variables
@@ -46,6 +50,7 @@ public abstract class State
 
 	public void FixedUpdateState()
 	{
+		Debug.Log("Speed: " + agent.speed);
 		if (moveOnFixedUpdate)
 		{
 			if (agent.isOnNavMesh)
@@ -53,6 +58,21 @@ public abstract class State
 				agent.SetDestination(targetPos);
 				moveOnFixedUpdate = false;
 			}
+		}
+	}
+
+	protected void AvoidObject()
+	{
+		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, 1.0f, playerMask))
+		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * 1.0f, Color.green);
+			agent.speed = catchUpSpeed;
+			targetPos = new Vector3(agent.transform.position.x, agent.transform.position.y, master.transform.position.z + 1.0f) - agent.transform.TransformDirection(Vector3.forward);
+			moveOnFixedUpdate = true;
+		}
+		else
+		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * 1.0f, Color.red);
 		}
 	}
 
@@ -97,12 +117,11 @@ public abstract class State
 		}
 		else if (Input.GetKeyDown("g"))
 		{
+			moveOnFixedUpdate = false;
 			agent.enabled = false;
-			agent.GetComponent<Rigidbody>().useGravity = true;
-			isFalling = true;
 			invertedGravity = !invertedGravity;
-
-			//fallenTime = 0;
+			agent.GetComponent<Rigidbody>().isKinematic = false;
+			isFalling = true;
 		}
 		return false;
 	}
@@ -111,14 +130,10 @@ public abstract class State
 	{
 		if (!agent.isOnNavMesh && collision.collider.CompareTag("WalkableObject"))
 		{
+			agent.GetComponent<Rigidbody>().isKinematic = true;
 			agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
-			agent.GetComponent<Rigidbody>().useGravity = false;
 			agent.enabled = true;
 			isFalling = false;
-			targetPos = agent.transform.position;
-
-			//fallenTime = 0;
-
 		}
 	}
 

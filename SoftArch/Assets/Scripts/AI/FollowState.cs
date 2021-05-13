@@ -37,6 +37,7 @@ public class FollowState : State
 		{
 			targetPos = master.transform.position;
 			agent.speed = catchUpSpeed;
+			moveOnFixedUpdate = true;
 		}
 		else if (distance < -followDistance)
 		{
@@ -56,6 +57,10 @@ public class FollowState : State
 				moveOnFixedUpdate = true;
 			}
 		}
-		Debug.Log(agent.speed);
+		else
+		{
+			AvoidObject();
+			agent.transform.LookAt(master.transform);
+		}
 	}
 }

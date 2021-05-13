@@ -35,6 +35,7 @@ public class IdleState : State
 
 		if (!moveOnFixedUpdate)
 		{
+			AvoidObject();
 			if (timeToChange <= 0)
 			{
 				SetTargetPosition();
@@ -63,7 +64,6 @@ public class IdleState : State
 			}
 			else if (newDir == 2)
 			{
-				targetPos = agent.transform.position;
 				break;
 			}
 		}

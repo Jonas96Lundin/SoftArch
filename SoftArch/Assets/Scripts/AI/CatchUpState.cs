@@ -31,14 +31,13 @@ public class CatchUpState : State
 	public override void SetTargetPosition()
 	{
 		float distance = agent.transform.position.x - master.transform.position.x;
-		if (Mathf.Abs(distance) > followDistance)
+		if (Mathf.Abs(distance) > (2 * followDistance))
 		{
 			targetPos = master.transform.position;
 			moveOnFixedUpdate = true;
 		}
 		else
 		{
-			targetPos = agent.nextPosition;
 			_context.TransitionTo(new IdleState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
 			return;
 		}
