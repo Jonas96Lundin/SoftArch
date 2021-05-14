@@ -13,33 +13,50 @@ using UnityEngine;
 
 // Change FlipAnimation() to only occur if character has landed from it's previous jump
 
-// Add idleTimer function
 
 public class animationscript : MonoBehaviour
 {
-    float vX;
-    float vY;
-    public float idleTimer;
-    public Rigidbody rb;
-
+    public float secondsIdle = 0.0f;
     bool isFacingRight;
 
+    public Rigidbody rb;
     Animator animator;
 
+    float vX;
+    float vY;
+
+    [Tooltip("Amount of seconds the character has to be idle before playing the animation")]
+    [Range(0.0f, 10.0f)]
+    [SerializeField]
+    const float secondsIdleUntilWave = 6.0f; // Amount of seconds the character has to be idle before playing the animation
+
+  
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        UpdateParameters();
-    }
-
     private void FixedUpdate()
     {
+        // if not idle
+        if (rb.velocity.x == 0 && rb.velocity.y == 0)
+        {
+            secondsIdle += Time.deltaTime;
+            secondsIdle = secondsIdle % 60;
+        }
+        else
+        {
+            secondsIdle = 0.0f;
+        }
+
+        // if idle for the selected amount of seconds, play animation
+        if (secondsIdle >= secondsIdleUntilWave)
+        {
+            animator.Play("wave_animation");
+            secondsIdle = 0.0f;
+        }
+
         UpdateParameters();
     }
 

@@ -690,7 +690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a20f56aae8f1b574b8d6ed9b6e0bfe9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  idleTimer: 0
+  secondsIdle: 0
   rb: {fileID: 1801554730}
 --- !u!95 &1181329535
 Animator:
