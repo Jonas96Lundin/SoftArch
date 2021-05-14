@@ -20,13 +20,14 @@ public class IdleState : State
 		this.agent.speed = idleSpeed;
 
 		targetPos = agent.transform.position;
-		timeToChange = attentionSpan;
+		//timeToChange = attentionSpan;
 	}
 
 	public override void UpdateState()
 	{
 		if (MasterInput())
 			return;
+
 		if (Mathf.Abs(master.transform.position.x - agent.transform.position.x) > 30)
 		{
 			_context.TransitionTo(new CatchUpState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
@@ -35,7 +36,9 @@ public class IdleState : State
 
 		if (!moveOnFixedUpdate)
 		{
-			AvoidObject();
+			//if (AvoidObjects())
+			//	return;
+
 			if (timeToChange <= 0)
 			{
 				SetTargetPosition();
@@ -52,13 +55,13 @@ public class IdleState : State
 			int newDir = Random.Range(0, 3);
 			if (newDir == 0)
 			{
-				targetPos = new Vector3(agent.transform.position.x - 5, agent.transform.position.y, 0);
+				targetPos = new Vector3(agent.transform.position.x - 10, agent.transform.position.y, 0);
 				moveOnFixedUpdate = true;
 				break;
 			}
 			else if (newDir == 1)
 			{
-				targetPos = new Vector3(agent.transform.position.x + 5, agent.transform.position.y, 0);
+				targetPos = new Vector3(agent.transform.position.x + 10, agent.transform.position.y, 0);
 				moveOnFixedUpdate = true;
 				break;
 			}

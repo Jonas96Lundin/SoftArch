@@ -16,28 +16,22 @@ public abstract class State
 	//NavMesh
 	protected NavMeshAgent agent;
 	protected Vector3 targetPos;
-
+	//RayCast
 	protected RaycastHit hit;
-	protected static int playerMask = 1 << 6;
-	protected LayerMask playMask = 2;
-
-	//Static varialbles
-	protected static bool followMaster, closeToMaster;
-	//Tweakable variables
+	protected const int playerMask = 1 << 6;
+	//Tweakable Const variables
 	protected const float followDistance = 4.0f;
-	protected float attentionSpan = 1.0f;
-	protected float idleSpeed = 3.0f,
+	protected float attentionSpan = 1.0f,
+					idleSpeed = 3.0f,
 					catchUpSpeed = 10.0f,
 					followSpeed = 4.0f;
+	//Static varialbles
+	protected static float timeToChange = 1.0f;
+	protected static bool followMaster,
+						  isJumping,
+						  isFalling,
+						  invertedGravity;
 	//Other Variables
-	protected float timeToChange;
-
-	protected static bool isJumping, isFalling, invertedGravity = true;
-	protected Vector3 startJumpPos, endJumpPos;
-	protected float hightDifference;
-	protected float fallTime = 1.0f, fallenTime;
-
-
 	protected bool jumpOnFixedUpdate = false,
 				   moveOnFixedUpdate = false;
 
@@ -47,11 +41,17 @@ public abstract class State
 		_context = context;
 	}
 	public abstract void UpdateState();
+	public abstract void SetTargetPosition();
 
 	public void FixedUpdateState()
 	{
 		Debug.Log("Speed: " + agent.speed);
-		if (moveOnFixedUpdate)
+
+		if (isFalling && invertedGravity)
+		{
+			agent.GetComponent<Rigidbody>().AddForce(Vector3.up * (2.0f * 9.82f), ForceMode.Acceleration);
+		}
+		else if (AvoidObjects() || moveOnFixedUpdate)
 		{
 			if (agent.isOnNavMesh)
 			{
@@ -61,39 +61,61 @@ public abstract class State
 		}
 	}
 
-	protected void AvoidObject()
+	protected bool AvoidObjects()
 	{
 		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, 1.0f, playerMask))
 		{
 			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * 1.0f, Color.green);
 			agent.speed = catchUpSpeed;
-			targetPos = new Vector3(agent.transform.position.x, agent.transform.position.y, master.transform.position.z + 1.0f) - agent.transform.TransformDirection(Vector3.forward);
+			targetPos = new Vector3(agent.transform.position.x, agent.transform.position.y, master.transform.position.z + 5.5f) - agent.transform.TransformDirection(Vector3.forward) * 5.5f;
 			moveOnFixedUpdate = true;
+			return true;
 		}
 		else
 		{
 			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * 1.0f, Color.red);
 		}
+
+		if (Physics.Raycast(agent.transform.position, - agent.transform.TransformDirection(Vector3.forward), out hit, 1.0f, playerMask))
+		{
+			Debug.DrawRay(agent.transform.position, - agent.transform.TransformDirection(Vector3.forward) * 1.0f, Color.green);
+			agent.speed = catchUpSpeed;
+			targetPos = new Vector3(agent.transform.position.x, agent.transform.position.y, master.transform.position.z + 5.5f) + agent.transform.TransformDirection(Vector3.forward) * 5.5f;
+			moveOnFixedUpdate = true;
+			return true;
+		}
+		else
+		{
+			Debug.DrawRay(agent.transform.position, -agent.transform.TransformDirection(Vector3.forward) * 1.0f, Color.red);
+		}
+
+		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.right), out hit, 1.0f, playerMask))
+		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * 1.0f, Color.green);
+			agent.speed = catchUpSpeed;
+			targetPos = new Vector3(agent.transform.position.x, agent.transform.position.y, master.transform.position.z + 5.5f) - agent.transform.TransformDirection(Vector3.right) * 5.5f;
+			moveOnFixedUpdate = true;
+			return true;
+		}
+		else
+		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * 1.0f, Color.red);
+		}
+
+		if (Physics.Raycast(agent.transform.position, -agent.transform.TransformDirection(Vector3.right), out hit, 1.0f, playerMask))
+		{
+			Debug.DrawRay(agent.transform.position, -agent.transform.TransformDirection(Vector3.right) * 1.0f, Color.green);
+			agent.speed = catchUpSpeed;
+			targetPos = new Vector3(agent.transform.position.x, agent.transform.position.y, master.transform.position.z + 5.5f) + agent.transform.TransformDirection(Vector3.right) * 5.5f;
+			moveOnFixedUpdate = true;
+			return true;
+		}
+		else
+		{
+			Debug.DrawRay(agent.transform.position, -agent.transform.TransformDirection(Vector3.right) * 1.0f, Color.red);
+		}
+		return false;
 	}
-
-	public abstract void SetTargetPosition();
-
-	//protected void TurnForward()
-	//{
-	//	agent.transform.eulerAngles = new Vector3(0f, 0f, 0f);
-	//}
-	//protected void TurnBack()
-	//{
-	//	agent.transform.eulerAngles = new Vector3(0f, 180f, 0f);
-	//}
-	//protected void TurnRight()
-	//{
-	//	agent.transform.eulerAngles = new Vector3(0f, 90f, 0f);
-	//}
-	//protected void TurnLeft()
-	//{
-	//	agent.transform.eulerAngles = new Vector3(0f, -90f, 0f);
-	//}
 
 	protected bool MasterInput()
 	{

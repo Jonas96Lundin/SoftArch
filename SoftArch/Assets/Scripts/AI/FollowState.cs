@@ -26,6 +26,9 @@ public class FollowState : State
 
 		if (!moveOnFixedUpdate)
 		{
+			//if (AvoidObjects())
+			//	return;
+
 			SetTargetPosition();
 		}
 	}
@@ -33,34 +36,65 @@ public class FollowState : State
 	public override void SetTargetPosition()
 	{
 		float distance = agent.transform.position.x - master.transform.position.x;
-		if (Mathf.Abs(distance) > (2 * followDistance))
+		if (Mathf.Abs(distance) > 8)
 		{
-			targetPos = master.transform.position;
-			agent.speed = catchUpSpeed;
-			moveOnFixedUpdate = true;
-		}
-		else if (distance < -followDistance)
-		{
-			if (!master.RBLeftMovementActive || distance < -(followDistance + 1))
-			{
-				targetPos = new Vector3(master.transform.position.x - followDistance, master.transform.position.y, master.transform.position.z);
-				agent.speed = followSpeed;
-				moveOnFixedUpdate = true;
-			}
-		}
-		else if (distance > followDistance)
-		{
-			if (!master.RBRightMovementActive || distance > (followDistance + 1))
-			{
-				targetPos = new Vector3(master.transform.position.x + followDistance, master.transform.position.y, master.transform.position.z);
-				agent.speed = followSpeed;
-				moveOnFixedUpdate = true;
-			}
+			_context.TransitionTo(new CatchUpState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
 		}
 		else
 		{
-			AvoidObject();
-			agent.transform.LookAt(master.transform);
+			targetPos = master.transform.position;
+			agent.speed = followSpeed;
+			moveOnFixedUpdate = true;
 		}
+
+
+
+
+
+
+
+		//float distance = agent.transform.position.x - master.transform.position.x;
+		//if (Mathf.Abs(distance) > 8)
+		//{
+		//	targetPos = master.transform.position;
+		//	agent.speed = catchUpSpeed;
+		//	moveOnFixedUpdate = true;
+		//}
+		//else
+		//{
+		//	targetPos = master.transform.position;
+		//	agent.speed = followSpeed;
+		//	moveOnFixedUpdate = true;
+		//}
+
+		//	if (Mathf.Abs(distance) > (2 * followDistance))
+		//{
+		//	targetPos = master.transform.position;
+		//	agent.speed = catchUpSpeed;
+		//	moveOnFixedUpdate = true;
+		//}
+		//else if (distance < -followDistance)
+		//{
+		//	if (!master.RBLeftMovementActive || distance < -(followDistance + 1))
+		//	{
+		//		targetPos = new Vector3(master.transform.position.x - followDistance, master.transform.position.y, master.transform.position.z);
+		//		agent.speed = followSpeed;
+		//		moveOnFixedUpdate = true;
+		//	}
+		//}
+		//else if (distance > followDistance)
+		//{
+		//	if (!master.RBRightMovementActive || distance > (followDistance + 1))
+		//	{
+		//		targetPos = new Vector3(master.transform.position.x + followDistance, master.transform.position.y, master.transform.position.z);
+		//		agent.speed = followSpeed;
+		//		moveOnFixedUpdate = true;
+		//	}
+		//}
+		//else
+		//{
+		//	AvoidObjects();
+		//	agent.transform.LookAt(master.transform);
+		//}
 	}
 }
