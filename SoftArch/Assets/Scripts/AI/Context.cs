@@ -34,6 +34,11 @@ public class Context
 	{
         _state.HandleCollision(collision);
     }
+    public void HandleAvoidTrigger(Collider other)
+	{
+        _state.HandleAvoidTrigger(other);
+    }
+
     //?
     public void OnDrawGizmos()
 	{

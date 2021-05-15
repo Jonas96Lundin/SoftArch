@@ -45,4 +45,10 @@ public class AI : MonoBehaviour
 	{
 		context.HandleCollision(collision);
 	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+        context.HandleAvoidTrigger(other);
+
+    }
 }

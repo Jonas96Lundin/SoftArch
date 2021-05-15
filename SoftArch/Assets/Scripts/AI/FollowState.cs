@@ -16,7 +16,7 @@ public class FollowState : State
 		this.idleSpeed = idleSpeed;
 		this.catchUpSpeed = catchUpSpeed;
 
-		this.agent.speed = catchUpSpeed;
+		this.agent.speed = followSpeed;
 	}
 
 	public override void UpdateState()
@@ -38,13 +38,19 @@ public class FollowState : State
 		float distance = agent.transform.position.x - master.transform.position.x;
 		if (Mathf.Abs(distance) > 8)
 		{
-			_context.TransitionTo(new CatchUpState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			agent.speed = catchUpSpeed;
+			targetPos = master.transform.position;
+			moveOnFixedUpdate = true;
+		}
+		else if (Mathf.Abs(distance) > 4)
+		{
+			agent.speed = followSpeed;
+			targetPos = master.transform.position;
+			moveOnFixedUpdate = true;
 		}
 		else
 		{
-			targetPos = master.transform.position;
-			agent.speed = followSpeed;
-			moveOnFixedUpdate = true;
+			agent.transform.LookAt(master.transform);
 		}
 
 

@@ -44,8 +44,9 @@ public class IdleState : State
 				SetTargetPosition();
 				timeToChange = attentionSpan;
 			}
+			timeToChange -= Time.deltaTime;
 		}
-		timeToChange -= Time.deltaTime;
+		
 	}
 
 	public override void SetTargetPosition()
@@ -56,12 +57,14 @@ public class IdleState : State
 			if (newDir == 0)
 			{
 				targetPos = new Vector3(agent.transform.position.x - 10, agent.transform.position.y, 0);
+				agent.speed = idleSpeed;
 				moveOnFixedUpdate = true;
 				break;
 			}
 			else if (newDir == 1)
 			{
 				targetPos = new Vector3(agent.transform.position.x + 10, agent.transform.position.y, 0);
+				agent.speed = idleSpeed;
 				moveOnFixedUpdate = true;
 				break;
 			}

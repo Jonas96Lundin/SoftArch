@@ -30,11 +30,12 @@ public abstract class State
 	protected static bool followMaster,
 						  isJumping,
 						  isFalling,
-						  invertedGravity;
+						  invertedGravity,
+						  avoidOnFixedUpdate;
 	//Other Variables
 	protected bool jumpOnFixedUpdate = false,
 				   moveOnFixedUpdate = false;
-
+				   
 
 	public void SetContext(Context context)
 	{
@@ -51,7 +52,7 @@ public abstract class State
 		{
 			agent.GetComponent<Rigidbody>().AddForce(Vector3.up * (2.0f * 9.82f), ForceMode.Acceleration);
 		}
-		else if (AvoidObjects() || moveOnFixedUpdate)
+		else if (/*AvoidObjects() || */moveOnFixedUpdate)
 		{
 			if (agent.isOnNavMesh)
 			{
@@ -156,6 +157,43 @@ public abstract class State
 			agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
 			agent.enabled = true;
 			isFalling = false;
+		}
+		//else if(collision.collider.tag == "Player")
+		//{
+		//	//Hastighetsvektorn vinkelrätt mot planet
+		//	Vector3 u = Vector3.Dot(Vector3.forward, collision.GetContact(0).normal) * collision.GetContact(0).normal;
+		//	//Vektor som är parallell mot planet
+		//	Vector3 w = Vector3.forward - u;
+		//	//w minskas mha friktionskoeffecient
+		//	//u minskas mha studkoeffecienten
+		//	//w och u skapar en ny velocity som speglar den gamla 
+		//	Vector3 newDirection = w - u;
+		//	targetPos = newDirection * 5.5f;
+		//	moveOnFixedUpdate = true;
+		//}
+	}
+
+	public void HandleAvoidTrigger(Collider other)
+	{
+		if (other.tag == "Player")
+		{
+			//agent.isStopped = true;
+			float distance = agent.transform.position.x - master.transform.position.x;
+			if(distance > 0)
+			{
+				agent.speed = catchUpSpeed;
+				targetPos = new Vector3(master.transform.position.x + 4.0f, agent.transform.position.y, master.transform.position.z + 4.0f);
+				moveOnFixedUpdate = true;
+				avoidOnFixedUpdate = true;
+			}
+			else
+			{
+				agent.speed = catchUpSpeed;
+				targetPos = new Vector3(master.transform.position.x - 4.0f, agent.transform.position.y, master.transform.position.z + 4.0f);
+				moveOnFixedUpdate = true;
+				avoidOnFixedUpdate = true;
+			}
+			//agent.isStopped = false;
 		}
 	}
 
