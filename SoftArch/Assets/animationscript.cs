@@ -26,9 +26,9 @@ public class animationscript : MonoBehaviour
     float vY;
 
     [Tooltip("Amount of seconds the character has to be idle before playing the animation")]
-    [Range(0.0f, 10.0f)]
+    [Range(0.0f, 20.0f)]
     [SerializeField]
-    const float secondsIdleUntilWave = 6.0f; // Amount of seconds the character has to be idle before playing the animation
+    const float secondsIdleUntilWave = 10.0f; // Amount of seconds the character has to be idle before playing the animation
 
   
     // Start is called before the first frame update
@@ -39,7 +39,7 @@ public class animationscript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // if not idle
+        // if not moving
         if (rb.velocity.x == 0 && rb.velocity.y == 0)
         {
             secondsIdle += Time.deltaTime;
@@ -71,8 +71,6 @@ public class animationscript : MonoBehaviour
         // Set velocity X to always be positive, direction does not matter for selecting the correct animation
         vX = (float)Math.Round(Mathf.Abs(rb.velocity.x) * 100f / 100f);
 
-        //Debug.Log(vX);
-
         // if gravity is currently set to normal
         if (rb.useGravity)
         {
@@ -88,10 +86,6 @@ public class animationscript : MonoBehaviour
 
         animator.SetFloat("VelocityX", vX);
         animator.SetFloat("VelocityY", vY);
-
-        
-
-        //Debug.Log(animator.GetFloat("VelocityX"));
     }
 
     void FlipAnimation()
@@ -99,7 +93,7 @@ public class animationscript : MonoBehaviour
         // switches the bool
         isFacingRight = !isFacingRight;
 
-        // switches the local scale to an inversion of itself
+        // switches the local scale to an inversion of itself (easier than rotating)
         Vector3 newScale = transform.localScale;
         newScale.x *= -1;
         transform.localScale = newScale;
