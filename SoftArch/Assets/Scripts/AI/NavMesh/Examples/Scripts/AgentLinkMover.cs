@@ -24,7 +24,7 @@ public class AgentLinkMover : MonoBehaviour
         agent.autoTraverseOffMeshLink = false;
         while (true)
         {
-            if (agent.isOnOffMeshLink)
+            if (agent.isOnOffMeshLink && agent.enabled)
             {
                 if (m_Method == OffMeshLinkMoveMethod.NormalSpeed)
                     yield return StartCoroutine(NormalSpeed(agent));
@@ -32,7 +32,10 @@ public class AgentLinkMover : MonoBehaviour
                     yield return StartCoroutine(Parabola(agent, 0.25f, 0.75f));
                 else if (m_Method == OffMeshLinkMoveMethod.Curve)
                     yield return StartCoroutine(Curve(agent, 0.5f));
-                agent.CompleteOffMeshLink();
+				if (agent.enabled)
+				{
+                    agent.CompleteOffMeshLink();
+                }
             }
             yield return null;
         }
@@ -70,6 +73,10 @@ public class AgentLinkMover : MonoBehaviour
             float yOffset = height * 4.0f * (normalizedTime - normalizedTime * normalizedTime);
             agent.transform.position = Vector3.Lerp(startPos, endPos, normalizedTime) + yOffset * Vector3.up;
             normalizedTime += Time.deltaTime / duration;
+            if (!agent.enabled)
+            {
+                normalizedTime = 1.0f;
+            }
             yield return null;
         }
     }

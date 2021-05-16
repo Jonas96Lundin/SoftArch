@@ -19,22 +19,17 @@ public class CatchUpState : State
 	}
 	public override void UpdateState()
 	{
-		if (MasterInput())
-			return;
+		MasterInput();
 
 		if (!moveOnFixedUpdate)
 		{
-			//if (AvoidObjects())
-			//	return;
-
 			SetTargetPosition();
 		}
 	}
 
 	public override void SetTargetPosition()
 	{
-		float distance = agent.transform.position.x - master.transform.position.x;
-		if (Mathf.Abs(distance) > 8)
+		if (distanceToMaster > 8)
 		{
 			targetPos = master.transform.position;
 			moveOnFixedUpdate = true;

@@ -20,35 +20,30 @@ public class AI : MonoBehaviour
 
     private Context context;
 
+
     void Start()
     {
         context = new Context(new IdleState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
     }
 
+
     void Update()
     {
         context.UpdateContext();
     }
-
     private void FixedUpdate()
     {
         context.FixedUpdateContext();
     }
-
-	//?
-	//private void OnDrawGizmos()
-	//{
-	//    context.OnDrawGizmos();
-	//}
+	
 
 	private void OnCollisionEnter(Collision collision)
 	{
 		context.HandleCollision(collision);
 	}
-
 	private void OnTriggerEnter(Collider other)
 	{
-        context.HandleAvoidTrigger(other);
+        context.HandleProximityTrigger(other);
 
     }
 }

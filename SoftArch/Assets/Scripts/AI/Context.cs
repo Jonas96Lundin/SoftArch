@@ -19,30 +19,24 @@ public class Context
         _state.SetContext(this);
     }
 
+
     public void UpdateContext()
     {
         _state.UpdateState();
     }
-
     public void FixedUpdateContext()
 	{
         _state.FixedUpdateState();
 
     }
 
+
     public void HandleCollision(Collision collision)
 	{
         _state.HandleCollision(collision);
     }
-    public void HandleAvoidTrigger(Collider other)
+    public void HandleProximityTrigger(Collider other)
 	{
-        _state.HandleAvoidTrigger(other);
-    }
-
-    //?
-    public void OnDrawGizmos()
-	{
-        _state.OnDrawGizmos();
-
+        _state.HandleProximityTrigger(other);
     }
 }

@@ -18,50 +18,197 @@ public abstract class State
 	protected Vector3 targetPos;
 	//RayCast
 	protected RaycastHit hit;
+	//LayerMasks
 	protected const int playerMask = 1 << 6;
 	//Tweakable Const variables
-	protected const float followDistance = 4.0f;
+	protected const float followDistance = 4.0f,
+						  followSpeed = 4.0f,
+						  avoidOffset = 4.0f;
 	protected float attentionSpan = 1.0f,
 					idleSpeed = 3.0f,
-					catchUpSpeed = 10.0f,
-					followSpeed = 4.0f;
+					catchUpSpeed = 10.0f;
 	//Static varialbles
-	protected static float timeToChange = 1.0f;
+	protected static Vector3 objectPos;
+	protected static float timeToChange = 1.0f,
+						   distanceToMaster;
 	protected static bool followMaster,
 						  isJumping,
 						  isFalling,
 						  invertedGravity,
-						  avoidOnFixedUpdate;
+						  objectFound;
 	//Other Variables
 	protected bool jumpOnFixedUpdate = false,
 				   moveOnFixedUpdate = false;
-				   
+
+
+
 
 	public void SetContext(Context context)
 	{
 		_context = context;
 	}
+
+
 	public abstract void UpdateState();
 	public abstract void SetTargetPosition();
-
 	public void FixedUpdateState()
 	{
-		Debug.Log("Speed: " + agent.speed);
+		
 
-		if (isFalling && invertedGravity)
+		if (isFalling)
 		{
-			agent.GetComponent<Rigidbody>().AddForce(Vector3.up * (2.0f * 9.82f), ForceMode.Acceleration);
-		}
-		else if (/*AvoidObjects() || */moveOnFixedUpdate)
-		{
-			if (agent.isOnNavMesh)
+			if (invertedGravity)
 			{
-				agent.SetDestination(targetPos);
+				agent.GetComponent<Rigidbody>().AddForce(Vector3.up * (2.0f * 9.82f), ForceMode.Acceleration);
+				agent.transform.eulerAngles = new Vector3(0, 0, -180);
+			}
+			else
+			{
+				agent.transform.eulerAngles = new Vector3(0, 0, 0);
+			}
+		}
+		else
+		{
+			distanceToMaster = Mathf.Abs(agent.transform.position.x - master.transform.position.x);
+			if (moveOnFixedUpdate)
+			{
+				if (agent.isOnNavMesh)
+				{
+					agent.SetDestination(targetPos);
+					moveOnFixedUpdate = false;
+				}
+			}
+			if (distanceToMaster < 4)
+			{
+				agent.transform.LookAt(master.transform);
+			}
+		}
+
+		
+		
+
+		//Debug.Log("Speed: " + agent.speed);
+		//Debug.Log("Distance to Player: " + distanceToMaster);
+		Debug.Log("Follow Player: " + followMaster);
+		
+	}
+
+	protected void MasterInput()
+	{
+		if (Input.GetKeyDown("f"))
+		{
+			if (!objectFound)
+			{
+				followMaster = !followMaster;
+				if (followMaster)
+				{
+					_context.TransitionTo(new FollowState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+				}
+				else if (distanceToMaster < 10)
+				{
+					_context.TransitionTo(new IdleState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+				}
+				else
+				{
+					_context.TransitionTo(new CatchUpState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+				}
 				moveOnFixedUpdate = false;
 			}
+			else
+			{
+				followMaster = true;
+				objectFound = false;
+				_context.TransitionTo(new FollowState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			}
+		}
+		else if (Input.GetKeyDown("g"))
+		{
+			moveOnFixedUpdate = false;
+			agent.enabled = false;
+			invertedGravity = !invertedGravity;
+			agent.GetComponent<Rigidbody>().isKinematic = false;
+			agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
+			isFalling = true;
+			objectFound = false;
 		}
 	}
 
+	public void HandleCollision(Collision collision)
+	{
+		if (!agent.isOnNavMesh)
+		{
+			if (!invertedGravity && collision.collider.CompareTag("WalkableObject"))
+			{
+				agent.GetComponent<Rigidbody>().isKinematic = true;
+				agent.enabled = true;
+				isFalling = false;
+			}
+			else if (invertedGravity && collision.collider.CompareTag("WalkableObject180"))
+			{
+				agent.GetComponent<Rigidbody>().isKinematic = true;
+				agent.enabled = true;
+				isFalling = false;
+			}
+		}
+	}
+	public void HandleProximityTrigger(Collider other)
+	{
+		if (isFalling)
+		{
+			if(!invertedGravity && other.tag != "WalkableObject")
+			{
+				if (agent.transform.position.y > other.transform.position.y)
+				{
+					if (agent.transform.position.x > other.transform.position.x)
+					{
+						agent.GetComponent<Rigidbody>().AddForce(Vector3.right * catchUpSpeed, ForceMode.Acceleration);
+					}
+					else if (agent.transform.position.x < other.transform.position.x)
+					{
+						agent.GetComponent<Rigidbody>().AddForce(Vector3.left * catchUpSpeed, ForceMode.Acceleration);
+					}
+				}
+			}
+			else if(invertedGravity && other.tag != "WalkableObject180")
+			{
+				if (agent.transform.position.y < other.transform.position.y)
+				{
+					if (agent.transform.position.x > other.transform.position.x)
+					{
+						agent.GetComponent<Rigidbody>().AddForce(Vector3.right * catchUpSpeed, ForceMode.Acceleration);
+					}
+					else if (agent.transform.position.x < other.transform.position.x)
+					{
+						agent.GetComponent<Rigidbody>().AddForce(Vector3.left * catchUpSpeed, ForceMode.Acceleration);
+					}
+				}
+			}
+		}
+		else if (other.tag == "Player")
+		{
+			float distance = agent.transform.position.x - master.transform.position.x;
+			if (distance > 0)
+			{
+				targetPos = new Vector3(master.transform.position.x + avoidOffset, agent.transform.position.y, master.transform.position.z + avoidOffset);
+			}
+			else
+			{
+				targetPos = new Vector3(master.transform.position.x - avoidOffset, agent.transform.position.y, master.transform.position.z + avoidOffset);
+			}
+			agent.speed = catchUpSpeed;
+			moveOnFixedUpdate = true;
+		}
+		else if (other.tag == "InteractableObject" && !objectFound)
+		{
+			objectFound = true;
+			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);
+			targetPos = objectPos;
+			_context.TransitionTo(new HoldState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+		}
+	}
+
+
+	//RayCast (Not Used)
 	protected bool AvoidObjects()
 	{
 		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, 1.0f, playerMask))
@@ -77,9 +224,9 @@ public abstract class State
 			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * 1.0f, Color.red);
 		}
 
-		if (Physics.Raycast(agent.transform.position, - agent.transform.TransformDirection(Vector3.forward), out hit, 1.0f, playerMask))
+		if (Physics.Raycast(agent.transform.position, -agent.transform.TransformDirection(Vector3.forward), out hit, 1.0f, playerMask))
 		{
-			Debug.DrawRay(agent.transform.position, - agent.transform.TransformDirection(Vector3.forward) * 1.0f, Color.green);
+			Debug.DrawRay(agent.transform.position, -agent.transform.TransformDirection(Vector3.forward) * 1.0f, Color.green);
 			agent.speed = catchUpSpeed;
 			targetPos = new Vector3(agent.transform.position.x, agent.transform.position.y, master.transform.position.z + 5.5f) + agent.transform.TransformDirection(Vector3.forward) * 5.5f;
 			moveOnFixedUpdate = true;
@@ -116,96 +263,5 @@ public abstract class State
 			Debug.DrawRay(agent.transform.position, -agent.transform.TransformDirection(Vector3.right) * 1.0f, Color.red);
 		}
 		return false;
-	}
-
-	protected bool MasterInput()
-	{
-		if (Input.GetKeyDown("f"))
-		{
-			followMaster = !followMaster;
-			if (followMaster)
-			{
-				_context.TransitionTo(new FollowState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
-			}
-			else if (Mathf.Abs(master.transform.position.x - agent.transform.position.x) < 10)
-			{
-				_context.TransitionTo(new IdleState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
-			}
-			else
-			{
-				_context.TransitionTo(new CatchUpState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
-			}
-			moveOnFixedUpdate = false;
-			return true;
-		}
-		else if (Input.GetKeyDown("g"))
-		{
-			moveOnFixedUpdate = false;
-			agent.enabled = false;
-			invertedGravity = !invertedGravity;
-			agent.GetComponent<Rigidbody>().isKinematic = false;
-			isFalling = true;
-		}
-		return false;
-	}
-
-	public void HandleCollision(Collision collision)
-	{
-		if (!agent.isOnNavMesh && collision.collider.CompareTag("WalkableObject"))
-		{
-			agent.GetComponent<Rigidbody>().isKinematic = true;
-			agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
-			agent.enabled = true;
-			isFalling = false;
-		}
-		//else if(collision.collider.tag == "Player")
-		//{
-		//	//Hastighetsvektorn vinkelrätt mot planet
-		//	Vector3 u = Vector3.Dot(Vector3.forward, collision.GetContact(0).normal) * collision.GetContact(0).normal;
-		//	//Vektor som är parallell mot planet
-		//	Vector3 w = Vector3.forward - u;
-		//	//w minskas mha friktionskoeffecient
-		//	//u minskas mha studkoeffecienten
-		//	//w och u skapar en ny velocity som speglar den gamla 
-		//	Vector3 newDirection = w - u;
-		//	targetPos = newDirection * 5.5f;
-		//	moveOnFixedUpdate = true;
-		//}
-	}
-
-	public void HandleAvoidTrigger(Collider other)
-	{
-		if (other.tag == "Player")
-		{
-			//agent.isStopped = true;
-			float distance = agent.transform.position.x - master.transform.position.x;
-			if(distance > 0)
-			{
-				agent.speed = catchUpSpeed;
-				targetPos = new Vector3(master.transform.position.x + 4.0f, agent.transform.position.y, master.transform.position.z + 4.0f);
-				moveOnFixedUpdate = true;
-				avoidOnFixedUpdate = true;
-			}
-			else
-			{
-				agent.speed = catchUpSpeed;
-				targetPos = new Vector3(master.transform.position.x - 4.0f, agent.transform.position.y, master.transform.position.z + 4.0f);
-				moveOnFixedUpdate = true;
-				avoidOnFixedUpdate = true;
-			}
-			//agent.isStopped = false;
-		}
-	}
-
-	public void OnDrawGizmos()
-	{
-		if (agent.isStopped)
-		{
-			Gizmos.color = Color.green;
-			foreach (var point in agent.path.corners)
-			{
-				Gizmos.DrawSphere(point, 0.25f);
-			}
-		}
 	}
 }
