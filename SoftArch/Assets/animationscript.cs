@@ -14,9 +14,9 @@ using UnityEngine;
 // Change FlipAnimation() to only occur if character has landed from it's previous jump
 
 
-public class animationscript : MonoBehaviour
+public class AnimationScript : MonoBehaviour
 {
-    public float secondsIdle = 0.0f;
+    float secondsIdle = 0.0f;
     bool isFacingRight;
 
     public Rigidbody rb;
@@ -28,7 +28,7 @@ public class animationscript : MonoBehaviour
     [Tooltip("Amount of seconds the character has to be idle before playing the animation")]
     [Range(0.0f, 20.0f)]
     [SerializeField]
-    const float secondsIdleUntilWave = 10.0f; // Amount of seconds the character has to be idle before playing the animation
+    private float secondsIdleUntilWave = 10.0f; // Amount of seconds the character has to be idle before playing the animation
 
   
     // Start is called before the first frame update
