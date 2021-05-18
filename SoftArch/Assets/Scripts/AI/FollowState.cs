@@ -16,13 +16,12 @@ public class FollowState : State
 		this.idleSpeed = idleSpeed;
 		this.catchUpSpeed = catchUpSpeed;
 
-		this.agent.speed = catchUpSpeed;
+		this.agent.speed = followSpeed;
 	}
 
 	public override void UpdateState()
 	{
-		if (MasterInput())
-			return;
+		MasterInput();
 
 		if (!moveOnFixedUpdate)
 		{
@@ -32,24 +31,17 @@ public class FollowState : State
 
 	public override void SetTargetPosition()
 	{
-		float distance = agent.transform.position.x - master.transform.position.x;
-
-		if (distance < -followDistance)
+		if (distanceToMaster > 8)
 		{
-			if (!master.RBLeftMovementActive || distance < -(followDistance + 1))
-			{
-				targetPos = new Vector3(master.transform.position.x - followDistance, master.transform.position.y, master.transform.position.z);
-				moveOnFixedUpdate = true;
-			}
-
+			agent.speed = catchUpSpeed;
+			targetPos = master.transform.position;
+			moveOnFixedUpdate = true;
 		}
-		else if (distance > followDistance)
+		else if (distanceToMaster > 4)
 		{
-			if (!master.RBRightMovementActive || distance > (followDistance + 1))
-			{
-				targetPos = new Vector3(master.transform.position.x + followDistance, master.transform.position.y, master.transform.position.z);
-				moveOnFixedUpdate = true;
-			}
+			agent.speed = followSpeed;
+			targetPos = master.transform.position;
+			moveOnFixedUpdate = true;
 		}
 	}
 }
