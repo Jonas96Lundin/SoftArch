@@ -1,121 +1,152 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+ *  Av Helge Herrström
+ */
 public class SlopeDetector : MonoBehaviour
 {
-    // Slope detection variables
-    const float maxColliderY = -0.5f; // If any collision on collider is done above this value it is ignored. "0" is the middle of character.
-    Vector2 highestXColPoint = Vector2.zero, // Collision point furthest to the right
-            lowestXColPoint = Vector2.zero;  // Collision point furthest to the left
-    Vector2 verifiedPos = Vector2.zero;
-    int highestXColPointGOID = -1, lowestXColPointGOID = -1;
-    float angleLeft = 0, angleRight = 0;
-    SortedDictionary<int, int> triggeredObjects = new SortedDictionary<int, int>();
 
+    /*
+     * Variables
+     */
+    float highestXColPoint = 0, // x of Collision furthest to the right
+          lowestXColPoint = 0;  // x of Collision furthest to the left
+    int highestXColPointGOID = -1, // ID of GameObject to the right
+        lowestXColPointGOID = -1; // ID of GameObject to the left
+    float angleRight = 0, // Angle of Collision to the right
+          angleLeft = 0; // Angle of Collision to the left
+    public bool FlippedCollisionDetection { get; set; } = false;
+    SortedDictionary<int, int> triggeredObjects = new SortedDictionary<int, int>(); // Stores number of current collisions with objects. Key is GameObject IDs.
+
+    
+    /*
+     * Public Methods
+     */
+    /// <summary>
+    /// Returns true if collisions values of slopes are stored.
+    /// </summary>
+    /// <returns>Returns true if on ground</returns>
     public bool IsOnGround() => highestXColPointGOID != -1 && lowestXColPointGOID != -1;
 
+    /// <summary>
+    /// Must be called every fixed update. Returns angle of slope under collider.
+    /// </summary>
+    /// <param name="movingRight">If moving right</param>
+    /// <returns>Returns angle of slope under collider</returns>
     public float GetAngleOfSlope(bool movingRight)
     {
+        float aTemp;
         if (movingRight)
-        {
-            float aTemp = angleRight;
-            angleRight = 0;
-            angleLeft = 0;
-            return aTemp;
-        }
+            aTemp = angleRight;
         else
-        {
-            float aTemp = angleLeft;
-            angleLeft = 0;
-            angleRight = 0;
-            return aTemp;
-        }
+            aTemp = angleLeft;
+        angleLeft = 0;
+        angleRight = 0;
+        return aTemp;
     }
 
+    /*
+     * Collision Events
+     */
     void OnCollisionStay(Collision collision)
     {
-        int objID = collision.gameObject.GetInstanceID();
-        ResetCollisionValuesOfGOID(objID);
+        int objID = collision.gameObject.GetInstanceID(); // Get ID
+        EmptyCollisionValuesOfGOID(objID); // Empty stored values of the object in collision.
 
-        // Find the collision point at the left and right of collider if any
-        for (int i = 0; i < collision.contactCount; i++)
+        // Find values of collisions, and replace currently stored values if collision are further to the left or right.
+        for (int i = 0; i < collision.contactCount; i++) // For each collision
         {
-            if (collision.GetContact(i).thisCollider.material.frictionCombine != PhysicMaterialCombine.Minimum) // No friction
+            if (collision.GetContact(i).thisCollider.material.frictionCombine != PhysicMaterialCombine.Minimum) // Skip collisions with characters colliders that has no friction
             {
                 Vector2 colPos = collision.GetContact(i).point - collision.GetContact(i).thisCollider.bounds.center; // Point of collision relative to character
-
-                //Debug.DrawRay(collision.GetContact(i).thisCollider.bounds.center, Vector3.right * transform.localScale.x/2f, Color.green);
-                //Debug.DrawRay(collision.GetContact(i).thisCollider.bounds.center, Vector3.right * -transform.localScale.x/2f, Color.green);
-
-                Vector2 dir = new Vector2(collision.GetContact(i).normal.y, -collision.GetContact(i).normal.x); // Get normal of surface and turn it 90 degrees clockwise (The direction to move)
-                dir.Normalize();
-                float tempA = Mathf.Atan2(dir.y, dir.x);
-
-                if (colPos.y <= 0)
+                Vector2 dir;
+                if (FlippedCollisionDetection)
                 {
-                    //Debug.DrawRay(collision.GetContact(i).point, collision.GetContact(i).normal, Color.blue, Time.fixedDeltaTime);
-                    if (highestXColPointGOID == -1 || colPos.x >= highestXColPoint.x)
+                    dir = new Vector2(-collision.GetContact(i).normal.y, collision.GetContact(i).normal.x); // Get normal of surface and turn it 90 degrees counter clockwise (The direction to move)
+                }
+                else
+                {
+                    dir = new Vector2(collision.GetContact(i).normal.y, -collision.GetContact(i).normal.x); // Get normal of surface and turn it 90 degrees clockwise (The direction to move)
+                }
+                dir.Normalize();
+
+                if ((colPos.y <= 0 && !FlippedCollisionDetection) || (colPos.y >= 0 && FlippedCollisionDetection)) // If collision is below middle of collider
+                {
+                    if (highestXColPointGOID == -1 || colPos.x >= highestXColPoint) // Collision is further to the right
                     {
+                        // Replace current collision values with the new collision
                         angleRight = Mathf.Atan2(dir.y, dir.x);
-                        highestXColPoint = colPos;
+                        highestXColPoint = colPos.x;
                         highestXColPointGOID = objID;
                     }
-                    if (lowestXColPointGOID == -1 || colPos.x <= lowestXColPoint.x)
+                    if (lowestXColPointGOID == -1 || colPos.x <= lowestXColPoint) // Collision is further to the left
                     {
+                        // Replace current collision values with the new collision
                         angleLeft = Mathf.Atan2(dir.y, dir.x);
-                        lowestXColPoint = colPos;
+                        lowestXColPoint = colPos.x;
                         lowestXColPointGOID = objID;
                     }
                 }
             }
         }
     }
-
+    
     private void OnCollisionEnter(Collision collision)
     {
-        int objID = collision.gameObject.GetInstanceID();
-        if (triggeredObjects.ContainsKey(objID))
+        int objID = collision.gameObject.GetInstanceID(); // Get ID
+        if (triggeredObjects.ContainsKey(objID)) // If list contains key for object
         {
-            triggeredObjects[objID]++;
+            triggeredObjects[objID]++; // Add to number of collisions
         }
-        else
+        else // If list DO NOT contain key for object
         {
-            triggeredObjects.Add(objID, 1);
+            triggeredObjects.Add(objID, 1); // Add key and number of collisions to list
         }
     }
+
     private void OnCollisionExit(Collision collision)
     {
-        int objID = collision.gameObject.GetInstanceID();
-        triggeredObjects[objID]--;
-        if (triggeredObjects[objID] == 0)
+        int objID = collision.gameObject.GetInstanceID(); // Get ID
+        triggeredObjects[objID]--; // Count down number of collisions
+        if (triggeredObjects[objID] == 0) // If no collisions with object
         {
-            triggeredObjects.Remove(objID);
-            ResetCollisionValuesOfGOID(objID);
+            triggeredObjects.Remove(objID); // Remove object from list
+            EmptyCollisionValuesOfGOID(objID); // Remove collision values with objects
         }
     }
-    void ResetCollisionValuesOfGOID(int objID)
+
+    /*
+     * MISC Methods
+     */
+     /// <summary>
+     /// Empties stored collision values of gameobject with said ID. The values will be replaced with another objects that is colliding.
+     /// </summary>
+     /// <param name="objID"></param>
+    void EmptyCollisionValuesOfGOID(int objID)
     {
-        if (objID == highestXColPointGOID)
+        if (objID == highestXColPointGOID) // ID is game object to the right
         {
-            if (objID == lowestXColPointGOID)
+            if (objID == lowestXColPointGOID) // ID is game object to the left
             {
-                highestXColPointGOID = -1;
+                highestXColPointGOID = -1; // Set to a "null" value. No values to replace with. 
             }
-            else
+            else // Is NOT game object to the left
             {
+                // Replace values with collision values to the left
                 highestXColPointGOID = lowestXColPointGOID;
                 highestXColPoint = lowestXColPoint;
                 angleRight = angleLeft;
             }
         }
-        if (objID == lowestXColPointGOID)
+        if (objID == lowestXColPointGOID) // ID is game object to the left
         {
-            if (objID == highestXColPointGOID)
+            if (objID == highestXColPointGOID) // ID is game object to the right
             {
-                lowestXColPointGOID = -1;
+                lowestXColPointGOID = -1; // Set to a "null" value. No values to replace with.
             }
-            else
+            else // Is NOT game object to the right
             {
+                //Replace values with collision values to the right
                 lowestXColPointGOID = highestXColPointGOID;
                 lowestXColPoint = highestXColPoint;
                 angleLeft = angleRight;
