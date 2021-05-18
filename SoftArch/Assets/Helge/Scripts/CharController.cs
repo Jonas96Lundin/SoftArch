@@ -9,27 +9,27 @@ public class CharController : MonoBehaviour
      */
     SlopeDetector sd;
     Rigidbody rb;
+    FlipGravity fg;
 
+    // Default variable values
     const float defaultMaxVelocityHorizontal = 4.0f,
-                defaultForceJump = 5.0f,
-                groundDetectRayLength = 1.1f;
+                defaultForceJump = 5.0f;
 
+    // Used variable values
     [SerializeField]
-    float maxVelocityHorizontal = 4.0f, // The character will not add force on movement if the absolute velocity would be higher than this variable
-          forceJump = 5.0f;
+    float maxVelocityHorizontal = defaultMaxVelocityHorizontal, // The character will not add force on movement if the absolute velocity would be higher than this variable
+          forceJump = defaultForceJump;
 
+    // If to add force variables
     bool jumpOnFixedUpdate = false,
          moveOnFixedUpdate = false,
          addExtraForcesOnFixedUpdate = false;
 
     // Variables used every Fixed Update
-    Vector3 addedForces = Vector3.zero; // Forces added by other scripts through AddForce method 
+    Vector2 addedForces = Vector2.zero; // Forces added by other scripts through AddForce method 
     float additionalVelocityHorizontal = 0; // Change in x velocity
     bool jumpedLastFixedUpdate = false;
 
-    //Debug variables
-    [SerializeField]
-    bool debugRayMovementDirection = false;
     /*
      * Methods
      */
@@ -37,6 +37,7 @@ public class CharController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         sd = GetComponent<SlopeDetector>();
+        fg = GetComponent<FlipGravity>();
     }
     /*
      * Public Methods
@@ -65,10 +66,6 @@ public class CharController : MonoBehaviour
     /// Returns true if user input is moving rigidbody to the left
     /// </summary>
     public bool InputLeftMovementActive => additionalVelocityHorizontal < 0;
-    /// <summary>
-    /// Returns the velocity that will be applied to player the next fixed update.
-    /// </summary>
-    //public Vector2 InputMovement => GetMovement(rb.velocity, additionalVelocityHorizontal, sd.GetAngleOfSlope(additionalVelocityHorizontal > 0), maxVelocityHorizontal);
 
     /// <summary>
     /// Changes the velocity limit that can be achieved through player input into default value.
@@ -94,8 +91,8 @@ public class CharController : MonoBehaviour
     /// Add force to rigidbody. They will be processed on FixedUpdate.
     /// Filtertype used is ForceMode.Force
     /// </summary>
-    /// <param name="force">Force to apply</param>
-    public void AddForce(Vector3 force)
+    /// <param name="force">Force to apply to Rigidbody</param>
+    public void AddForce(ref Vector2 force)
     {
         addExtraForcesOnFixedUpdate = true;
         addedForces += force;
@@ -115,8 +112,8 @@ public class CharController : MonoBehaviour
             }
         }
         // Movement
-        float inputX = Input.GetAxisRaw("Horizontal");
-        if (!moveOnFixedUpdate && inputX != 0)
+        float inputX = Input.GetAxisRaw("Horizontal"); // Read user input
+        if (!moveOnFixedUpdate && inputX != 0) // Move restrictions
         {
             moveOnFixedUpdate = true;
             additionalVelocityHorizontal = inputX * maxVelocityHorizontal;
@@ -126,40 +123,55 @@ public class CharController : MonoBehaviour
     void FixedUpdate()
     {
         float movementAngle = sd.GetAngleOfSlope(additionalVelocityHorizontal > 0);
-        Vector2 movementForces = Vector2.zero;
+        Vector2 velocityChange = Vector2.zero; // Velocity to add onto rigidbody
         
         // Movement
         if (moveOnFixedUpdate)
         {
-            movementForces += GetMovement(rb.velocity, additionalVelocityHorizontal, movementAngle, maxVelocityHorizontal);
-            //Move(ref rb, movementAngle);
+            GetMovement(ref velocityChange, rb.velocity, additionalVelocityHorizontal, movementAngle, maxVelocityHorizontal); // Add movement velocity
             moveOnFixedUpdate = false;
             additionalVelocityHorizontal = 0;
         }
 
         // Jump
+        jumpedLastFixedUpdate = false;
         if (jumpOnFixedUpdate)
         {
-            movementForces.y = Mathf.Max(forceJump - rb.velocity.y, 0);
+            if (fg.GetSetFlippedGravity)
+            {
+                velocityChange.y = Mathf.Min((-forceJump) - rb.velocity.y, 0); // Add jump velocity
+            }
+            else
+            {
+                velocityChange.y = Mathf.Max(forceJump - rb.velocity.y, 0); // Add jump velocity
+            }
             jumpOnFixedUpdate = false;
             jumpedLastFixedUpdate = true;
         }
 
-        rb.AddForce(movementForces, ForceMode.VelocityChange);
+        rb.AddForce(velocityChange, ForceMode.VelocityChange); // Add velocity change onto rigidbody
         
         // Extra forces
         if (addExtraForcesOnFixedUpdate)
         {
-            rb.AddForce(addedForces, ForceMode.Force);
-            addedForces = Vector3.zero; // Clear added forces
+            rb.AddForce(addedForces, ForceMode.Force); // Add force onto rigidbody
+            addedForces.Set(0, 0); // Clear added forces
             addExtraForcesOnFixedUpdate = false;
         }
     }
-    
+
     /*
      * MISC Methods
      */
-    Vector2 GetMovement(Vector2 velocityBefore, float additionalVelocity, float additionalVelocityAngle, float maxVelocity)
+    /// <summary>
+    /// Adds velocity change to a vector
+    /// </summary>
+    /// <param name="output">Vector2 to add with the velocity change</param>
+    /// <param name="velocityBefore">Current velocity</param>
+    /// <param name="additionalVelocity">Wanted velocity to add</param>
+    /// <param name="additionalVelocityAngle">Wanted angle for velocity</param>
+    /// <param name="maxVelocity">Velocity to avoid to exceed</param>
+    void GetMovement(ref Vector2 output, Vector2 velocityBefore, float additionalVelocity, float additionalVelocityAngle, float maxVelocity)
     {
         float additionalVelocityX = Mathf.Cos(additionalVelocityAngle) * additionalVelocity,
               additionalVelocityY = Mathf.Sin(additionalVelocityAngle) * additionalVelocity;
@@ -167,19 +179,12 @@ public class CharController : MonoBehaviour
         float maxVelocityX = Mathf.Abs(Mathf.Cos(additionalVelocityAngle) * maxVelocity),
               maxVelocityY = Mathf.Abs(Mathf.Sin(additionalVelocityAngle) * maxVelocity);
 
-        Vector2 movement = new Vector2
+        output.x = ClampVelocity(velocityBefore.x, additionalVelocityX, maxVelocityX); // Add x movement
+
+        if (!jumpedLastFixedUpdate) // Avoid disrupting the jump if jumping.
         {
-            x = ClampVelocity(velocityBefore.x, additionalVelocityX, maxVelocityX),
-            y = ClampVelocity(velocityBefore.y, additionalVelocityY, maxVelocityY)
-        };
-        if (jumpedLastFixedUpdate)
-        {
-            movement.y = 0;
-            jumpedLastFixedUpdate = false;
+            output.y = ClampVelocity(velocityBefore.y, additionalVelocityY, maxVelocityY); // Add y movement
         }
-        if(debugRayMovementDirection)
-            Debug.DrawRay(transform.position, movement, Color.red, Time.deltaTime);
-        return movement;
     }
 
     float ClampVelocity(float velocityBefore, float additionalVelocity, float maxVelocity)
