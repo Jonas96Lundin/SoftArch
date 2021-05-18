@@ -897,6 +897,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5014827586527516350, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: secondsIdleUntilWave
+      value: 3.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6101668023830887433, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
       propertyPath: m_RootOrder
       value: 0

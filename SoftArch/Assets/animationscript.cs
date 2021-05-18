@@ -16,7 +16,7 @@ using UnityEngine;
 
 public class animationscript : MonoBehaviour
 {
-    float secondsIdle = 0.0f;
+    private float secondsIdle = 0.0f;
     bool isFacingRight;
 
     public Rigidbody rb;
@@ -70,19 +70,17 @@ public class animationscript : MonoBehaviour
 
         // Set velocity X to always be positive, direction does not matter for selecting the correct animation
         vX = (float)Math.Round(Mathf.Abs(rb.velocity.x) * 100f / 100f);
-
+        vY = (float)Math.Round(Mathf.Abs(rb.velocity.y) * 100f / 100f);
         // if gravity is currently set to normal
         if (rb.useGravity)
         {
-            vY = (float)Math.Round(rb.velocity.y * 100f / 100f);
             animator.SetBool("GravityFlipped", false);
         }
         else
         {
-            vY = rb.velocity.y; //
+            Debug.Log((float)Math.Round(rb.velocity.y * 100f / 100f));
             animator.SetBool("GravityFlipped", true);
         }
-
 
         animator.SetFloat("VelocityX", vX);
         animator.SetFloat("VelocityY", vY);
