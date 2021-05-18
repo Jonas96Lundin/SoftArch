@@ -8,7 +8,6 @@ using UnityEngine.AI;
 
 public abstract class State
 {
-	//Johan//
 	//Context
 	protected Context _context;
 	//Master
@@ -64,7 +63,6 @@ public abstract class State
 		}
 		else
 		{
-			distanceToMaster = Mathf.Abs(agent.transform.position.x - master.transform.position.x);
 			if (moveOnFixedUpdate)
 			{
 				if (agent.isOnNavMesh)
@@ -73,9 +71,31 @@ public abstract class State
 					moveOnFixedUpdate = false;
 				}
 			}
+
+			distanceToMaster = Mathf.Abs(agent.transform.position.x - master.transform.position.x);
+
 			if (distanceToMaster < 4)
 			{
-				agent.transform.LookAt(master.transform);
+				if (invertedGravity)
+				{
+					agent.transform.LookAt(master.transform.position, -Vector3.up);
+				}
+				else
+				{
+					agent.transform.LookAt(master.transform.position, Vector3.up);
+				}
+			}
+			else if (objectFound && distanceToMaster > 6.0f)
+			{
+				if (invertedGravity)
+				{
+					agent.transform.LookAt(objectPos, -Vector3.up);
+				}
+				else
+				{
+					agent.transform.LookAt(objectPos, Vector3.up);
+
+				}
 			}
 		}
 	}
@@ -117,6 +137,14 @@ public abstract class State
 			agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
 			isFalling = true;
 			objectFound = false;
+		}
+		else if (Input.GetKeyDown("h"))
+		{
+			targetPos = agent.transform.position;
+			objectFound = false;
+			followMaster = false;
+			_context.TransitionTo(new HoldState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+
 		}
 	}
 

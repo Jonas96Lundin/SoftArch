@@ -17,7 +17,6 @@ public class HoldState : State
 		this.catchUpSpeed = catchUpSpeed;
 
 		this.agent.speed = idleSpeed;
-		//moveOnFixedUpdate = true;
 	}
 
 	public override void UpdateState()
@@ -36,14 +35,6 @@ public class HoldState : State
 		{
 			objectFound = false;
 			_context.TransitionTo(new CatchUpState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
-		}
-
-		if (objectFound)
-		{
-			if (distanceToMaster > 6.0f)
-			{
-				agent.transform.LookAt(objectPos);
-			}
 		}
 	}
 
