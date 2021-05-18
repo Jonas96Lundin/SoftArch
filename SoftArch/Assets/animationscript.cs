@@ -63,10 +63,10 @@ public class animationscript : MonoBehaviour
     void UpdateParameters()
     {
         // rotate animation to match its direction, only when switching direction
-        if ((isFacingRight && rb.velocity.x < 0 )||(!isFacingRight && rb.velocity.x > 0))
-        {
-            FlipAnimation();
-        }
+        //if ((isFacingRight && rb.velocity.x < 0 )||(!isFacingRight && rb.velocity.x > 0))
+        //{
+        //    FlipAnimation();
+        //}
 
         // Set velocity X to always be positive, direction does not matter for selecting the correct animation
         vX = (float)Math.Round(Mathf.Abs(rb.velocity.x) * 100f / 100f);
@@ -88,6 +88,8 @@ public class animationscript : MonoBehaviour
         animator.SetFloat("VelocityY", vY);
     }
 
+
+    // Might delete this as rotation now happens in Rotationscript instead
     void FlipAnimation()
     {
         // switches the bool
