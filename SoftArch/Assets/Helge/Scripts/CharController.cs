@@ -11,12 +11,12 @@ public class CharController : MonoBehaviour
     Rigidbody rb;
 
     const float defaultMaxVelocityHorizontal = 4.0f,
-                defaultForceJump = 250.0f,
+                defaultForceJump = 5.0f,
                 groundDetectRayLength = 1.1f;
 
     [SerializeField]
     float maxVelocityHorizontal = 4.0f, // The character will not add force on movement if the absolute velocity would be higher than this variable
-          forceJump = 250.0f;
+          forceJump = 5.0f;
 
     bool jumpOnFixedUpdate = false,
          moveOnFixedUpdate = false,
@@ -25,6 +25,7 @@ public class CharController : MonoBehaviour
     // Variables used every Fixed Update
     Vector3 addedForces = Vector3.zero; // Forces added by other scripts through AddForce method 
     float additionalVelocityHorizontal = 0; // Change in x velocity
+    bool jumpedLastFixedUpdate = false;
 
     //Debug variables
     [SerializeField]
@@ -139,42 +140,22 @@ public class CharController : MonoBehaviour
         // Jump
         if (jumpOnFixedUpdate)
         {
-            movementForces.y += 5f;
-            //Jump(ref rb);
+            movementForces.y = Mathf.Max(forceJump - rb.velocity.y, 0);
             jumpOnFixedUpdate = false;
+            jumpedLastFixedUpdate = true;
         }
 
-        AddForce(ref movementForces, ref rb);
-
+        rb.AddForce(movementForces, ForceMode.VelocityChange);
+        
         // Extra forces
         if (addExtraForcesOnFixedUpdate)
         {
-            AddExtraForces(ref rb);
+            rb.AddForce(addedForces, ForceMode.Force);
             addedForces = Vector3.zero; // Clear added forces
             addExtraForcesOnFixedUpdate = false;
         }
     }
-
-    /*
-     * Force Methods
-     */
-    /// <summary>
-    /// Add all forces added by the "AddForce" method.
-    /// </summary>
-    /// <param name="rigidbody"></param>
-    void AddExtraForces(ref Rigidbody rigidbody) => rigidbody.AddForce(addedForces, ForceMode.Force);
-    /// <summary>
-    /// Applies a force to rigidbody. The direction of force is relative to Vector Right.
-    /// </summary>
-    /// <param name="rigidbody">The Rigidbody to receive forces</param>
-    //void Move(ref Rigidbody rigidbody, float angle) => rigidbody.AddForce(GetMovement(rigidbody.velocity, additionalVelocityHorizontal, angle, maxVelocityHorizontal), ForceMode.VelocityChange);
-    void AddForce(ref Vector2 forceVector, ref Rigidbody rigidbody) => rb.AddForce(forceVector, ForceMode.VelocityChange);
-    /// <summary>
-    /// Applies a force to rigidbody. The direction of force is relative to the gameobjects transforms up.
-    /// </summary>
-    /// <param name="rigidbody">The Rigidbody to receive forces</param>
-    void Jump(ref Rigidbody rigidbody) => rigidbody.AddForce(transform.up * forceJump);
-
+    
     /*
      * MISC Methods
      */
@@ -182,6 +163,7 @@ public class CharController : MonoBehaviour
     {
         float additionalVelocityX = Mathf.Cos(additionalVelocityAngle) * additionalVelocity,
               additionalVelocityY = Mathf.Sin(additionalVelocityAngle) * additionalVelocity;
+
         float maxVelocityX = Mathf.Abs(Mathf.Cos(additionalVelocityAngle) * maxVelocity),
               maxVelocityY = Mathf.Abs(Mathf.Sin(additionalVelocityAngle) * maxVelocity);
 
@@ -190,11 +172,16 @@ public class CharController : MonoBehaviour
             x = ClampVelocity(velocityBefore.x, additionalVelocityX, maxVelocityX),
             y = ClampVelocity(velocityBefore.y, additionalVelocityY, maxVelocityY)
         };
-
+        if (jumpedLastFixedUpdate)
+        {
+            movement.y = 0;
+            jumpedLastFixedUpdate = false;
+        }
         if(debugRayMovementDirection)
             Debug.DrawRay(transform.position, movement, Color.red, Time.deltaTime);
         return movement;
     }
+
     float ClampVelocity(float velocityBefore, float additionalVelocity, float maxVelocity)
     {
         if (additionalVelocity > 0) // Direction of added velocity is to the Right
