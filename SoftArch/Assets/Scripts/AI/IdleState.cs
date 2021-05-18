@@ -7,8 +7,6 @@ using UnityEngine.AI;
 /// </summary>
 public class IdleState : State
 {
-
-
 	public IdleState(NavMeshAgent agent, CharController master, float attentionSpan, float idleSpeed, float catchUpSpeed)
 	{
 		this.agent = agent;
@@ -32,10 +30,8 @@ public class IdleState : State
 			return;
 		}
 
-		if (!moveOnFixedUpdate)
+		if (!moveOnFixedUpdate && distanceToMaster > 4)
 		{
-			agent.speed = idleSpeed;
-
 			if (timeToChange <= 0)
 			{
 				SetTargetPosition();
@@ -43,7 +39,6 @@ public class IdleState : State
 			}
 			timeToChange -= Time.deltaTime;
 		}
-		
 	}
 
 	public override void SetTargetPosition()
@@ -53,13 +48,15 @@ public class IdleState : State
 			int newDir = Random.Range(0, 3);
 			if (newDir == 0)
 			{
-				targetPos = new Vector3(agent.transform.position.x - 10, agent.transform.position.y, 0);			
+				targetPos = new Vector3(agent.transform.position.x - 10, agent.transform.position.y, 0);
+				agent.speed = idleSpeed;
 				moveOnFixedUpdate = true;
 				break;
 			}
 			else if (newDir == 1)
 			{
 				targetPos = new Vector3(agent.transform.position.x + 10, agent.transform.position.y, 0);
+				agent.speed = idleSpeed;
 				moveOnFixedUpdate = true;
 				break;
 			}
