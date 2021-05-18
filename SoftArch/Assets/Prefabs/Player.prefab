@@ -2193,6 +2193,7 @@ GameObject:
   - component: {fileID: 6101668023830887437}
   - component: {fileID: 6101668023830887434}
   - component: {fileID: 6101668023830887436}
+  - component: {fileID: 763733494}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2309,7 +2310,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxVelocityHorizontal: 4
   forceJump: 250
-  debugRayMovementDirection: 1
 --- !u!114 &6101668023830887439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2323,7 +2323,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leftClickEffectEnabled: 1
-  rightClickEffectEnabled: 0
 --- !u!135 &6101668023830887437
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2362,6 +2361,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df810ab7bb37ba840804af6843e1e658, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &763733494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6101668023830887476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61c12a0e1efc084f922748ac139bbf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transformToRotate: {fileID: 8057869120999739180}
 --- !u!1 &6113566932437250117
 GameObject:
   m_ObjectHideFlags: 0
