@@ -14,7 +14,7 @@ using UnityEngine;
 // Change FlipAnimation() to only occur if character has landed from it's previous jump
 
 
-public class AnimationScript : MonoBehaviour
+public class animationscript : MonoBehaviour
 {
     float secondsIdle = 0.0f;
     bool isFacingRight;
