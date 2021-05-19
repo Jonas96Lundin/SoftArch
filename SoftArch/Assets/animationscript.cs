@@ -10,6 +10,8 @@ using UnityEngine;
  *
  */
 
+ //TO DO: Clean up
+
 public class animationscript : MonoBehaviour
 {
     public float secondsIdle = 0.0f;
