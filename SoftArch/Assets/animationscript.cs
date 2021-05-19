@@ -17,7 +17,6 @@ public class animationscript : MonoBehaviour
     public float secondsIdle = 0.0f;
     bool isFacingRight, gravityFlipped;
 
-
     public Rigidbody rb;
     Animator animator;
 
