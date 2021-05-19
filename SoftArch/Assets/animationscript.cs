@@ -7,17 +7,14 @@ using UnityEngine;
  * By Tinea Larsson
  * 
  * Script to update the parameters needed in the animation controller
+ *
  */
-
-// TO DO: 
-
-// Change FlipAnimation() to only occur if character has landed from it's previous jump
-
 
 public class animationscript : MonoBehaviour
 {
-    private float secondsIdle = 0.0f;
-    bool isFacingRight;
+    public float secondsIdle = 0.0f;
+    bool isFacingRight, gravityFlipped;
+
 
     public Rigidbody rb;
     Animator animator;
@@ -39,7 +36,7 @@ public class animationscript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // if not moving
+        // if not moving with normal gravity
         if (rb.velocity.x == 0 && rb.velocity.y == 0)
         {
             secondsIdle += Time.deltaTime;
@@ -53,7 +50,15 @@ public class animationscript : MonoBehaviour
         // if idle for the selected amount of seconds, play animation
         if (secondsIdle >= secondsIdleUntilWave)
         {
-            animator.Play("wave_animation");
+            if (isFacingRight)
+            {
+                animator.Play("wave_animation_mirrored"); //ÄNDRA
+            }
+            else
+            {
+                animator.Play("wave_animation");
+            }
+
             secondsIdle = 0.0f;
         }
 
@@ -62,23 +67,25 @@ public class animationscript : MonoBehaviour
 
     void UpdateParameters()
     {
-        // rotate animation to match its direction, only when switching direction
-        //if ((isFacingRight && rb.velocity.x < 0 )||(!isFacingRight && rb.velocity.x > 0))
-        //{
-        //    FlipAnimation();
-        //}
+        if ((isFacingRight && rb.velocity.x < 0 )|| (!isFacingRight && rb.velocity.x > 0))
+        {
+            ChangeDirection();
+        }
 
         // Set velocity X to always be positive, direction does not matter for selecting the correct animation
         vX = (float)Math.Round(Mathf.Abs(rb.velocity.x) * 100f / 100f);
         vY = (float)Math.Round(Mathf.Abs(rb.velocity.y) * 100f / 100f);
+       
         // if gravity is currently set to normal
         if (rb.useGravity)
         {
+            gravityFlipped = false;
             animator.SetBool("GravityFlipped", false);
         }
         else
         {
-            Debug.Log((float)Math.Round(rb.velocity.y * 100f / 100f));
+            gravityFlipped = true;
+            //Debug.Log((float)Math.Round(rb.velocity.y * 100f / 100f));
             animator.SetBool("GravityFlipped", true);
         }
 
@@ -90,12 +97,15 @@ public class animationscript : MonoBehaviour
     // Might delete this as rotation now happens in Rotationscript instead
     void FlipAnimation()
     {
-        // switches the bool
-        isFacingRight = !isFacingRight;
-
-        // switches the local scale to an inversion of itself (easier than rotating)
+        // switches the local scale to an inversion of itself 
         Vector3 newScale = transform.localScale;
         newScale.x *= -1;
         transform.localScale = newScale;
+    }
+
+    void ChangeDirection() 
+    {
+        // switches the bool
+        isFacingRight = !isFacingRight;
     }
 }

@@ -501,6 +501,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &1091267681 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6101668023830887436, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+  m_PrefabInstance: {fileID: 5014827585551793856}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df810ab7bb37ba840804af6843e1e658, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1333212400
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -897,6 +908,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5014827586527516350, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: sd
+      value: 
+      objectReference: {fileID: 1091267681}
     - target: {fileID: 5014827586527516350, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
       propertyPath: secondsIdleUntilWave
       value: 3.5
