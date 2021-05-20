@@ -7,23 +7,17 @@ using UnityEngine.AI;
 /// </summary>
 public class AI : MonoBehaviour
 {
-	[SerializeField]
-	private AI ai;
     [SerializeField]
     private NavMeshAgent agent;
     [SerializeField]
     private CharController master;
-    [SerializeField]
-    private float attentionSpan;
-    [SerializeField]
-    private float idleSpeed, catchUpSpeed;
 
     private Context context;
 
 
     void Start()
     {
-        context = new Context(new IdleState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+        context = new Context(new IdleState(agent, master/*, attentionSpan, idleSpeed, catchUpSpeed*/));
     }
 
 

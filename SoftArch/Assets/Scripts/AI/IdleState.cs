@@ -7,26 +7,22 @@ using UnityEngine.AI;
 /// </summary>
 public class IdleState : State
 {
-	public IdleState(NavMeshAgent agent, CharController master, float attentionSpan, float idleSpeed, float catchUpSpeed)
+	public IdleState(NavMeshAgent agent, CharController master)
 	{
 		this.agent = agent;
 		this.master = master;
 
-		this.attentionSpan = attentionSpan;
-		this.idleSpeed = idleSpeed;
-		this.catchUpSpeed = catchUpSpeed;
 		this.agent.speed = idleSpeed;
-
 		targetPos = agent.transform.position;
 	}
 
 	public override void UpdateState()
 	{
 		MasterInput();
-		
+
 		if (distanceToMaster > 30)
 		{
-			_context.TransitionTo(new CatchUpState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			_context.TransitionTo(new CatchUpState(agent, master));
 			return;
 		}
 

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4936846924914537222}
   - component: {fileID: 3637487020764104413}
   - component: {fileID: 369252292741796957}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: pCube3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8430312993697115125}
   - component: {fileID: 6137372170472637680}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorPivotRight1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 1679892621306378255}
   - component: {fileID: 4946556995684021434}
   - component: {fileID: 1065055177906685649}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorLeft2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 6285192558418183565}
   - component: {fileID: 7274193343395237014}
   - component: {fileID: 4018028998665024798}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: C_ClosedDoors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -340,7 +340,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1505605191840398533}
   - component: {fileID: 7072434332708025299}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorPivotRight2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -388,7 +388,7 @@ GameObject:
   - component: {fileID: 3870510607569573925}
   - component: {fileID: 8251690200105163909}
   - component: {fileID: 5686864611306169737}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorLeft1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -481,7 +481,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1420862224431246502}
   - component: {fileID: 4013914989641140382}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorPivotLeft2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -527,7 +527,7 @@ GameObject:
   m_Component:
   - component: {fileID: 770937639937199906}
   - component: {fileID: 2430570564615574022}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorPivotLeft1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -575,7 +575,7 @@ GameObject:
   - component: {fileID: 8876422832120089227}
   - component: {fileID: 4647886464291209599}
   - component: {fileID: 7691253505050388607}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorRight1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -670,7 +670,7 @@ GameObject:
   - component: {fileID: 2262801668606180627}
   - component: {fileID: 4465295243627068999}
   - component: {fileID: 7955076640297414434}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorRight2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

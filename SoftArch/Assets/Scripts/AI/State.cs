@@ -5,69 +5,84 @@ using UnityEngine.AI;
 /// <summary>
 /// Kodad av: Johan Melkersson
 /// </summary>
-
 public abstract class State
 {
 	//Context
 	protected Context _context;
-	//Master
+	//Player
 	protected CharController master;
 	//NavMesh
 	protected NavMeshAgent agent;
 	protected Vector3 targetPos;
 	//Tweakable Const variables
-	protected const float antiGravity = 2.0f * 9.82f,
-						  followDistance = 4.0f,
+	protected const float idleSpeed = 2.0f,
 						  followSpeed = 4.0f,
-						  airSpeed = 5.0f,
+						  catchUpSpeed = 8.0f,
+						  flyBackSpeed = 5.0f,
+						  flipRotationSpeed = 5.0f,
+						  antiGravity = 2.0f * 9.82f,
+						  followDistance = 4.0f,
+						  flyBackDistance = 20.0f,
 						  avoidOffset = 4.0f,
-						  rotationSpeed = 5.0f;
-	protected float attentionSpan = 1.0f,
-					idleSpeed = 3.0f,
-					catchUpSpeed = 10.0f;
-	//Static varialbles
+						  attentionSpan = 1.0f;
+	//Static variables
 	protected static Vector3 objectPos;
 	protected static float timeToChange = 1.0f,
 						   distanceToMaster;
 	protected static bool followMaster,
 						  isJumping,
 						  isFalling,
+						  isFlyBack,
 						  invertedGravity,
 						  objectFound;
 	//Other Variables
 	protected bool jumpOnFixedUpdate = false,
 				   moveOnFixedUpdate = false;
 
-
-
-
 	public void SetContext(Context context)
 	{
 		_context = context;
 	}
 
-
 	public abstract void UpdateState();
 	public abstract void SetTargetPosition();
 	public void FixedUpdateState()
 	{
+		distanceToMaster = Vector3.Distance(agent.transform.position, master.transform.position);
+
 		if (isFalling)
 		{
-			Fall();
+			//Move
+			if (!isFlyBack)
+				Fall();
+			else
+				FlyBack();
+
+			//Rotation
+			if (distanceToMaster < followDistance)
+			{
+				LookAt(master.transform.position);
+			}
+			else if (!invertedGravity)
+			{
+				agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, 0)), flipRotationSpeed * Time.deltaTime));
+			}
+			else
+			{
+				agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, -180)), flipRotationSpeed * Time.deltaTime));
+			}
+
 		}
 		else
 		{
-			if (moveOnFixedUpdate)
+			//Move
+			if (moveOnFixedUpdate && agent.isOnNavMesh)
 			{
-				if (agent.isOnNavMesh)
-				{
-					agent.SetDestination(targetPos);
-					moveOnFixedUpdate = false;
-				}
+				agent.SetDestination(targetPos);
+				moveOnFixedUpdate = false;
 			}
 
-			distanceToMaster = Mathf.Abs(agent.transform.position.x - master.transform.position.x);
-
+			//Rotation
 			if (distanceToMaster < 4)
 			{
 				LookAt(master.transform.position);
@@ -81,17 +96,42 @@ public abstract class State
 
 	private void Fall()
 	{
-		if (invertedGravity)
-		{
-			agent.GetComponent<Rigidbody>().AddForce(Vector3.up * antiGravity, ForceMode.Acceleration);
+		float verticalDistanceToMaster = master.transform.position.y - agent.transform.position.y;
 
-			agent.GetComponent<Rigidbody>().AddForce((master.transform.position - agent.transform.position).normalized * airSpeed, ForceMode.Acceleration);
-			agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, -180)), rotationSpeed * Time.deltaTime));
+		if (!invertedGravity)
+		{
+			if (verticalDistanceToMaster > flyBackDistance)
+			{
+				agent.GetComponent<Rigidbody>().useGravity = false;
+				agent.GetComponent<Rigidbody>().velocity = Vector3.zero;
+				isFlyBack = true;
+			}
+			else
+			{
+				agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, 0)), flipRotationSpeed * Time.deltaTime));
+			}
 		}
 		else
 		{
-			agent.GetComponent<Rigidbody>().AddForce((master.transform.position - agent.transform.position).normalized * airSpeed, ForceMode.Acceleration);
-			agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, 0)), rotationSpeed * Time.deltaTime));
+			agent.GetComponent<Rigidbody>().useGravity = false;
+
+			if (verticalDistanceToMaster < -flyBackDistance)
+			{
+				agent.GetComponent<Rigidbody>().velocity = Vector3.zero;
+				isFlyBack = true;
+			}
+			else
+			{
+				agent.GetComponent<Rigidbody>().AddForce(Vector3.up * antiGravity, ForceMode.Acceleration);
+				agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, -180)), flipRotationSpeed * Time.deltaTime));
+			}
+		}
+	}
+	protected void FlyBack()
+	{
+		if (distanceToMaster > followDistance)
+		{
+			agent.GetComponent<Rigidbody>().AddForce((master.transform.position - agent.transform.position).normalized * flyBackSpeed, ForceMode.Acceleration);
 		}
 	}
 
@@ -116,15 +156,15 @@ public abstract class State
 				followMaster = !followMaster;
 				if (followMaster)
 				{
-					_context.TransitionTo(new FollowState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+					_context.TransitionTo(new FollowState(agent, master));
 				}
 				else if (distanceToMaster < 10)
 				{
-					_context.TransitionTo(new IdleState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+					_context.TransitionTo(new IdleState(agent, master));
 				}
 				else
 				{
-					_context.TransitionTo(new CatchUpState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+					_context.TransitionTo(new CatchUpState(agent, master));
 				}
 				moveOnFixedUpdate = false;
 			}
@@ -132,15 +172,16 @@ public abstract class State
 			{
 				followMaster = true;
 				objectFound = false;
-				_context.TransitionTo(new FollowState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+				_context.TransitionTo(new FollowState(agent, master));
 			}
 		}
-		else if (Input.GetKeyDown("g"))
+		else if (Input.GetButtonDown("Fire2") || Input.GetKeyDown("g"))
 		{
 			moveOnFixedUpdate = false;
 			agent.enabled = false;
 			invertedGravity = !invertedGravity;
 			agent.GetComponent<Rigidbody>().isKinematic = false;
+			agent.GetComponent<Rigidbody>().useGravity = true;
 			agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
 			isFalling = true;
 			objectFound = false;
@@ -150,7 +191,7 @@ public abstract class State
 			targetPos = agent.transform.position;
 			objectFound = false;
 			followMaster = false;
-			_context.TransitionTo(new HoldState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			_context.TransitionTo(new HoldState(agent, master));
 
 		}
 	}
@@ -162,14 +203,18 @@ public abstract class State
 			if (!invertedGravity && collision.collider.CompareTag("WalkableObject"))
 			{
 				agent.GetComponent<Rigidbody>().isKinematic = true;
+				agent.GetComponent<Rigidbody>().useGravity = true;
 				agent.enabled = true;
 				isFalling = false;
+				isFlyBack = false;
 			}
 			else if (invertedGravity && collision.collider.CompareTag("WalkableObject180"))
 			{
 				agent.GetComponent<Rigidbody>().isKinematic = true;
+				agent.GetComponent<Rigidbody>().useGravity = true;
 				agent.enabled = true;
 				isFalling = false;
+				isFlyBack = false;
 			}
 		}
 	}
@@ -177,33 +222,13 @@ public abstract class State
 	{
 		if (isFalling)
 		{
-			if(!invertedGravity && other.tag != "WalkableObject")
+			if (!invertedGravity && other.tag != "WalkableObject")
 			{
-				if (agent.transform.position.y > other.transform.position.y)
-				{
-					if (agent.transform.position.x > other.transform.position.x)
-					{
-						agent.GetComponent<Rigidbody>().AddForce(Vector3.right * catchUpSpeed, ForceMode.Acceleration);
-					}
-					else if (agent.transform.position.x < other.transform.position.x)
-					{
-						agent.GetComponent<Rigidbody>().AddForce(Vector3.left * catchUpSpeed, ForceMode.Acceleration);
-					}
-				}
+				agent.GetComponent<Rigidbody>().AddForce(-(other.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
 			}
-			else if(invertedGravity && other.tag != "WalkableObject180")
+			else if (invertedGravity && other.tag != "WalkableObject180")
 			{
-				if (agent.transform.position.y < other.transform.position.y)
-				{
-					if (agent.transform.position.x > other.transform.position.x)
-					{
-						agent.GetComponent<Rigidbody>().AddForce(Vector3.right * catchUpSpeed, ForceMode.Acceleration);
-					}
-					else if (agent.transform.position.x < other.transform.position.x)
-					{
-						agent.GetComponent<Rigidbody>().AddForce(Vector3.left * catchUpSpeed, ForceMode.Acceleration);
-					}
-				}
+				agent.GetComponent<Rigidbody>().AddForce(-(other.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
 			}
 		}
 		else if (other.tag == "Player")
@@ -225,7 +250,7 @@ public abstract class State
 			objectFound = true;
 			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);
 			targetPos = objectPos;
-			_context.TransitionTo(new HoldState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			_context.TransitionTo(new HoldState(agent, master));
 		}
 	}
 }

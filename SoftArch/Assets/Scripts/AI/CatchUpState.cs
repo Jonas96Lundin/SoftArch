@@ -7,14 +7,11 @@ using UnityEngine.AI;
 /// </summary>
 public class CatchUpState : State
 {
-	public CatchUpState(NavMeshAgent agent, CharController master, float attentionSpan, float idleSpeed, float catchUpSpeed)
+	public CatchUpState(NavMeshAgent agent, CharController master)
 	{
 		this.agent = agent;
 		this.master = master;
 
-		this.attentionSpan = attentionSpan;
-		this.idleSpeed = idleSpeed;
-		this.catchUpSpeed = catchUpSpeed;
 		this.agent.speed = catchUpSpeed;
 	}
 	public override void UpdateState()
@@ -36,11 +33,11 @@ public class CatchUpState : State
 		}
 		else if (followMaster)
 		{
-			_context.TransitionTo(new FollowState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			_context.TransitionTo(new FollowState(agent, master));
 		}
 		else
 		{
-			_context.TransitionTo(new IdleState(agent, master, attentionSpan, idleSpeed, catchUpSpeed));
+			_context.TransitionTo(new IdleState(agent, master));
 		}
 	}
 }
