@@ -15,7 +15,6 @@ public class FlipGravity : MonoBehaviour
      */
     bool flippedLastUpdate = false;
     [SerializeField] bool flippedGravity = false;
-    
     /*
      * Properties and Methods
      */

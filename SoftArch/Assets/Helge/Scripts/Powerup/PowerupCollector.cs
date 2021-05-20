@@ -3,14 +3,36 @@ using UnityEngine;
 public class PowerupCollector : MonoBehaviour
 {
     int flipAmount = 0;
-    public int GetFlipAmount { get => flipAmount; }
+    [SerializeField] bool infiniteFlips = false;
+    public int GetFlipAmount
+    {
+        get
+        {
+            if (infiniteFlips)
+                return 1;
+            return flipAmount;
+        }
+    }
+
     /// <summary>
     /// Increases the amount of flips by one
     /// </summary>
-    public void IncreaseAmountOfFlips() => ++flipAmount;
+    public void IncreaseAmountOfFlips()
+    {
+        if (!infiniteFlips)
+        {
+            ++flipAmount;
+        }
+    }
     /// <summary>
     /// Decrease the amount of flips by one
     /// </summary>
-    public void DecreaseAmountOfFlips() => --flipAmount;
+    public void DecreaseAmountOfFlips()
+    {
+        if (!infiniteFlips)
+        {
+            --flipAmount;
+        }
+    }
     
 }

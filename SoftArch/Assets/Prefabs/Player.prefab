@@ -818,6 +818,8 @@ GameObject:
   - component: {fileID: 6101668023830887434}
   - component: {fileID: 6101668023830887436}
   - component: {fileID: 763733494}
+  - component: {fileID: 6751812157307714735}
+  - component: {fileID: 215959959775641892}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -999,6 +1001,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transformToRotate: {fileID: 8057869120999739180}
+--- !u!114 &6751812157307714735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6101668023830887476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a48be0f52e899498050edd503085db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infiniteFlips: 0
+--- !u!114 &215959959775641892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6101668023830887476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3f333ee37358a488743af1adda9b39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6113566932437250117
 GameObject:
   m_ObjectHideFlags: 0
