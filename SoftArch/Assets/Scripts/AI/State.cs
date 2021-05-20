@@ -16,8 +16,10 @@ public abstract class State
 	protected NavMeshAgent agent;
 	protected Vector3 targetPos;
 	//Tweakable Const variables
-	protected const float followDistance = 4.0f,
+	protected const float antiGravity = 2.0f * 9.82f,
+						  followDistance = 4.0f,
 						  followSpeed = 4.0f,
+						  airSpeed = 5.0f,
 						  avoidOffset = 4.0f,
 						  rotationSpeed = 5.0f;
 	protected float attentionSpan = 1.0f,
@@ -51,15 +53,7 @@ public abstract class State
 	{
 		if (isFalling)
 		{
-			if (invertedGravity)
-			{
-				agent.GetComponent<Rigidbody>().AddForce(Vector3.up * (2.0f * 9.82f), ForceMode.Acceleration);
-				agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, -180)), rotationSpeed * Time.deltaTime));
-			}
-			else
-			{
-				agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, 0)), rotationSpeed * Time.deltaTime));
-			}
+			Fall();
 		}
 		else
 		{
@@ -76,27 +70,40 @@ public abstract class State
 
 			if (distanceToMaster < 4)
 			{
-				if (invertedGravity)
-				{
-					agent.transform.LookAt(master.transform.position, -Vector3.up);
-				}
-				else
-				{
-					agent.transform.LookAt(master.transform.position, Vector3.up);
-				}
+				LookAt(master.transform.position);
 			}
 			else if (objectFound && distanceToMaster > 6.0f)
 			{
-				if (invertedGravity)
-				{
-					agent.transform.LookAt(objectPos, -Vector3.up);
-				}
-				else
-				{
-					agent.transform.LookAt(objectPos, Vector3.up);
-
-				}
+				LookAt(objectPos);
 			}
+		}
+	}
+
+	private void Fall()
+	{
+		if (invertedGravity)
+		{
+			agent.GetComponent<Rigidbody>().AddForce(Vector3.up * antiGravity, ForceMode.Acceleration);
+
+			agent.GetComponent<Rigidbody>().AddForce((master.transform.position - agent.transform.position).normalized * airSpeed, ForceMode.Acceleration);
+			agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, -180)), rotationSpeed * Time.deltaTime));
+		}
+		else
+		{
+			agent.GetComponent<Rigidbody>().AddForce((master.transform.position - agent.transform.position).normalized * airSpeed, ForceMode.Acceleration);
+			agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, 0)), rotationSpeed * Time.deltaTime));
+		}
+	}
+
+	private void LookAt(Vector3 target)
+	{
+		if (invertedGravity)
+		{
+			agent.transform.LookAt(target, -Vector3.up);
+		}
+		else
+		{
+			agent.transform.LookAt(target, Vector3.up);
 		}
 	}
 
