@@ -9,6 +9,7 @@ public class FlipGravity : MonoBehaviour
      */
     SlopeDetector sd;
     RotationManager rm;
+    PowerupCollector pc;
     /*
      * Variables
      */
@@ -27,6 +28,7 @@ public class FlipGravity : MonoBehaviour
     {
         sd = GetComponent<SlopeDetector>();
         rm = GetComponent<RotationManager>();
+        pc = GetComponent<PowerupCollector>();
     }
 
     // Update is called once per frame
@@ -34,7 +36,11 @@ public class FlipGravity : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire2")) // Change gravity on user input
         {
-            GetSetFlippedGravity = !flippedGravity;
+            if (pc.GetFlipAmount > 0)
+            {
+                pc.DecreaseAmountOfFlips();
+                GetSetFlippedGravity = !flippedGravity;
+            }
         }
 
         if (flippedGravity != flippedLastUpdate) // If gravity has changes since last update
