@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2601829092467902206}
   - component: {fileID: 1716382579255922661}
   - component: {fileID: 4962993759089849965}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: C_NoDoors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,7 +115,7 @@ GameObject:
   - component: {fileID: 4008701256387326069}
   - component: {fileID: 4708517528352015790}
   - component: {fileID: 8520011778824722222}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: pCube3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
