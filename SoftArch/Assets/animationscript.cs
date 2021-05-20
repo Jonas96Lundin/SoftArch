@@ -10,12 +10,15 @@ using UnityEngine;
  *
  */
 
- //TO DO: Clean up
+//TO DO: Clean up
 
 public class animationscript : MonoBehaviour
 {
     public float secondsIdle = 0.0f;
-    bool isFacingRight, gravityFlipped;
+    bool isFacingRight, gravityFlipped, moving;
+
+    public enum charType { player, ai };
+    public charType thisCharType;
 
     public Rigidbody rb;
     Animator animator;
@@ -28,7 +31,7 @@ public class animationscript : MonoBehaviour
     [SerializeField]
     private float secondsIdleUntilWave = 10.0f; // Amount of seconds the character has to be idle before playing the animation
 
-  
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,8 +40,25 @@ public class animationscript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // if not moving with normal gravity
-        if (rb.velocity.x == 0 && rb.velocity.y == 0)
+        switch (thisCharType)
+        {
+            case charType.player:
+                if (rb.velocity.x != 0 || rb.velocity.y != 0)
+                {
+                    moving = true;
+                }
+                break;
+
+            case charType.ai:
+                //
+                moving = false; // 
+                break;
+        }
+
+        UpdateParameters();
+
+        // if not moving (with normal gravity)
+        if (!moving)
         {
             secondsIdle += Time.deltaTime;
             secondsIdle = secondsIdle % 60;
@@ -51,44 +71,71 @@ public class animationscript : MonoBehaviour
         // if idle for the selected amount of seconds, play animation
         if (secondsIdle >= secondsIdleUntilWave)
         {
-            if (isFacingRight)
+            switch (thisCharType)
             {
-                animator.Play("wave_animation_mirrored"); //ÄNDRA
-            }
-            else
-            {
-                animator.Play("wave_animation");
-            }
+                case charType.player:
+                    if (isFacingRight)
+                    {
+                        animator.Play("wave_animation_mirrored");
+                    }
+                    else
+                    {
+                        animator.Play("wave_animation");
+                    }
+                    secondsIdle = 0.0f;
+                    break;
 
-            secondsIdle = 0.0f;
+                case charType.ai:
+
+                    //Play sad 
+                    animator.Play("ai_turning_to_sad");
+
+                    //Play happy
+                    //animator.Play("ai_turning_to_happy");
+                    secondsIdle = 0.0f;
+                    break;
+            }
         }
-
-        UpdateParameters();
     }
 
     void UpdateParameters()
     {
-        if ((isFacingRight && rb.velocity.x < 0 )|| (!isFacingRight && rb.velocity.x > 0))
+        switch (thisCharType)
         {
-            ChangeDirection();
+            case charType.player:
+
+                if ((isFacingRight && rb.velocity.x < 0) || (!isFacingRight && rb.velocity.x > 0))
+                {
+                    ChangeDirectionPlayer();
+                }
+                vX = (float)Math.Round(Mathf.Abs(rb.velocity.x) * 100f / 100f);
+                vY = (float)Math.Round(rb.velocity.y * 100f / 100f);
+
+                break;
+
+            case charType.ai:
+                // if needed change direction
+
+                // vX = 
+                // vY = 
+
+
+                break;
         }
 
-        // Set velocity X to always be positive, direction does not matter for selecting the correct animation
-        vX = (float)Math.Round(Mathf.Abs(rb.velocity.x) * 100f / 100f);
-        vY = (float)Math.Round(Mathf.Abs(rb.velocity.y) * 100f / 100f);
-       
-        // if gravity is currently set to normal
-        if (rb.useGravity)
-        {
-            gravityFlipped = false;
-            animator.SetBool("GravityFlipped", false);
-        }
-        else
-        {
-            gravityFlipped = true;
-            //Debug.Log((float)Math.Round(rb.velocity.y * 100f / 100f));
-            animator.SetBool("GravityFlipped", true);
-        }
+
+        //// if gravity is currently set to normal
+        //if (rb.useGravity)
+        //{
+        //    gravityFlipped = false;
+        //    animator.SetBool("GravityFlipped", false);
+        //}
+        //else
+        //{
+        //    gravityFlipped = true;
+        //    //Debug.Log((float)Math.Round(rb.velocity.y * 100f / 100f));
+        //    animator.SetBool("GravityFlipped", true);
+        //}
 
         animator.SetFloat("VelocityX", vX);
         animator.SetFloat("VelocityY", vY);
@@ -104,9 +151,7 @@ public class animationscript : MonoBehaviour
         transform.localScale = newScale;
     }
 
-    void ChangeDirection() 
-    {
-        // switches the bool
-        isFacingRight = !isFacingRight;
-    }
+    // switches the bool
+    void ChangeDirectionPlayer(){ isFacingRight = !isFacingRight;}
+
 }
