@@ -5,7 +5,6 @@ using UnityEngine.AI;
 /// <summary>
 /// Kodad av: Johan Melkersson
 /// </summary>
-
 public abstract class State
 {
 	//Context
