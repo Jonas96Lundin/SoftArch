@@ -7,14 +7,10 @@ using UnityEngine.AI;
 /// </summary>
 public class FollowState : State
 {
-	public FollowState(NavMeshAgent agent, CharController master, float attentionSpan, float idleSpeed, float catchUpSpeed)
+	public FollowState(NavMeshAgent agent, CharController master)
 	{
 		this.agent = agent;
 		this.master = master;
-
-		this.attentionSpan = attentionSpan;
-		this.idleSpeed = idleSpeed;
-		this.catchUpSpeed = catchUpSpeed;
 
 		this.agent.speed = followSpeed;
 	}
