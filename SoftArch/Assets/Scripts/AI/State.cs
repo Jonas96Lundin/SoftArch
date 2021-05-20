@@ -15,7 +15,6 @@ public abstract class State
 	//NavMesh
 	protected NavMeshAgent agent;
 	protected Vector3 targetPos;
-
 	//Tweakable Const variables
 	protected const float idleSpeed = 2.0f,
 						  followSpeed = 4.0f,
@@ -23,25 +22,20 @@ public abstract class State
 						  flyBackSpeed = 5.0f,
 						  flipRotationSpeed = 5.0f,
 						  antiGravity = 2.0f * 9.82f,
-
 						  followDistance = 4.0f,
 						  flyBackDistance = 20.0f,
 						  avoidOffset = 4.0f,
-
 						  attentionSpan = 1.0f;
-
+	//Static variables
+	protected static Vector3 objectPos;
 	protected static float timeToChange = 1.0f,
 						   distanceToMaster;
-
 	protected static bool followMaster,
 						  isJumping,
 						  isFalling,
 						  isFlyBack,
 						  invertedGravity,
 						  objectFound;
-
-	protected static Vector3 objectPos;
-
 	//Other Variables
 	protected bool jumpOnFixedUpdate = false,
 				   moveOnFixedUpdate = false;
