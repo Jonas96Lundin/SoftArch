@@ -18,7 +18,7 @@ public class AlwaysVisible : MonoBehaviour
         {
             Debug.DrawRay(camera.transform.position,
             (target.transform.position - camera.transform.position), Color.green);
-            Debug.Log(hit.collider.gameObject.tag);
+            //Debug.Log(hit.collider.gameObject.tag);
 
             if (hit.collider.gameObject.tag == "Sphere")
             {

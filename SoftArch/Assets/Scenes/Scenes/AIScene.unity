@@ -3170,6 +3170,16 @@ MonoBehaviour:
   m_Bidirectional: 1
   m_AutoUpdatePosition: 0
   m_Area: 0
+--- !u!54 &1688905329 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 2637776329487982137, guid: c6728eeb09a39834a9d84aed09963f8e, type: 3}
+  m_PrefabInstance: {fileID: 3567824725164984000}
+  m_PrefabAsset: {fileID: 0}
+--- !u!195 &1688905333 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 2637776329487982135, guid: c6728eeb09a39834a9d84aed09963f8e, type: 3}
+  m_PrefabInstance: {fileID: 3567824725164984000}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1689222591
 GameObject:
   m_ObjectHideFlags: 0
@@ -3303,7 +3313,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   secondsIdle: 0
   thisCharType: 1
-  rb: {fileID: 0}
+  rb: {fileID: 1688905329}
+  aiAgent: {fileID: 1688905333}
   secondsIdleUntilWave: 10
 --- !u!1 &1715939664
 GameObject:
