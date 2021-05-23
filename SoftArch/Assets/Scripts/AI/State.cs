@@ -13,7 +13,8 @@ public abstract class State
 	protected CharController master;
 	//NavMesh
 	protected NavMeshAgent agent;
-	protected Vector3 targetPos;
+	protected static Vector3 targetPos;
+	protected Light moveToIndicator;
 	//Tweakable Const variables
 	protected const float idleSpeed = 2.0f,
 						  followSpeed = 4.0f,
@@ -24,14 +25,17 @@ public abstract class State
 						  followDistance = 4.0f,
 						  flyBackDistance = 20.0f,
 						  avoidOffset = 4.0f,
-						  attentionSpan = 1.0f;
+						  attentionSpan = 1.0f,
+						  indicationTime = 3.0f;
 	//Static variables
 	protected static Vector3 objectPos;
 	protected static float timeToChange = 1.0f,
+						   spotlightAngleChange = 2.8f,
 						   distanceToMaster;
 	protected static bool followMaster,
 						  isJumping,
 						  isFalling,
+						  isHolding,
 						  isFlyBack,
 						  invertedGravity,
 						  objectFound;
@@ -45,7 +49,7 @@ public abstract class State
 	}
 
 	public abstract void UpdateState();
-	public abstract void SetTargetPosition();
+	protected abstract void SetTargetPosition();
 	public void FixedUpdateState()
 	{
 		distanceToMaster = Vector3.Distance(agent.transform.position, master.transform.position);
@@ -53,10 +57,9 @@ public abstract class State
 		if (isFalling)
 		{
 			//Move
-			if (!isFlyBack)
-				Fall();
-			else
+			if (isFlyBack || !FreeFall())
 				FlyBack();
+
 
 			//Rotation
 			if (distanceToMaster < followDistance)
@@ -94,7 +97,7 @@ public abstract class State
 		}
 	}
 
-	private void Fall()
+	private bool FreeFall()
 	{
 		float verticalDistanceToMaster = master.transform.position.y - agent.transform.position.y;
 
@@ -105,27 +108,24 @@ public abstract class State
 				agent.GetComponent<Rigidbody>().useGravity = false;
 				agent.GetComponent<Rigidbody>().velocity = Vector3.zero;
 				isFlyBack = true;
-			}
-			else
-			{
-				agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, 0)), flipRotationSpeed * Time.deltaTime));
+				return false;
 			}
 		}
 		else
 		{
-			agent.GetComponent<Rigidbody>().useGravity = false;
-
 			if (verticalDistanceToMaster < -flyBackDistance)
 			{
+				agent.GetComponent<Rigidbody>().useGravity = false;
 				agent.GetComponent<Rigidbody>().velocity = Vector3.zero;
 				isFlyBack = true;
+				return false;
 			}
 			else
 			{
 				agent.GetComponent<Rigidbody>().AddForce(Vector3.up * antiGravity, ForceMode.Acceleration);
-				agent.transform.rotation = (Quaternion.Slerp(agent.transform.rotation, Quaternion.Euler(new Vector3(agent.transform.rotation.x, agent.transform.rotation.y, -180)), flipRotationSpeed * Time.deltaTime));
 			}
 		}
+		return true;
 	}
 	protected void FlyBack()
 	{
@@ -134,7 +134,6 @@ public abstract class State
 			agent.GetComponent<Rigidbody>().AddForce((master.transform.position - agent.transform.position).normalized * flyBackSpeed, ForceMode.Acceleration);
 		}
 	}
-
 	private void LookAt(Vector3 target)
 	{
 		if (invertedGravity)
@@ -147,55 +146,30 @@ public abstract class State
 		}
 	}
 
-	protected void MasterInput()
+	protected void GravityFlip()
 	{
-		if (Input.GetKeyDown("f"))
-		{
-			if (!objectFound)
-			{
-				followMaster = !followMaster;
-				if (followMaster)
-				{
-					_context.TransitionTo(new FollowState(agent, master));
-				}
-				else if (distanceToMaster < 10)
-				{
-					_context.TransitionTo(new IdleState(agent, master));
-				}
-				else
-				{
-					_context.TransitionTo(new CatchUpState(agent, master));
-				}
-				moveOnFixedUpdate = false;
-			}
-			else
-			{
-				followMaster = true;
-				objectFound = false;
-				_context.TransitionTo(new FollowState(agent, master));
-			}
-		}
-		else if (Input.GetButtonDown("Fire2") || Input.GetKeyDown("g"))
-		{
-			moveOnFixedUpdate = false;
-			agent.enabled = false;
-			invertedGravity = !invertedGravity;
-			agent.GetComponent<Rigidbody>().isKinematic = false;
-			agent.GetComponent<Rigidbody>().useGravity = true;
-			agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
-			isFalling = true;
-			objectFound = false;
-		}
-		else if (Input.GetKeyDown("h"))
-		{
-			targetPos = agent.transform.position;
-			objectFound = false;
-			followMaster = false;
-			_context.TransitionTo(new HoldState(agent, master));
+		moveOnFixedUpdate = false;
+		agent.enabled = false;
+		invertedGravity = !invertedGravity;
+		agent.GetComponent<Rigidbody>().isKinematic = false;
+		agent.GetComponent<Rigidbody>().useGravity = true;
+		agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
+		isFalling = true;
+	}
+	protected void MoveToHoldPosition()
+	{
+		moveToIndicator.spotAngle = 1.0f;
 
-		}
+		if (master.GetComponent<RotationManager>().rotateLeft)
+			targetPos = new Vector3(master.transform.position.x - 4.0f, master.transform.position.y, master.transform.position.z);
+		else
+			targetPos = new Vector3(master.transform.position.x + 4.0f, master.transform.position.y, master.transform.position.z);
+
+		moveToIndicator.transform.position = targetPos + Vector3.up * 3.5f;
+		moveToIndicator.enabled = true;
 	}
 
+	protected abstract void MasterInput();
 	public void HandleCollision(Collision collision)
 	{
 		if (!agent.isOnNavMesh)
@@ -218,39 +192,5 @@ public abstract class State
 			}
 		}
 	}
-	public void HandleProximityTrigger(Collider other)
-	{
-		if (isFalling)
-		{
-			if (!invertedGravity && other.tag != "WalkableObject")
-			{
-				agent.GetComponent<Rigidbody>().AddForce(-(other.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
-			}
-			else if (invertedGravity && other.tag != "WalkableObject180")
-			{
-				agent.GetComponent<Rigidbody>().AddForce(-(other.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
-			}
-		}
-		else if (other.tag == "Player")
-		{
-			float distance = agent.transform.position.x - master.transform.position.x;
-			if (distance > 0)
-			{
-				targetPos = new Vector3(master.transform.position.x + avoidOffset, agent.transform.position.y, master.transform.position.z + avoidOffset);
-			}
-			else
-			{
-				targetPos = new Vector3(master.transform.position.x - avoidOffset, agent.transform.position.y, master.transform.position.z + avoidOffset);
-			}
-			agent.speed = catchUpSpeed;
-			moveOnFixedUpdate = true;
-		}
-		else if (other.tag == "InteractableObject" && !objectFound)
-		{
-			objectFound = true;
-			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);
-			targetPos = objectPos;
-			_context.TransitionTo(new HoldState(agent, master));
-		}
-	}
+	public abstract void HandleProximityTrigger(Collider other);
 }

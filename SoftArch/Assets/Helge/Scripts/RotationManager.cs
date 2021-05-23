@@ -10,7 +10,7 @@ public class RotationManager : MonoBehaviour
                      rotationLeftAndFlipped = new Vector3(0, 179, 180),
                      rotationRightNotFlipped = new Vector3(0, -179, 0),
                      rotationLeftNotFlipped = new Vector3(0, -1, 0);
-    bool rotateLeft = true, rotateRight = false;
+    public bool rotateLeft = true, rotateRight = false;
     bool isUpsideDown = false;
     const float rotationSpeed =  5.0f; // Rotation speed
     public bool IsUpsideDown { get => isUpsideDown; set

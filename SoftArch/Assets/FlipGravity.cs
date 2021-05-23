@@ -38,8 +38,8 @@ public class FlipGravity : MonoBehaviour
             if (pc.GetFlipAmount > 0)
             {
                 pc.DecreaseAmountOfFlips();
-                GetSetFlippedGravity = !flippedGravity;
-            }
+				GetSetFlippedGravity = !flippedGravity;
+			}
         }
 
         if (flippedGravity != flippedLastUpdate) // If gravity has changes since last update
