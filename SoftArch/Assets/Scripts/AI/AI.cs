@@ -31,15 +31,14 @@ public class AI : MonoBehaviour
     {
         context.FixedUpdateContext();
     }
-	
 
-	private void OnCollisionEnter(Collision collision)
+
+    private void OnTriggerEnter(Collider other)
+    {
+        context.HandleProximityTrigger(other);
+    }
+    private void OnCollisionEnter(Collision collision)
 	{
 		context.HandleCollision(collision);
 	}
-
-	private void OnTriggerEnter(Collider other)
-	{
-        context.HandleProximityTrigger(other);
-    }
 }

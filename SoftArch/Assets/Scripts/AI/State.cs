@@ -76,6 +76,10 @@ public abstract class State
 			}
 
 		}
+		else if (isJumping)
+		{
+
+		}
 		else
 		{
 			//Move
@@ -127,6 +131,17 @@ public abstract class State
 		}
 		return true;
 	}
+	protected void LookForLand(Collider potentialLand)
+	{
+		if (!invertedGravity && potentialLand.tag != "WalkableObject")
+		{
+			agent.GetComponent<Rigidbody>().AddForce(-(potentialLand.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
+		}
+		else if (invertedGravity && potentialLand.tag != "WalkableObject180")
+		{
+			agent.GetComponent<Rigidbody>().AddForce(-(potentialLand.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
+		}
+	}
 	protected void FlyBack()
 	{
 		if (distanceToMaster > followDistance)
@@ -145,6 +160,26 @@ public abstract class State
 			agent.transform.LookAt(target, Vector3.up);
 		}
 	}
+	protected void AvoidPlayer()
+	{
+		float distance = agent.transform.position.x - master.transform.position.x;
+		if (distance > 0)
+		{
+			targetPos = new Vector3(master.transform.position.x + avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
+		}
+		else
+		{
+			targetPos = new Vector3(master.transform.position.x - avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
+		}
+		agent.speed = catchUpSpeed;
+		moveOnFixedUpdate = true;
+	}
+	protected void FoundObject(Collider interestingObject)
+	{
+		objectPos = new Vector3(interestingObject.transform.position.x, agent.transform.position.y, interestingObject.transform.position.z);
+		targetPos = objectPos;
+		_context.TransitionTo(new FoundObjectState(agent, master, moveToIndicator));
+	}
 
 	protected void GravityFlip()
 	{
@@ -156,7 +191,7 @@ public abstract class State
 		agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
 		isFalling = true;
 	}
-	protected void MoveToHoldPosition()
+	protected virtual void MoveToHoldPosition()
 	{
 		moveToIndicator.spotAngle = 1.0f;
 
@@ -170,6 +205,8 @@ public abstract class State
 	}
 
 	protected abstract void MasterInput();
+	
+	public abstract void HandleProximityTrigger(Collider other);
 	public void HandleCollision(Collision collision)
 	{
 		if (!agent.isOnNavMesh)
@@ -191,6 +228,12 @@ public abstract class State
 				isFlyBack = false;
 			}
 		}
+		else
+		{
+			if(collision.collider.tag == "Player")
+			{
+
+			}
+		}
 	}
-	public abstract void HandleProximityTrigger(Collider other);
 }

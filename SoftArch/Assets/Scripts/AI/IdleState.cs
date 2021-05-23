@@ -89,24 +89,10 @@ public class IdleState : State
 	{
 		if (isFalling)
 		{
-			if (!invertedGravity && other.tag != "WalkableObject")
-			{
-				agent.GetComponent<Rigidbody>().AddForce(-(other.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
-			}
-			else if (invertedGravity && other.tag != "WalkableObject180")
-			{
-				agent.GetComponent<Rigidbody>().AddForce(-(other.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
-			}
+			LookForLand(other);
 		}
 		else if (other.tag == "Player")
 		{
-			Debug.Log("Follow: " + followMaster);
-			Debug.Log("Jumping: " + isJumping);
-			Debug.Log("Falling: " + isFalling);
-			Debug.Log("Holing: " + isHolding);
-			Debug.Log("Flyback: " + isFlyBack);
-			Debug.Log("InvertedGrav: " + invertedGravity);
-			Debug.Log("ObjetFound: " + objectFound);
 			float distance = agent.transform.position.x - master.transform.position.x;
 			if (distance > 0)
 			{
