@@ -1001,6 +1001,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transformToRotate: {fileID: 8057869120999739180}
+  rotateLeft: 1
+  rotateRight: 0
 --- !u!114 &6751812157307714735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1517,6 +1519,74 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6101668023830887433}
     m_Modifications:
+    - target: {fileID: 628736306913138785, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.x
+      value: 19.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736307010631337, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.x
+      value: 19.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736307010631337, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.y
+      value: 10.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736307155538194, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.x
+      value: 19.206057
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736307155538194, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.y
+      value: 28.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736307693167524, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.x
+      value: 19.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736307693167524, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.y
+      value: 10.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736308047916630, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.x
+      value: 19.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736308047916630, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.y
+      value: 10.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736308247281124, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.x
+      value: 19.206057
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736308247281124, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.y
+      value: 28.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736308578530245, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.x
+      value: 19.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736308578530245, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.y
+      value: 10.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736308936793092, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.x
+      value: 19.206057
+      objectReference: {fileID: 0}
+    - target: {fileID: 628736308936793092, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.y
+      value: 28.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5995188093248952893, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.x
+      value: 19.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5995188093248952893, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
+      propertyPath: m_Size.y
+      value: 10.8
+      objectReference: {fileID: 0}
     - target: {fileID: 8617195729142894024, guid: 0ee40dbcfe537c84593e204b15a0c240, type: 3}
       propertyPath: m_Name
       value: Main Camera

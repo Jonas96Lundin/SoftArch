@@ -15,6 +15,7 @@ public class FollowState : State
 
 		this.agent.speed = followSpeed;
 		this.agent.stoppingDistance = 4.0f;
+
 		followMaster = true; 
 	}
 
@@ -22,26 +23,19 @@ public class FollowState : State
 	{
 		MasterInput();
 
-		if (!moveOnFixedUpdate)
+		if (!isFalling && !moveOnFixedUpdate)
 		{
-			SetTargetPosition();
+			if (CheckProximity())
+				AvoidPlayer();
+			else
+				SetTargetPosition();
 		}
 	}
 
 	protected override void SetTargetPosition()
 	{
-		if (distanceToMaster > 8)
-		{
-			agent.speed = catchUpSpeed;
-			targetPos = master.transform.position;
-			moveOnFixedUpdate = true;
-		}
-		else if (distanceToMaster > 4)
-		{
-			agent.speed = followSpeed;
-			targetPos = master.transform.position;
-			moveOnFixedUpdate = true;
-		}
+		targetPos = master.transform.position;
+		moveOnFixedUpdate = true;
 	}
 
 	protected override void MasterInput()
@@ -62,6 +56,7 @@ public class FollowState : State
 		}
 		else if (Input.GetKeyDown("h"))
 		{
+			followMaster = false;
 			MoveToHoldPosition();
 			_context.TransitionTo(new HoldState(agent, master, moveToIndicator));
 		}
@@ -69,25 +64,11 @@ public class FollowState : State
 
 	public override void HandleProximityTrigger(Collider other)
 	{
-		if (isFalling)
-		{
-			LookForLand(other);
-		}
-		else if (other.tag == "Player")
-		{
-			float distance = agent.transform.position.x - master.transform.position.x;
-			if (distance > 0)
-			{
-				targetPos = new Vector3(master.transform.position.x + avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
-			}
-			else
-			{
-				targetPos = new Vector3(master.transform.position.x - avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
-			}
-			agent.speed = catchUpSpeed;
-			moveOnFixedUpdate = true;
-		}
-		else if (other.tag == "InteractableObject" && !objectFound)
+		//if (isFalling)
+		//{
+		//	LookForLand(other);
+		//}
+		/*else */if (other.tag == "InteractableObject" && !objectFound)
 		{
 			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);
 			targetPos = objectPos;

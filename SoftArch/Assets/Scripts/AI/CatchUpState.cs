@@ -15,6 +15,7 @@ public class CatchUpState : State
 
 		this.agent.speed = catchUpSpeed;
 		this.agent.stoppingDistance = 4.0f;
+
 	}
 	public override void UpdateState()
 	{
@@ -62,24 +63,10 @@ public class CatchUpState : State
 
 	public override void HandleProximityTrigger(Collider other)
 	{
-		if (isFalling)
-		{
-			LookForLand(other);
-		}
-		else if (other.tag == "Player")
-		{
-			float distance = agent.transform.position.x - master.transform.position.x;
-			if (distance > 0)
-			{
-				targetPos = new Vector3(master.transform.position.x + avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
-			}
-			else
-			{
-				targetPos = new Vector3(master.transform.position.x - avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
-			}
-			agent.speed = catchUpSpeed;
-			moveOnFixedUpdate = true;
-		}
+		//if (isFalling)
+		//{
+		//	LookForLand(other);
+		//}
 		else if (other.tag == "InteractableObject" && !objectFound)
 		{
 			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);

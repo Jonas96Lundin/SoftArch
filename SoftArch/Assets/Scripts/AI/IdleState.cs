@@ -14,31 +14,42 @@ public class IdleState : State
 		this.moveToIndicator = moveToIndicator;
 
 		this.agent.speed = idleSpeed;
+		this.agent.stoppingDistance = 4.0f;
 
 		targetPos = agent.transform.position;
 		timeToChange = attentionSpan;
-		this.agent.stoppingDistance = 4.0f;
+		moveOnFixedUpdate = true;
 	}
 
 	public override void UpdateState()
 	{
 		MasterInput();
-
-		if (distanceToMaster > 30)
+		if (!isFalling)
 		{
-			_context.TransitionTo(new CatchUpState(agent, master, moveToIndicator));
-			return;
-		}
-
-		if (!moveOnFixedUpdate && distanceToMaster > 4)
-		{
-			if (timeToChange <= 0)
+			if (distanceToMaster > 30)
 			{
-				SetTargetPosition();
-				timeToChange = attentionSpan;
+				_context.TransitionTo(new CatchUpState(agent, master, moveToIndicator));
+				return;
 			}
-			timeToChange -= Time.deltaTime;
+
+			if (!moveOnFixedUpdate)
+			{
+				if (CheckProximity())
+				{
+					AvoidPlayer();
+				}
+				else if (distanceToMaster > avoidOffset)
+				{
+					if (timeToChange <= 0)
+					{
+						SetTargetPosition();
+						timeToChange = attentionSpan;
+					}
+					timeToChange -= Time.deltaTime;
+				}
+			}
 		}
+		
 	}
 
 	protected override void SetTargetPosition()
@@ -87,25 +98,11 @@ public class IdleState : State
 
 	public override void HandleProximityTrigger(Collider other)
 	{
-		if (isFalling)
-		{
-			LookForLand(other);
-		}
-		else if (other.tag == "Player")
-		{
-			float distance = agent.transform.position.x - master.transform.position.x;
-			if (distance > 0)
-			{
-				targetPos = new Vector3(master.transform.position.x + avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
-			}
-			else
-			{
-				targetPos = new Vector3(master.transform.position.x - avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
-			}
-			agent.speed = catchUpSpeed;
-			moveOnFixedUpdate = true;
-		}
-		else if (other.tag == "InteractableObject" && !objectFound)
+		//if (isFalling)
+		//{
+		//	LookForLand(other);
+		//}
+		/*else */if (other.tag == "InteractableObject" && !objectFound)
 		{
 			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);
 			targetPos = objectPos;

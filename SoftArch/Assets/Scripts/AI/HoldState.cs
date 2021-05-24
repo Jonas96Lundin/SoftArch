@@ -13,29 +13,33 @@ public class HoldState : State
 		this.master = master;
 		this.moveToIndicator = moveToIndicator;
 
-		this.agent.stoppingDistance = 0.0f;
+		this.agent.stoppingDistance = 0.5f;
 		this.agent.speed = followSpeed;
 
 		isHolding = false;
-		moveOnFixedUpdate = true;
 		timeToChange = 0.0f;
+		moveOnFixedUpdate = true;
 	}
 
 	public override void UpdateState()
 	{
 		MasterInput();
 
-		if (!isHolding && !moveOnFixedUpdate)
+
+		if (!isFalling && !isHolding && !moveOnFixedUpdate)
 		{
-			//Vector3 endPos = new Vector3(agent.pathEndPosition.x, agent.transform.position.y, agent.pathEndPosition.z);
-			if (agent.transform.position == new Vector3(agent.pathEndPosition.x, agent.transform.position.y, agent.pathEndPosition.z))
+			Vector3 endPos = new Vector3(agent.pathEndPosition.x, agent.transform.position.y, agent.pathEndPosition.z);
+			if (Vector3.Distance(agent.transform.position, endPos) < 1.0f)
 			{
 				moveToIndicator.enabled = false;
 				isHolding = true;
 			}
 			else
 			{
-				if(timeToChange < indicationTime)
+				if (Vector3.Distance(agent.transform.position, endPos) > 2.0f && CheckProximity())
+					agent.velocity = new Vector3(agent.velocity.x, agent.velocity.y, agent.velocity.z - 0.1f);
+
+				if (timeToChange < indicationTime)
 				{
 					if (moveToIndicator.spotAngle <= 1)
 						spotlightAngleChange = Mathf.Abs(spotlightAngleChange);
@@ -48,11 +52,12 @@ public class HoldState : State
 				else
 				{
 					moveToIndicator.enabled = false;
-					isHolding = true;
 					timeToChange = 0;
 				}
 			}
 		}
+
+
 	}
 
 
@@ -84,21 +89,21 @@ public class HoldState : State
 
 	public override void HandleProximityTrigger(Collider other)
 	{
-		if (isFalling)
-		{
-			LookForLand(other);
-		}
-		else if (!isHolding && other.tag == "Player")
-		{
-			Debug.Log("HEJ");
-			if (other.transform.position.z >= 0)
-			{
-				agent.velocity = new Vector3(agent.velocity.x, agent.velocity.y, agent.velocity.z - 3.5f);
-			}
-			else
-			{
-				agent.velocity = new Vector3(agent.velocity.x, agent.velocity.y, agent.velocity.z - 3.5f);
-			}
-		}
+		//if (isFalling)
+		//{
+		//	LookForLand(other);
+		//}
+		//else if (!isHolding && other.tag == "Player")
+		//{
+		//	Debug.Log("HEJ");
+		//	if (other.transform.position.z >= 0)
+		//	{
+		//		agent.velocity = new Vector3(agent.velocity.x, agent.velocity.y, agent.velocity.z - 2.5f);
+		//	}
+		//	else
+		//	{
+		//		agent.velocity = new Vector3(agent.velocity.x, agent.velocity.y, agent.velocity.z - 2.5f);
+		//	}
+		//}
 	}
 }
