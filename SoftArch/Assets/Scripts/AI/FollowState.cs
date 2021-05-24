@@ -14,61 +14,52 @@ public class FollowState : State
 		this.moveToIndicator = moveToIndicator;
 
 		this.agent.speed = followSpeed;
-		this.agent.stoppingDistance = 4.0f;
+		this.agent.stoppingDistance = followDistance;
 
-		followMaster = true; 
+		followMaster = true;
 	}
 
 	public override void UpdateState()
 	{
-		MasterInput();
-
-		if (!isFalling && !moveOnFixedUpdate)
+		if (!GravityFlip() && !isFalling)
 		{
-			if (CheckProximity())
-				AvoidPlayer();
-			else
-				SetTargetPosition();
+			MasterInput();
+
+			if (!isFalling && !moveOnFixedUpdate)
+			{
+				if (distanceToMaster <= rayDistance && LookForPlayer())
+					AvoidPlayer();
+				else
+					SetTargetPosition();
+			}
 		}
 	}
 
-	protected override void SetTargetPosition()
+	private void SetTargetPosition()
 	{
 		targetPos = master.transform.position;
 		moveOnFixedUpdate = true;
 	}
 
+
 	protected override void MasterInput()
 	{
-		if (Input.GetButtonDown("Fire2") || Input.GetKeyDown("g"))
+		if (Input.GetKeyDown("f"))
 		{
 			followMaster = false;
-			GravityFlip();
-		}
-		else if (Input.GetKeyDown("f"))
-		{
-			followMaster = false;
-
-			if (distanceToMaster < 10)
-				_context.TransitionTo(new IdleState(agent, master, moveToIndicator));
-			else
-				_context.TransitionTo(new CatchUpState(agent, master, moveToIndicator));
+			_context.TransitionTo(new IdleState(agent, master, moveToIndicator));
 		}
 		else if (Input.GetKeyDown("h"))
 		{
 			followMaster = false;
-			MoveToHoldPosition();
+			SetHoldPosition();
 			_context.TransitionTo(new HoldState(agent, master, moveToIndicator));
 		}
 	}
 
 	public override void HandleProximityTrigger(Collider other)
 	{
-		//if (isFalling)
-		//{
-		//	LookForLand(other);
-		//}
-		/*else */if (other.tag == "InteractableObject" && !objectFound)
+		if (other.tag == "InteractableObject")
 		{
 			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);
 			targetPos = objectPos;
@@ -76,19 +67,3 @@ public class FollowState : State
 		}
 	}
 }
-
-
-
-
-
-
-//objectFound = false;
-//followMaster = false;
-//isHolding = false;
-//Debug.Log("Follow: " + followMaster);
-//Debug.Log("Jumping: " + isJumping);
-//Debug.Log("Falling: " + isFalling);
-//Debug.Log("Holing: " + isHolding);
-//Debug.Log("Flyback: " + isFlyBack);
-//Debug.Log("InvertedGrav: " + invertedGravity);
-//Debug.Log("ObjetFound: " + objectFound);

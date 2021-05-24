@@ -14,20 +14,22 @@ public class CatchUpState : State
 		this.moveToIndicator = moveToIndicator;
 
 		this.agent.speed = catchUpSpeed;
-		this.agent.stoppingDistance = 4.0f;
-
+		this.agent.stoppingDistance = followDistance;
 	}
 	public override void UpdateState()
 	{
-		MasterInput();
-
-		if (!moveOnFixedUpdate)
+		if (!GravityFlip() || !isFalling)
 		{
-			SetTargetPosition();
+			MasterInput();
+
+			if (!moveOnFixedUpdate)
+			{
+				SetTargetPosition();
+			}
 		}
 	}
 
-	protected override void SetTargetPosition()
+	private void SetTargetPosition()
 	{
 		if (distanceToMaster > 8)
 		{
@@ -46,28 +48,21 @@ public class CatchUpState : State
 
 	protected override void MasterInput()
 	{
-		if (Input.GetButtonDown("Fire2") || Input.GetKeyDown("g"))
-		{
-			GravityFlip();
-		}
-		else if (Input.GetKeyDown("f"))
+		if (Input.GetKeyDown("f"))
 		{
 			_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
 		}
 		else if (Input.GetKeyDown("h"))
 		{
-			MoveToHoldPosition();
+			followMaster = false;
+			SetHoldPosition();
 			_context.TransitionTo(new HoldState(agent, master, moveToIndicator));
 		}
 	}
 
 	public override void HandleProximityTrigger(Collider other)
 	{
-		//if (isFalling)
-		//{
-		//	LookForLand(other);
-		//}
-		else if (other.tag == "InteractableObject" && !objectFound)
+		if (other.tag == "InteractableObject")
 		{
 			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);
 			targetPos = objectPos;

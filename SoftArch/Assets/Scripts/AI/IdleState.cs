@@ -14,7 +14,7 @@ public class IdleState : State
 		this.moveToIndicator = moveToIndicator;
 
 		this.agent.speed = idleSpeed;
-		this.agent.stoppingDistance = 4.0f;
+		this.agent.stoppingDistance = followDistance;
 
 		targetPos = agent.transform.position;
 		timeToChange = attentionSpan;
@@ -23,9 +23,10 @@ public class IdleState : State
 
 	public override void UpdateState()
 	{
-		MasterInput();
-		if (!isFalling)
+		if (!GravityFlip() || !isFalling)
 		{
+			MasterInput();
+
 			if (distanceToMaster > 30)
 			{
 				_context.TransitionTo(new CatchUpState(agent, master, moveToIndicator));
@@ -34,7 +35,7 @@ public class IdleState : State
 
 			if (!moveOnFixedUpdate)
 			{
-				if (CheckProximity())
+				if (distanceToMaster <= rayDistance && LookForPlayer())
 				{
 					AvoidPlayer();
 				}
@@ -52,7 +53,7 @@ public class IdleState : State
 		
 	}
 
-	protected override void SetTargetPosition()
+	private void SetTargetPosition()
 	{
 		while (true)
 		{
@@ -81,28 +82,20 @@ public class IdleState : State
 
 	protected override void MasterInput()
 	{
-		if (Input.GetButtonDown("Fire2") || Input.GetKeyDown("g"))
-		{
-			GravityFlip();
-		}
-		else if (Input.GetKeyDown("f"))
+		if (Input.GetKeyDown("f"))
 		{
 			_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
 		}
 		else if (Input.GetKeyDown("h"))
 		{
-			MoveToHoldPosition();
+			SetHoldPosition();
 			_context.TransitionTo(new HoldState(agent, master, moveToIndicator));
 		}
 	}
 
 	public override void HandleProximityTrigger(Collider other)
 	{
-		//if (isFalling)
-		//{
-		//	LookForLand(other);
-		//}
-		/*else */if (other.tag == "InteractableObject" && !objectFound)
+		if (other.tag == "InteractableObject")
 		{
 			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);
 			targetPos = objectPos;

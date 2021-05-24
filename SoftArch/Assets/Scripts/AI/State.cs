@@ -14,7 +14,7 @@ public abstract class State
 	//NavMesh
 	protected NavMeshAgent agent;
 	protected Vector3 startPos = new Vector3(-2.0f, 1.5f, 0.0f);
-	protected static Vector3 targetPos;
+	protected static Vector3 targetPos, objectPos, holdPos;
 	protected Light moveToIndicator;
 	//Tweakable Const variables
 	protected const float idleSpeed = 2.0f,
@@ -26,29 +26,29 @@ public abstract class State
 						  followDistance = 4.0f,
 						  flyBackDistance = 20.0f,
 						  avoidOffset = 4.0f,
-						  rayDistance = 3.0f,
+						  rayDistance = 2.0f,
+						  longRayDistance = 4.0f,
 						  attentionSpan = 1.0f,
 						  indicationTime = 3.0f;
 	//Static variables
-	protected static Vector3 objectPos;
 	protected static float timeToChange = 1.0f,
 						   spotlightAngleChange = 2.8f,
 						   distanceToMaster;
 	protected static bool followMaster,
-						  isJumping,
+						  //isJumping,
 						  isFalling,
 						  isHolding,
 						  isFlyBack,
 						  invertedGravity,
-						  objectFound;
-	//Other Variables
-	protected static bool jumpOnFixedUpdate = false,
-				   moveOnFixedUpdate = false;
+						  objectFound,
+						  jumpOnFixedUpdate = false,
+						  moveOnFixedUpdate = false;
 
 	//RayCast
 	protected static int groundMask = 1 << 3;
 	protected static int playerMask = 1 << 6;
 	protected static int ground180Mask = 1 << 8;
+	protected static int InterestingObjects = 1 << 9;
 
 	protected static int comboMask = groundMask | playerMask;
 
@@ -61,8 +61,8 @@ public abstract class State
 		_context = context;
 	}
 
+	//Update
 	public abstract void UpdateState();
-	protected abstract void SetTargetPosition();
 	public void FixedUpdateState()
 	{
 		distanceToMaster = Vector3.Distance(agent.transform.position, master.transform.position);
@@ -110,6 +110,7 @@ public abstract class State
 		}
 	}
 
+	//protected abstract void SetTargetPosition();
 	private void LookAt(Vector3 target)
 	{
 		if (invertedGravity)
@@ -123,97 +124,67 @@ public abstract class State
 	}
 
 	//On Ground
-	protected bool CheckProximity()
+	protected bool LookForPlayer()
 	{
 		//Forward
 		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, rayDistance, playerMask))
 		{
-			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * hit.distance, Color.green);
 			return true;
 		}
-		else
-		{
-			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * rayDistance, Color.red);
-		}
-
-		//Back
-		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.back), out hit, rayDistance, playerMask))
-		{
-			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.back) * hit.distance, Color.green);
-			return true;
-		}
-		else
-		{
-			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.back) * rayDistance, Color.red);
-		}
-
-		//Right
-		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.right), out hit, rayDistance, playerMask))
-		{
-			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * hit.distance, Color.green);
-			return true;
-		}
-		else
-		{
-			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * rayDistance, Color.red);
-		}
-
-		//Left
-		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.left), out hit, rayDistance, playerMask))
-		{
-			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.left) * hit.distance, Color.green);
-			return true;
-		}
-		else
-		{
-			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.left) * rayDistance, Color.red);
-		}
-
-		
 		//Forward/Right
-		if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized, out hit, rayDistance, playerMask))
+		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized, out hit, rayDistance, playerMask))
 		{
-			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * hit.distance, Color.green);
 			return true;
 		}
-		else
-		{
-			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
-		}
-
 		//Forwerd/Left
-		if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized, out hit, rayDistance, playerMask))
+		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized, out hit, rayDistance, playerMask))
 		{
-			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * hit.distance, Color.green);
 			return true;
 		}
-		else
+		//Right
+		else if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.right), out hit, rayDistance, playerMask))
 		{
-			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			return true;
 		}
-
+		//Left
+		else if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.left), out hit, rayDistance, playerMask))
+		{
+			return true;
+		}
 		//Back/Right
-		if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized, out hit, rayDistance, playerMask))
+		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized, out hit, rayDistance, playerMask))
 		{
-			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized * hit.distance, Color.green);
 			return true;
 		}
-		else
-		{
-			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
-		}
-
 		//Back/Left
-		if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized, out hit, rayDistance, playerMask))
+		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized, out hit, rayDistance, playerMask))
 		{
-			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized * hit.distance, Color.green);
 			return true;
 		}
-		else
+				//Back
+		else if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.back), out hit, rayDistance, playerMask))
 		{
-			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			return true;
 		}
-
+		return false;
+	}
+	protected bool LookForPlayerFar()
+	{
+		//Forward
+		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, longRayDistance, playerMask))
+		{
+			return true;
+		}
+		//Forward/Right
+		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized, out hit, longRayDistance, playerMask))
+		{
+			return true;
+		}
+		//Forwerd/Left
+		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized, out hit, longRayDistance, playerMask))
+		{
+			return true;
+		}
 		return false;
 	}
 	protected void AvoidPlayer()
@@ -227,24 +198,26 @@ public abstract class State
 		{
 			targetPos = new Vector3(master.transform.position.x - avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
 		}
-		//agent.speed = catchUpSpeed;
 		moveOnFixedUpdate = true;
 	}
-	protected void FoundObject(Collider interestingObject)
-	{
-		objectPos = new Vector3(interestingObject.transform.position.x, agent.transform.position.y, interestingObject.transform.position.z);
-		targetPos = objectPos;
-		_context.TransitionTo(new FoundObjectState(agent, master, moveToIndicator));
-	}
-	protected void MoveToHoldPosition()
+
+
+	//protected void FoundObject(Collider interestingObject)
+	//{
+	//	objectPos = new Vector3(interestingObject.transform.position.x, agent.transform.position.y, interestingObject.transform.position.z);
+	//	targetPos = objectPos;
+	//	_context.TransitionTo(new FoundObjectState(agent, master, moveToIndicator));
+	//}
+	protected void SetHoldPosition()
 	{
 		moveToIndicator.spotAngle = 1.0f;
 
 		if (master.GetComponent<RotationManager>().rotateLeft)
-			targetPos = new Vector3(master.transform.position.x - avoidOffset, master.transform.position.y, master.transform.position.z);
+			holdPos = new Vector3(master.transform.position.x - avoidOffset, master.transform.position.y, master.transform.position.z);
 		else
-			targetPos = new Vector3(master.transform.position.x + avoidOffset, master.transform.position.y, master.transform.position.z);
+			holdPos = new Vector3(master.transform.position.x + avoidOffset, master.transform.position.y, master.transform.position.z);
 
+		targetPos = holdPos;
 		moveToIndicator.transform.position = targetPos + Vector3.up * 3.5f;
 		moveToIndicator.enabled = true;
 	}
@@ -374,17 +347,21 @@ public abstract class State
 
 	//Player Input
 	protected abstract void MasterInput();
-	protected void GravityFlip()
+	protected bool GravityFlip()
 	{
-		moveOnFixedUpdate = false;
-		agent.enabled = false;
-		invertedGravity = !invertedGravity;
-		agent.GetComponent<Rigidbody>().isKinematic = false;
-		agent.GetComponent<Rigidbody>().useGravity = true;
-		agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
-		isFalling = true;
+		if (Input.GetButtonDown("Fire2") || Input.GetKeyDown("g"))
+		{
+			moveOnFixedUpdate = false;
+			agent.enabled = false;
+			invertedGravity = !invertedGravity;
+			agent.GetComponent<Rigidbody>().isKinematic = false;
+			agent.GetComponent<Rigidbody>().useGravity = true;
+			agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
+			isFalling = true;
+		}
+		return isFalling;
 	}
-	
+
 	//Colliders
 	public abstract void HandleProximityTrigger(Collider other);
 	public void HandleCollision(Collision collision)
@@ -410,7 +387,7 @@ public abstract class State
 		}
 		else
 		{
-			if(collision.collider.tag == "Player")
+			if (collision.collider.tag == "Player")
 			{
 
 			}

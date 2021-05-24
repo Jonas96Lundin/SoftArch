@@ -13,7 +13,7 @@ public class FoundObjectState : State
 		this.master = master;
 		this.moveToIndicator = moveToIndicator;
 
-		this.agent.stoppingDistance = 4.0f;
+		this.agent.stoppingDistance = 1.5f;
 		this.agent.speed = followSpeed;
 
 		objectFound = true;
@@ -22,36 +22,47 @@ public class FoundObjectState : State
 
 	public override void UpdateState()
 	{
+		if (GravityFlip())
+		{
+			objectFound = false;
+			_context.TransitionTo(new IdleState(agent, master, moveToIndicator));
+		}
+
 		MasterInput();
 
-		if (followMaster)
+		if (followMaster && distanceToMaster > 12)
 		{
-			if (distanceToMaster > 12)
-			{
-				objectFound = false;
-				isHolding = false;
-				_context.TransitionTo(new CatchUpState(agent, master, moveToIndicator));
-			}
+			objectFound = false;
+			_context.TransitionTo(new CatchUpState(agent, master, moveToIndicator));
 		}
 		else if (distanceToMaster > 50)
 		{
 			objectFound = false;
-			isHolding = false;
 			_context.TransitionTo(new CatchUpState(agent, master, moveToIndicator));
 		}
+
+		if (!moveOnFixedUpdate)
+		{
+			if (distanceToMaster <= rayDistance && LookForPlayer())
+			{
+				agent.stoppingDistance = followDistance;
+				AvoidPlayer();
+			}
+			else if (targetPos != objectPos && distanceToMaster > 6)
+			{
+				targetPos = objectPos;
+				agent.stoppingDistance = 1.5f;
+				moveOnFixedUpdate = true;
+			}
+		}
+		
 	}
 
-	protected override void SetTargetPosition() { }
+	//protected override void SetTargetPosition() { }
 
 	protected override void MasterInput()
 	{
-		if (Input.GetButtonDown("Fire2") || Input.GetKeyDown("g"))
-		{
-			objectFound = false;
-			GravityFlip();
-			_context.TransitionTo(new IdleState(agent, master, moveToIndicator));
-		}
-		else if (Input.GetKeyDown("f"))
+		if (Input.GetKeyDown("f"))
 		{
 			objectFound = false;
 			_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
@@ -59,30 +70,11 @@ public class FoundObjectState : State
 		else if (Input.GetKeyDown("h"))
 		{
 			objectFound = false;
-			MoveToHoldPosition();
+			followMaster = false;
+			SetHoldPosition();
 			_context.TransitionTo(new HoldState(agent, master, moveToIndicator));
 		}
 	}
 
-	public override void HandleProximityTrigger(Collider other)
-	{
-		if (isFalling)
-		{
-			LookForLand(other);
-		}
-		else if (other.tag == "Player")
-		{
-			float distance = agent.transform.position.x - master.transform.position.x;
-			if (distance > 0)
-			{
-				targetPos = new Vector3(master.transform.position.x + avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
-			}
-			else
-			{
-				targetPos = new Vector3(master.transform.position.x - avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
-			}
-			agent.speed = catchUpSpeed;
-			moveOnFixedUpdate = true;
-		}
-	}
+	public override void HandleProximityTrigger(Collider other) { }
 }

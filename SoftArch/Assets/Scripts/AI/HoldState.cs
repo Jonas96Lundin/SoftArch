@@ -17,62 +17,70 @@ public class HoldState : State
 		this.agent.speed = followSpeed;
 
 		isHolding = false;
-		timeToChange = 0.0f;
+		timeToChange = indicationTime;
 		moveOnFixedUpdate = true;
 	}
 
 	public override void UpdateState()
 	{
+		if (GravityFlip())
+		{
+			moveToIndicator.enabled = false;
+			isHolding = false;
+			_context.TransitionTo(new IdleState(agent, master, moveToIndicator));
+		}
+
 		MasterInput();
 
+		if (!isHolding && !moveOnFixedUpdate)
+		{			
+			if (Vector3.Distance(agent.transform.position, holdPos) > 1.0f)
+			{
+				//Move Around Player
+				if (distanceToMaster <= longRayDistance && Mathf.Abs(agent.transform.position.x - holdPos.x) > 2.0f && LookForPlayerFar())
+				{
+					targetPos = master.transform.position + Vector3.back * avoidOffset;
+					moveOnFixedUpdate = true;
+				}
+				else if (targetPos != holdPos)
+				{
+					targetPos = holdPos;
+					moveOnFixedUpdate = true;
+				}
+					
+				//Flashing MoveTo Indicator
+				if (moveToIndicator.enabled)
+				{
+					if (timeToChange > 0)
+					{
+						if (moveToIndicator.spotAngle <= 1)
+							spotlightAngleChange = Mathf.Abs(spotlightAngleChange);
+						else if (moveToIndicator.spotAngle >= 40)
+							spotlightAngleChange = -spotlightAngleChange;
 
-		if (!isFalling && !isHolding && !moveOnFixedUpdate)
-		{
-			Vector3 endPos = new Vector3(agent.pathEndPosition.x, agent.transform.position.y, agent.pathEndPosition.z);
-			if (Vector3.Distance(agent.transform.position, endPos) < 1.0f)
+						moveToIndicator.spotAngle += spotlightAngleChange;
+						timeToChange -= Time.deltaTime;
+					}
+					else
+					{
+						moveToIndicator.enabled = false;
+					}
+				}
+			}
+			else
 			{
 				moveToIndicator.enabled = false;
 				isHolding = true;
 			}
-			else
-			{
-				if (Vector3.Distance(agent.transform.position, endPos) > 2.0f && CheckProximity())
-					agent.velocity = new Vector3(agent.velocity.x, agent.velocity.y, agent.velocity.z - 0.1f);
-
-				if (timeToChange < indicationTime)
-				{
-					if (moveToIndicator.spotAngle <= 1)
-						spotlightAngleChange = Mathf.Abs(spotlightAngleChange);
-					else if (moveToIndicator.spotAngle >= 40)
-						spotlightAngleChange = -spotlightAngleChange;
-
-					moveToIndicator.spotAngle += spotlightAngleChange;
-					timeToChange += Time.deltaTime;
-				}
-				else
-				{
-					moveToIndicator.enabled = false;
-					timeToChange = 0;
-				}
-			}
 		}
-
-
 	}
 
-
-	protected override void SetTargetPosition() { }
+	
+	//protected override void SetTargetPosition() { }
 
 	protected override void MasterInput()
 	{
-		if (Input.GetButtonDown("Fire2") || Input.GetKeyDown("g"))
-		{
-			moveToIndicator.enabled = false;
-			isHolding = false;
-			GravityFlip();
-			_context.TransitionTo(new IdleState(agent, master, moveToIndicator));
-		}
-		else if (Input.GetKeyDown("f"))
+		if (Input.GetKeyDown("f"))
 		{
 			moveToIndicator.enabled = false;
 			isHolding = false;
@@ -80,30 +88,22 @@ public class HoldState : State
 		}
 		else if (Input.GetKeyDown("h"))
 		{
-			MoveToHoldPosition();
-			isHolding = false;
-			timeToChange = 0;
+			SetHoldPosition();
 			moveOnFixedUpdate = true;
+			isHolding = false;
+			timeToChange = indicationTime;
 		}
 	}
 
 	public override void HandleProximityTrigger(Collider other)
 	{
-		//if (isFalling)
-		//{
-		//	LookForLand(other);
-		//}
-		//else if (!isHolding && other.tag == "Player")
-		//{
-		//	Debug.Log("HEJ");
-		//	if (other.transform.position.z >= 0)
-		//	{
-		//		agent.velocity = new Vector3(agent.velocity.x, agent.velocity.y, agent.velocity.z - 2.5f);
-		//	}
-		//	else
-		//	{
-		//		agent.velocity = new Vector3(agent.velocity.x, agent.velocity.y, agent.velocity.z - 2.5f);
-		//	}
-		//}
+		if (Vector3.Distance(agent.transform.position, targetPos) < avoidOffset && other.tag == "InteractableObject")
+		{
+			isHolding = false;
+			moveToIndicator.enabled = false;
+			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);
+			targetPos = objectPos;
+			_context.TransitionTo(new FoundObjectState(agent, master, moveToIndicator));
+		}
 	}
 }
