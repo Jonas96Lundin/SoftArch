@@ -1,5 +1,5 @@
-﻿using UnityEngine.Audio;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Audio;
 /// <summary>
 /// Create a sound that can be played through AudioManager.
 /// Created by: Jonas
@@ -24,6 +24,8 @@ public class Sound {
 	public bool loop = false;
 
 	public AudioMixerGroup mixerGroup;
+
+	public bool isSFX;
 
 	[HideInInspector]
 	public AudioSource source;

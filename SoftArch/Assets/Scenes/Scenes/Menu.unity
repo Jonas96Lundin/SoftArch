@@ -2026,6 +2026,34 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1901792128}
     m_Modifications:
+    - target: {fileID: 1207485039549357489, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1207485039549357489, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490051810476208824, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490051810476208824, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490051810476208824, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3010890868116361969, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 979966529}
+    - target: {fileID: 3010890868116361969, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetVolumeFBX
+      objectReference: {fileID: 0}
     - target: {fileID: 6515521463622657603, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -2118,10 +2146,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: OptionsMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 6515521463996291118, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6515521464176570189, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 979966529}
+    - target: {fileID: 6515521464425712749, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6515521464425712749, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6515521464425712749, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6515521465120397837, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6515521465120397837, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b9e2d3745e73b9419944d09c0548f19, type: 3}
 --- !u!1001 &9124056823984483509
@@ -2131,6 +2183,66 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[0].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: e1d184b7e12db7c4daaced316dd3a586, type: 3}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[0].name
+      value: MenuMusic
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[1].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 0b6fb79513a174e45a4edb318d84bb90, type: 3}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[1].loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[1].name
+      value: LevelMusic
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[2].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 3878d487ab710974eb9ca882cd844b36, type: 3}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[2].loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[2].name
+      value: DystopicSound
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[1].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[2].isFBX
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[2].isSFX
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[2].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[1].volume
+      value: 0.026
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124056824427575028, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
+      propertyPath: sounds.Array.data[2].volume
+      value: 0.057
+      objectReference: {fileID: 0}
     - target: {fileID: 9124056824427575029, guid: f6c05c100dcb09445a93de98889bc5c2, type: 3}
       propertyPath: m_Name
       value: AudioManager
