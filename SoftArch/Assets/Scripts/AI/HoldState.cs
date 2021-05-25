@@ -37,7 +37,7 @@ public class HoldState : State
 			if (Vector3.Distance(agent.transform.position, holdPos) > 1.0f)
 			{
 				//Move Around Player
-				if (distanceToMaster <= longRayDistance && Mathf.Abs(agent.transform.position.x - holdPos.x) > 2.0f && LookForPlayerFar())
+				if (distanceToMaster <= longRayDistance && Mathf.Abs(agent.transform.position.x - holdPos.x) > 2.0f && LookForPlayerAhead())
 				{
 					targetPos = master.transform.position + Vector3.back * avoidOffset;
 					moveOnFixedUpdate = true;
@@ -74,9 +74,6 @@ public class HoldState : State
 			}
 		}
 	}
-
-	
-	//protected override void SetTargetPosition() { }
 
 	protected override void MasterInput()
 	{

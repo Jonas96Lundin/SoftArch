@@ -43,7 +43,7 @@ public class FoundObjectState : State
 
 		if (!moveOnFixedUpdate)
 		{
-			if (distanceToMaster <= rayDistance && LookForPlayer())
+			if (distanceToMaster <= rayDistance && LookForPlayerAround())
 			{
 				agent.stoppingDistance = followDistance;
 				AvoidPlayer();
@@ -57,8 +57,6 @@ public class FoundObjectState : State
 		}
 		
 	}
-
-	//protected override void SetTargetPosition() { }
 
 	protected override void MasterInput()
 	{

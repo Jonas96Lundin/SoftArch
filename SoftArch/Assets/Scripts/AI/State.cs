@@ -28,6 +28,7 @@ public abstract class State
 						  avoidOffset = 4.0f,
 						  rayDistance = 2.0f,
 						  longRayDistance = 4.0f,
+						  fallRayDistance = 20.0f,
 						  attentionSpan = 1.0f,
 						  indicationTime = 3.0f;
 	//Static variables
@@ -35,7 +36,6 @@ public abstract class State
 						   spotlightAngleChange = 2.8f,
 						   distanceToMaster;
 	protected static bool followMaster,
-						  //isJumping,
 						  isFalling,
 						  isHolding,
 						  isFlyBack,
@@ -110,7 +110,6 @@ public abstract class State
 		}
 	}
 
-	//protected abstract void SetTargetPosition();
 	private void LookAt(Vector3 target)
 	{
 		if (invertedGravity)
@@ -124,7 +123,7 @@ public abstract class State
 	}
 
 	//On Ground
-	protected bool LookForPlayer()
+	protected bool LookForPlayerAround()
 	{
 		//Forward
 		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, rayDistance, playerMask))
@@ -168,7 +167,7 @@ public abstract class State
 		}
 		return false;
 	}
-	protected bool LookForPlayerFar()
+	protected bool LookForPlayerAhead()
 	{
 		//Forward
 		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, longRayDistance, playerMask))
@@ -201,13 +200,6 @@ public abstract class State
 		moveOnFixedUpdate = true;
 	}
 
-
-	//protected void FoundObject(Collider interestingObject)
-	//{
-	//	objectPos = new Vector3(interestingObject.transform.position.x, agent.transform.position.y, interestingObject.transform.position.z);
-	//	targetPos = objectPos;
-	//	_context.TransitionTo(new FoundObjectState(agent, master, moveToIndicator));
-	//}
 	protected void SetHoldPosition()
 	{
 		moveToIndicator.spotAngle = 1.0f;
@@ -260,79 +252,78 @@ public abstract class State
 	{
 		if (!invertedGravity)
 		{
-			if (Physics.Raycast(agent.transform.position, Vector3.down, out hit, rayDistance, groundMask))
+			if (Physics.Raycast(agent.transform.position, Vector3.down, out hit, fallRayDistance, groundMask))
 			{
 				Debug.DrawRay(agent.transform.position, Vector3.down * hit.distance, Color.green);
+				Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.right).normalized * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.left).normalized * fallRayDistance, Color.red);
+			}
+			else if (Physics.Raycast(agent.transform.position, (Vector3.down + Vector3.right).normalized, out hit, fallRayDistance, groundMask))
+			{
+				Debug.DrawRay(agent.transform.position, Vector3.down * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.right).normalized * hit.distance, Color.green);
+				Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.left).normalized * fallRayDistance, Color.red);
+
+				agent.GetComponent<Rigidbody>().AddForce(Vector3.right, ForceMode.Force);
+			}
+			else if (Physics.Raycast(agent.transform.position, (Vector3.down + Vector3.left).normalized, out hit, fallRayDistance, groundMask))
+			{
+				Debug.DrawRay(agent.transform.position, Vector3.down * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.right).normalized * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.left).normalized * hit.distance, Color.green);
+
+				agent.GetComponent<Rigidbody>().AddForce(Vector3.left, ForceMode.Force);
 			}
 			else
 			{
-				Debug.DrawRay(agent.transform.position, Vector3.down * rayDistance, Color.red);
-
-				if (Physics.Raycast(agent.transform.position, (Vector3.down + Vector3.right).normalized, out hit, rayDistance, groundMask))
-				{
-					Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.right).normalized * hit.distance, Color.green);
-					agent.GetComponent<Rigidbody>().AddForce(Vector3.right, ForceMode.Force);
-				}
-				else
-				{
-					Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.right).normalized * rayDistance, Color.red);
-
-					if (Physics.Raycast(agent.transform.position, (Vector3.down + Vector3.left).normalized, out hit, rayDistance, groundMask))
-					{
-						Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.left).normalized * hit.distance, Color.green);
-						agent.GetComponent<Rigidbody>().AddForce(Vector3.left, ForceMode.Force);
-					}
-					else
-					{
-						Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.left).normalized * rayDistance, Color.red);
-					}
-				}
+				Debug.DrawRay(agent.transform.position, Vector3.down * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.right).normalized * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.down + Vector3.left).normalized * fallRayDistance, Color.red);
 			}
 		}
 		else
 		{
-			if (Physics.Raycast(agent.transform.position, Vector3.up, out hit, rayDistance, ground180Mask))
+			if (Physics.Raycast(agent.transform.position, Vector3.up, out hit, fallRayDistance, groundMask))
 			{
 				Debug.DrawRay(agent.transform.position, Vector3.up * hit.distance, Color.green);
+				Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.right).normalized * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.left).normalized * fallRayDistance, Color.red);
+			}
+			else if (Physics.Raycast(agent.transform.position, (Vector3.up + Vector3.right).normalized, out hit, fallRayDistance, groundMask))
+			{
+				Debug.DrawRay(agent.transform.position, Vector3.up * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.right).normalized * hit.distance, Color.green);
+				Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.left).normalized * fallRayDistance, Color.red);
+
+				agent.GetComponent<Rigidbody>().AddForce(Vector3.right * followSpeed, ForceMode.Force);
+			}
+			else if (Physics.Raycast(agent.transform.position, (Vector3.up + Vector3.left).normalized, out hit, fallRayDistance, groundMask))
+			{
+				Debug.DrawRay(agent.transform.position, Vector3.up * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.right).normalized * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.left).normalized * hit.distance, Color.green);
+
+				agent.GetComponent<Rigidbody>().AddForce(Vector3.left * followSpeed, ForceMode.Force);
 			}
 			else
 			{
-				Debug.DrawRay(agent.transform.position, Vector3.up * rayDistance, Color.red);
-
-				if (Physics.Raycast(agent.transform.position, (Vector3.up + Vector3.right).normalized, out hit, rayDistance, ground180Mask))
-				{
-					Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.right).normalized * hit.distance, Color.green);
-					agent.GetComponent<Rigidbody>().AddForce(Vector3.right, ForceMode.Force);
-
-				}
-				else
-				{
-					Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.right).normalized * rayDistance, Color.red);
-
-					if (Physics.Raycast(agent.transform.position, (Vector3.up + Vector3.left).normalized, out hit, rayDistance, ground180Mask))
-					{
-						Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.left).normalized * hit.distance, Color.green);
-						agent.GetComponent<Rigidbody>().AddForce(Vector3.left, ForceMode.Force);
-					}
-					else
-					{
-						Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.left).normalized * rayDistance, Color.red);
-					}
-				}
+				Debug.DrawRay(agent.transform.position, Vector3.up * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.right).normalized * fallRayDistance, Color.red);
+				Debug.DrawRay(agent.transform.position, (Vector3.up + Vector3.left).normalized * fallRayDistance, Color.red);
 			}
 		}
 	}
-	protected void LookForLand(Collider potentialLand)
-	{
-		if (!invertedGravity && potentialLand.tag != "WalkableObject")
-		{
-			agent.GetComponent<Rigidbody>().AddForce(-(potentialLand.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
-		}
-		else if (invertedGravity && potentialLand.tag != "WalkableObject180")
-		{
-			agent.GetComponent<Rigidbody>().AddForce(-(potentialLand.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
-		}
-	}
+	//protected void LookForLand(Collider potentialLand)
+	//{
+	//	if (!invertedGravity && potentialLand.tag != "WalkableObject")
+	//	{
+	//		agent.GetComponent<Rigidbody>().AddForce(-(potentialLand.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
+	//	}
+	//	else if (invertedGravity && potentialLand.tag != "WalkableObject180")
+	//	{
+	//		agent.GetComponent<Rigidbody>().AddForce(-(potentialLand.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
+	//	}
+	//}
 	protected void FlyBack(Vector3 flyBackPos)
 	{
 		if (Vector3.Distance(agent.transform.position, flyBackPos) > followDistance)

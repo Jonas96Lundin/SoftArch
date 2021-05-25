@@ -35,7 +35,7 @@ public class IdleState : State
 
 			if (!moveOnFixedUpdate)
 			{
-				if (distanceToMaster <= rayDistance && LookForPlayer())
+				if (distanceToMaster <= rayDistance && LookForPlayerAround())
 				{
 					AvoidPlayer();
 				}
@@ -78,7 +78,6 @@ public class IdleState : State
 			}
 		}
 	}
-
 
 	protected override void MasterInput()
 	{

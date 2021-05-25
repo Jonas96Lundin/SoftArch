@@ -13,8 +13,8 @@ public class ParallaxBackground : MonoBehaviour
 	private bool infiniteHorizontal;
 	[SerializeField]
 	private bool infiniteVertical;
-	[SerializeField]
-	private bool object3D;
+	//[SerializeField]
+	//private bool object3D;
 
 	private Transform cameraTransform;
 	private Vector3 lastCameraPos;
@@ -29,6 +29,7 @@ public class ParallaxBackground : MonoBehaviour
 		cameraTransform = Camera.main.transform;
 		Camera camera = Camera.main;
 		lastCameraPos = cameraTransform.position;
+
 
 		////Canvas
 		//if (object3D)
@@ -47,21 +48,25 @@ public class ParallaxBackground : MonoBehaviour
 		//}
 
 		//Regular and Canvas
-		if (object3D)
-		{
-			Transform rectTransform = GetComponent<Transform>();
-			textureSizeX = rectTransform.localScale.x / 4;
-			textureSizeY = rectTransform.localScale.y / 4;
+		//if (object3D)
+		//{
+		//	Transform rectTransform = GetComponent<Transform>();
+		//	textureSizeX = rectTransform.localScale.x / 4;
+		//	textureSizeY = rectTransform.localScale.y / 4;
 
-		}
-		else
-		{
-			Sprite sprite = GetComponent<SpriteRenderer>().sprite;
-			Texture2D texture = sprite.texture;
-			textureSizeX = (texture.width / sprite.pixelsPerUnit) * transform.localScale.x;
-			textureSizeY = (texture.height / sprite.pixelsPerUnit) * transform.localScale.y;
-		}
+		//}
+		//else
+		//{
+		//	Sprite sprite = GetComponent<SpriteRenderer>().sprite;
+		//	Texture2D texture = sprite.texture;
+		//	textureSizeX = (texture.width / sprite.pixelsPerUnit) * transform.localScale.x;
+		//	textureSizeY = (texture.height / sprite.pixelsPerUnit) * transform.localScale.y;
+		//}
 
+		Sprite sprite = GetComponent<SpriteRenderer>().sprite;
+		Texture2D texture = sprite.texture;
+		textureSizeX = (texture.width / sprite.pixelsPerUnit) * transform.localScale.x;
+		textureSizeY = (texture.height / sprite.pixelsPerUnit) * transform.localScale.y;
 	}
 
 	void LateUpdate()

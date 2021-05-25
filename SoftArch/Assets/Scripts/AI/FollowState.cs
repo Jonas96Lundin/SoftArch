@@ -27,7 +27,7 @@ public class FollowState : State
 
 			if (!isFalling && !moveOnFixedUpdate)
 			{
-				if (distanceToMaster <= rayDistance && LookForPlayer())
+				if (distanceToMaster <= rayDistance && LookForPlayerAround())
 					AvoidPlayer();
 				else
 					SetTargetPosition();
@@ -40,7 +40,6 @@ public class FollowState : State
 		targetPos = master.transform.position;
 		moveOnFixedUpdate = true;
 	}
-
 
 	protected override void MasterInput()
 	{
