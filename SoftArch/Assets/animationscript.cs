@@ -13,6 +13,8 @@ using UnityEngine;
 //TO DO: 
 // Use isOnGround to play run-animation if on slope, currently playing jump-animation
 
+// Fix ai idle animations 
+
 //Clean up
 
 public class animationscript : MonoBehaviour
@@ -94,15 +96,15 @@ public class animationscript : MonoBehaviour
                     //animator.Play("ai_turning_to_sad");
 
                     //Play happy
-                    if (animator.GetBool("isFacingRight"))
-                    {
-                        animator.Play("ai_turning_to_sad");
-                        //animator.Play("ai_happy_mirrored");
-                    }
-                    else
-                    {
-                        animator.Play("ai_turning_to_sad");
-                    }
+                    //if (animator.GetBool("isFacingRight"))
+                    //{
+                    //    animator.Play("ai_turning_to_happy");
+                    //    //animator.Play("ai_happy_mirrored");
+                    //}
+                    //else
+                    //{
+                    //    animator.Play("ai_turning_to_happy");
+                    //}
                     
                     secondsIdle = 0.0f;
                     break;
