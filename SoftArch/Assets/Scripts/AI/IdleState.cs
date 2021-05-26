@@ -7,37 +7,53 @@ using UnityEngine.AI;
 /// </summary>
 public class IdleState : State
 {
-	public IdleState(NavMeshAgent agent, CharController master)
+	public IdleState(NavMeshAgent agent, CharController master, Light moveToIndicator)
 	{
 		this.agent = agent;
 		this.master = master;
+		this.moveToIndicator = moveToIndicator;
 
 		this.agent.speed = idleSpeed;
+		this.agent.stoppingDistance = followDistance;
+
 		targetPos = agent.transform.position;
+		timeToChange = attentionSpan;
+		moveOnFixedUpdate = true;
 	}
 
 	public override void UpdateState()
 	{
-		MasterInput();
-
-		if (distanceToMaster > 30)
+		if (!GravityFlip() || !isFalling)
 		{
-			_context.TransitionTo(new CatchUpState(agent, master));
-			return;
-		}
+			MasterInput();
 
-		if (!moveOnFixedUpdate && distanceToMaster > 4)
-		{
-			if (timeToChange <= 0)
+			if (distanceToMaster > 30)
 			{
-				SetTargetPosition();
-				timeToChange = attentionSpan;
+				_context.TransitionTo(new CatchUpState(agent, master, moveToIndicator));
+				return;
 			}
-			timeToChange -= Time.deltaTime;
+
+			if (!moveOnFixedUpdate)
+			{
+				if (distanceToMaster <= rayDistance && LookForPlayerAround())
+				{
+					AvoidPlayer();
+				}
+				else if (distanceToMaster > followDistance)
+				{
+					if (timeToChange <= 0)
+					{
+						SetTargetPosition();
+						timeToChange = attentionSpan;
+					}
+					timeToChange -= Time.deltaTime;
+				}
+			}
 		}
+		
 	}
 
-	public override void SetTargetPosition()
+	private void SetTargetPosition()
 	{
 		while (true)
 		{
@@ -45,14 +61,14 @@ public class IdleState : State
 			if (newDir == 0)
 			{
 				targetPos = new Vector3(agent.transform.position.x - 10, agent.transform.position.y, 0);
-				agent.speed = idleSpeed;
+				agent.stoppingDistance = 0.5f;
 				moveOnFixedUpdate = true;
 				break;
 			}
 			else if (newDir == 1)
 			{
 				targetPos = new Vector3(agent.transform.position.x + 10, agent.transform.position.y, 0);
-				agent.speed = idleSpeed;
+				agent.stoppingDistance = 0.5f;
 				moveOnFixedUpdate = true;
 				break;
 			}
@@ -60,6 +76,29 @@ public class IdleState : State
 			{
 				break;
 			}
+		}
+	}
+
+	protected override void MasterInput()
+	{
+		if (Input.GetKeyDown("f"))
+		{
+			_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
+		}
+		else if (Input.GetKeyDown("h"))
+		{
+			SetHoldPosition();
+			_context.TransitionTo(new HoldState(agent, master, moveToIndicator));
+		}
+	}
+
+	public override void HandleProximityTrigger(Collider other)
+	{
+		if (other.tag == "InteractableObject")
+		{
+			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);
+			targetPos = objectPos;
+			_context.TransitionTo(new FoundObjectState(agent, master, moveToIndicator));
 		}
 	}
 }

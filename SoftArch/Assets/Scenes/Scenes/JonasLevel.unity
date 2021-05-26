@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18242653, g: 0.22813736, b: 0.3072742, a: 1}
+  m_IndirectSpecularColor: {r: 0.18242615, g: 0.2281365, b: 0.30727303, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6642,6 +6642,130 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1892030216, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668508128336, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.x
+      value: 96
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668674812568, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.x
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668674812568, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_DrawMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668674812569, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: parallaxEffect.x
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668674812571, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668674812571, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668674812571, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668674812571, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668819639586, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668819639586, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -23.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668819639587, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.x
+      value: 96
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668819639587, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.y
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979668819639587, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_SpriteTileMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669355155349, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.x
+      value: 96
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669355155349, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.y
+      value: 54
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669777138276, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: parallaxEffect.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669777138276, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: parallaxEffect.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669777138276, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: infiniteHorizontal
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669777138278, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669777138278, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669777138278, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669777138279, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_DrawMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669841236436, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669841236437, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.x
+      value: 96
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979669841236437, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.y
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979670307758068, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.x
+      value: 96
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979670307758068, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.y
+      value: 54
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979670381519955, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.x
+      value: 96
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979670381519955, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.y
+      value: 10.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166979670531649589, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
+      propertyPath: m_Size.x
+      value: 96
+      objectReference: {fileID: 0}
     - target: {fileID: 6101668023830887433, guid: ae8c7e8e45973164aa6aec8871f28ac4, type: 3}
       propertyPath: m_RootOrder
       value: 1

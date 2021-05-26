@@ -22,11 +22,11 @@ public class AlwaysVisible : MonoBehaviour
 
             if (hit.collider.gameObject.tag == "Sphere")
             {
-                target.transform.localScale = new Vector3(0, 0, 0);
+                target.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
             }
             else
             {
-                target.transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+                target.transform.localScale = new Vector3(/*1.3f, 1.3f, 1.3f*/0.065f, 0.065f, 0.065f);
             }
         }
     }

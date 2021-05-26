@@ -7,37 +7,63 @@ using UnityEngine.AI;
 /// </summary>
 public class FollowState : State
 {
-	public FollowState(NavMeshAgent agent, CharController master)
+	public FollowState(NavMeshAgent agent, CharController master, Light moveToIndicator)
 	{
 		this.agent = agent;
 		this.master = master;
+		this.moveToIndicator = moveToIndicator;
 
 		this.agent.speed = followSpeed;
+		this.agent.stoppingDistance = followDistance;
+
+		followMaster = true;
 	}
 
 	public override void UpdateState()
 	{
-		MasterInput();
-
-		if (!moveOnFixedUpdate)
+		if (!GravityFlip() && !isFalling)
 		{
-			SetTargetPosition();
+			MasterInput();
+
+			if (!isFalling && !moveOnFixedUpdate)
+			{
+				if (distanceToMaster <= rayDistance && LookForPlayerAround())
+					AvoidPlayer();
+				else
+					SetTargetPosition();
+			}
 		}
 	}
 
-	public override void SetTargetPosition()
+	private void SetTargetPosition()
 	{
-		if (distanceToMaster > 8)
+		targetPos = master.transform.position;
+		agent.stoppingDistance = followDistance;
+		moveOnFixedUpdate = true;
+	}
+
+	protected override void MasterInput()
+	{
+		if (Input.GetKeyDown("f"))
 		{
-			agent.speed = catchUpSpeed;
-			targetPos = master.transform.position;
-			moveOnFixedUpdate = true;
+			followMaster = false;
+			_context.TransitionTo(new IdleState(agent, master, moveToIndicator));
 		}
-		else if (distanceToMaster > 4)
+		else if (Input.GetKeyDown("h"))
 		{
-			agent.speed = followSpeed;
-			targetPos = master.transform.position;
-			moveOnFixedUpdate = true;
+			followMaster = false;
+			SetHoldPosition();
+			_context.TransitionTo(new HoldState(agent, master, moveToIndicator));
+		}
+	}
+
+	public override void HandleProximityTrigger(Collider other)
+	{
+		if (other.tag == "InteractableObject")
+		{
+			objectPos = new Vector3(other.transform.position.x, agent.transform.position.y, other.transform.position.z);
+			targetPos = objectPos;
+			_context.TransitionTo(new FoundObjectState(agent, master, moveToIndicator));
 		}
 	}
 }

@@ -11,13 +11,15 @@ public class AI : MonoBehaviour
     private NavMeshAgent agent;
     [SerializeField]
     private CharController master;
+    [SerializeField]
+    private Light moveToIndicator;
 
     private Context context;
 
 
     void Start()
     {
-        context = new Context(new IdleState(agent, master/*, attentionSpan, idleSpeed, catchUpSpeed*/));
+        context = new Context(new IdleState(agent, master, moveToIndicator/*, attentionSpan, idleSpeed, catchUpSpeed*/));
     }
 
 
@@ -29,15 +31,14 @@ public class AI : MonoBehaviour
     {
         context.FixedUpdateContext();
     }
-	
 
-	private void OnCollisionEnter(Collision collision)
+
+    private void OnTriggerEnter(Collider other)
+    {
+        context.HandleProximityTrigger(other);
+    }
+    private void OnCollisionEnter(Collision collision)
 	{
 		context.HandleCollision(collision);
 	}
-	private void OnTriggerEnter(Collider other)
-	{
-        context.HandleProximityTrigger(other);
-
-    }
 }

@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Container
+  m_Name: RedContainer
   m_Shader: {fileID: 4800000, guid: bf1824bd099e51a4e88767308042b639, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4

@@ -31,12 +31,13 @@ public class Context
     }
 
 
+    public void HandleProximityTrigger(Collider other)
+    {
+        _state.HandleProximityTrigger(other);
+    }
     public void HandleCollision(Collision collision)
 	{
         _state.HandleCollision(collision);
     }
-    public void HandleProximityTrigger(Collider other)
-	{
-        _state.HandleProximityTrigger(other);
-    }
+
 }

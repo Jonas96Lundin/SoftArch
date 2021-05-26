@@ -12,18 +12,24 @@ public class MainMenu : MonoBehaviour
     {
         //optionsMenu.SetActive(true);
         //optionsMenu.SetActive(false);
-        AudioManager.instance.Play("Music");
+        AudioManager.instance.Play("MenuMusic");
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void StartGame()
     {
-        SceneManager.LoadScene("Jonas", LoadSceneMode.Single);
+        SceneManager.LoadScene("JonasLevelNew", LoadSceneMode.Single);
+        AudioManager.instance.Stop("MenuMusic");
+        //AudioManager.instance.Play("LevelMusic");
+        AudioManager.instance.Play("DystopicSound");
+
+
     }
 
     public void QuitGame()
@@ -34,5 +40,9 @@ public class MainMenu : MonoBehaviour
     public void SetVolume(float volume)
     {
         AudioManager.instance.SetVolume(volume);
+    }
+    public void SetSFXVolume(float volume)
+    {
+        AudioManager.instance.SetVolumeSFX(volume);
     }
 }
