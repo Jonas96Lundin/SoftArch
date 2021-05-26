@@ -99,7 +99,7 @@ public class AudioManager : MonoBehaviour
     /// Method by; Jonas
     /// </summary>
     /// <param name="volume">Insert the volume as a float</param>
-    public void SetVolumeFBX(float volume)
+    public void SetVolumeSFX(float volume)
     {
         foreach (Sound s in sounds)
         {
