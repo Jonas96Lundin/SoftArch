@@ -39,7 +39,7 @@ public class IdleState : State
 				{
 					AvoidPlayer();
 				}
-				else if (distanceToMaster > avoidOffset)
+				else if (distanceToMaster > followDistance)
 				{
 					if (timeToChange <= 0)
 					{
@@ -61,14 +61,14 @@ public class IdleState : State
 			if (newDir == 0)
 			{
 				targetPos = new Vector3(agent.transform.position.x - 10, agent.transform.position.y, 0);
-				agent.speed = idleSpeed;
+				agent.stoppingDistance = 0.5f;
 				moveOnFixedUpdate = true;
 				break;
 			}
 			else if (newDir == 1)
 			{
 				targetPos = new Vector3(agent.transform.position.x + 10, agent.transform.position.y, 0);
-				agent.speed = idleSpeed;
+				agent.stoppingDistance = 0.5f;
 				moveOnFixedUpdate = true;
 				break;
 			}

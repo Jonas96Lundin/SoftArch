@@ -25,7 +25,7 @@ public abstract class State
 						  antiGravity = 2.0f * 9.82f,
 						  followDistance = 4.0f,
 						  flyBackDistance = 20.0f,
-						  avoidOffset = 4.0f,
+						  avoidOffset = 2.0f,
 						  rayDistance = 2.0f,
 						  longRayDistance = 4.0f,
 						  fallRayDistance = 20.0f,
@@ -45,10 +45,14 @@ public abstract class State
 						  moveOnFixedUpdate = false;
 
 	//RayCast
-	protected static int groundMask = 1 << 3;
-	protected static int playerMask = 1 << 6;
-	protected static int ground180Mask = 1 << 8;
-	protected static int InterestingObjects = 1 << 9;
+	protected const int playerMask = 1 << 6;
+	protected const int groundMask = 1 << 10;
+	protected const int ground180Mask = 1 << 11;
+	protected const int obstacle = 1 << 12;
+	protected static int InterestingObjects = 1 << 13;
+
+
+
 
 	protected static int comboMask = groundMask | playerMask;
 
@@ -128,41 +132,105 @@ public abstract class State
 		//Forward
 		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, rayDistance, playerMask))
 		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * hit.distance, Color.green);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.left) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.back) * rayDistance, Color.red);
 			return true;
 		}
 		//Forward/Right
 		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized, out hit, rayDistance, playerMask))
 		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * hit.distance, Color.green);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.left) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.back) * rayDistance, Color.red);
 			return true;
 		}
 		//Forwerd/Left
 		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized, out hit, rayDistance, playerMask))
 		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * hit.distance, Color.green);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.left) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.back) * rayDistance, Color.red);
 			return true;
 		}
 		//Right
 		else if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.right), out hit, rayDistance, playerMask))
 		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * hit.distance, Color.green);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.left) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.back) * rayDistance, Color.red);
 			return true;
 		}
 		//Left
 		else if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.left), out hit, rayDistance, playerMask))
 		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.left) * hit.distance, Color.green);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.back) * rayDistance, Color.red);
 			return true;
 		}
 		//Back/Right
 		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized, out hit, rayDistance, playerMask))
 		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.left) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized * hit.distance, Color.green);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.back) * rayDistance, Color.red);
 			return true;
 		}
 		//Back/Left
 		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized, out hit, rayDistance, playerMask))
 		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.left) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized * hit.distance, Color.green);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.back) * rayDistance, Color.red);
 			return true;
 		}
 				//Back
 		else if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.back), out hit, rayDistance, playerMask))
 		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.right) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.left) * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.back) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.back) * hit.distance, Color.green);
 			return true;
 		}
 		return false;
@@ -172,16 +240,25 @@ public abstract class State
 		//Forward
 		if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, longRayDistance, playerMask))
 		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * hit.distance, Color.green);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
 			return true;
 		}
 		//Forward/Right
 		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized, out hit, longRayDistance, playerMask))
 		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * longRayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * hit.distance, Color.green);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * rayDistance, Color.red);
 			return true;
 		}
 		//Forwerd/Left
 		else if (Physics.Raycast(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized, out hit, longRayDistance, playerMask))
 		{
+			Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * longRayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.right)).normalized * rayDistance, Color.red);
+			Debug.DrawRay(agent.transform.position, (agent.transform.TransformDirection(Vector3.forward) + agent.transform.TransformDirection(Vector3.left)).normalized * hit.distance, Color.green);
 			return true;
 		}
 		return false;
@@ -192,11 +269,14 @@ public abstract class State
 		if (distance > 0)
 		{
 			targetPos = new Vector3(master.transform.position.x + avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
+			//agent.velocity += (Vector3.right + Vector3.back).normalized * 0.3f;
 		}
 		else
 		{
 			targetPos = new Vector3(master.transform.position.x - avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
+			//agent.velocity += (Vector3.left + Vector3.back).normalized * 0.3f;
 		}
+		agent.stoppingDistance = 1.0f;
 		moveOnFixedUpdate = true;
 	}
 

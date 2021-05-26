@@ -38,6 +38,7 @@ public class FollowState : State
 	private void SetTargetPosition()
 	{
 		targetPos = master.transform.position;
+		agent.stoppingDistance = followDistance;
 		moveOnFixedUpdate = true;
 	}
 

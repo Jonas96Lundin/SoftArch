@@ -39,7 +39,7 @@ public class HoldState : State
 				//Move Around Player
 				if (distanceToMaster <= longRayDistance && Mathf.Abs(agent.transform.position.x - holdPos.x) > 2.0f && LookForPlayerAhead())
 				{
-					targetPos = master.transform.position + Vector3.back * avoidOffset;
+					targetPos = master.transform.position + Vector3.back * followDistance;
 					moveOnFixedUpdate = true;
 				}
 				else if (targetPos != holdPos)
