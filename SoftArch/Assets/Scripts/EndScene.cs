@@ -12,11 +12,6 @@ public class EndScene : MonoBehaviour
 
     float timeElapsed;
     float lerpDuration = 10;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
@@ -35,15 +30,5 @@ public class EndScene : MonoBehaviour
     public void BackToStartMenu()
     {
         SceneManager.LoadScene("Menu", LoadSceneMode.Single);
-    }
-
-    public void LoadEndScene()
-    {
-        SceneManager.LoadScene("EndScene", LoadSceneMode.Single);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        LoadEndScene();
     }
 }
