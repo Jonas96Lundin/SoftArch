@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
@@ -24,7 +25,8 @@ public class Checkpoint : MonoBehaviour
                 }
                 bool isFlipped = other.GetComponent<FlipGravity>().GetSetFlippedGravity;
                 int flipCount = other.GetComponent<PowerupCollector>().GetFlipAmount;
-                collector.AddCheckPoint(ref checkpointPosition, checkpointPriority, isFlipped, flipCount);
+                GameObject[] powerups = GameObject.FindGameObjectsWithTag("Powerup");
+                collector.AddCheckPoint(ref checkpointPosition, checkpointPriority, isFlipped, flipCount, ref powerups);
             }
         }
     }
