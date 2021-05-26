@@ -45,7 +45,7 @@ public class animationscript : MonoBehaviour
     [Tooltip("Amount of seconds the character has to be idle before playing the animation")]
     [Range(0.0f, 20.0f)]
     [SerializeField]
-    private float secondsIdleUntilWave = 10.0f; // Amount of seconds the character has to be idle before playing the animation
+    private float secondsIdleUntilWave = 10.0f; 
 
 
     // Start is called before the first frame update
@@ -56,8 +56,6 @@ public class animationscript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //isFacingRight = animator.GetBool("isFacingRight"); //
-
         moving = CheckMovement();
 
         UpdateParameters();
@@ -125,37 +123,23 @@ public class animationscript : MonoBehaviour
                 {
                     ChangeDirection();
                 }
-
                 break;
 
             case charType.ai:
 
                 vX = (float)Math.Round(aiAgent.velocity.x * 100f / 100f);
                 vY = (float)Math.Round(aiAgent.velocity.y * 100f / 100f);
-                // if needed change direction
 
                 // check where it's facing
-                if ((FacingRight() && vX < 0) || (!FacingRight() && vX > 0))                     // Fixa här
+                if ((FacingRight() && vX < 0) || (!FacingRight() && vX > 0))                    
                 {
                     ChangeDirection();
-                    //Debug.Log("AI facing right: " + FacingRight());
                 }
-                
                 break;
         }
 
         animator.SetFloat("VelocityX", vX);
         animator.SetFloat("VelocityY", vY);
-    }
-
-
-    // Might delete this as rotation now happens in Rotationscript instead
-    void FlipAnimation()
-    {
-        // switches the local scale to an inversion of itself 
-        Vector3 newScale = transform.localScale;
-        newScale.x *= -1;
-        transform.localScale = newScale;
     }
 
     bool CheckMovement()
@@ -182,8 +166,8 @@ public class animationscript : MonoBehaviour
                     return false;
                 }
         }
-        Debug.Log("No charType Selected");
-        return false;                       // ?
+        Debug.Log("No charType Selected"); // DEBUG
+        return false;                       
     }
 
     // switches the bool

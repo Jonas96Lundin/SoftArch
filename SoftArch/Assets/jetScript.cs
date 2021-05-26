@@ -2,16 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * By Tinea Larsson
+ */
+
 public class jetScript : MonoBehaviour
 {
-    public FlipGravity fg;
-    
-    public ParticleSystem ps;
+    [Tooltip("FlipGravity")]
+    [SerializeField]
+    private FlipGravity fg;
 
-    public GameObject thisObj;
+    [Tooltip("ParticleSystem to move")]
+    [SerializeField]
+    private ParticleSystem ps;
 
-    public enum charType { player, ai };
-    public charType thisCharType;
+    [Tooltip("Type of character")]
+    [SerializeField]
+    private GameObject thisObj;
+
+    enum charType { player, ai };
+
+    [Tooltip("Type of character")]
+    [SerializeField]
+    private charType thisCharType;
 
     float normalY, flippedY;
 
