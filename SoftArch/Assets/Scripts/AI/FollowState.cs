@@ -44,12 +44,12 @@ public class FollowState : State
 
 	protected override void MasterInput()
 	{
-		if (Input.GetKeyDown("f"))
-		{
-			followMaster = false;
-			_context.TransitionTo(new IdleState(agent, master, moveToIndicator));
-		}
-		else if (Input.GetKeyDown("h"))
+		//if (Input.GetKeyDown("f"))
+		//{
+		//	followMaster = false;
+		//	_context.TransitionTo(new IdleState(agent, master, moveToIndicator));
+		//}
+		/*else */if (Input.GetKeyDown("e"))
 		{
 			followMaster = false;
 			SetHoldPosition();

@@ -18,7 +18,7 @@ public class CatchUpState : State
 	}
 	public override void UpdateState()
 	{
-		if (!GravityFlip() || !isFalling)
+		if (!GravityFlip() && !isFalling)
 		{
 			MasterInput();
 
@@ -48,11 +48,11 @@ public class CatchUpState : State
 
 	protected override void MasterInput()
 	{
-		if (Input.GetKeyDown("f"))
-		{
-			_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
-		}
-		else if (Input.GetKeyDown("h"))
+		//if (Input.GetKeyDown("f"))
+		//{
+		//	_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
+		//}
+		/*else */if (Input.GetKeyDown("e"))
 		{
 			followMaster = false;
 			SetHoldPosition();

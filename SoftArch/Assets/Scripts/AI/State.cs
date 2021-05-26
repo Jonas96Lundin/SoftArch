@@ -393,22 +393,12 @@ public abstract class State
 			}
 		}
 	}
-	//protected void LookForLand(Collider potentialLand)
-	//{
-	//	if (!invertedGravity && potentialLand.tag != "WalkableObject")
-	//	{
-	//		agent.GetComponent<Rigidbody>().AddForce(-(potentialLand.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
-	//	}
-	//	else if (invertedGravity && potentialLand.tag != "WalkableObject180")
-	//	{
-	//		agent.GetComponent<Rigidbody>().AddForce(-(potentialLand.transform.position - agent.transform.position).normalized * catchUpSpeed, ForceMode.Force);
-	//	}
-	//}
 	protected void FlyBack(Vector3 flyBackPos)
 	{
 		if (Vector3.Distance(agent.transform.position, flyBackPos) > followDistance)
 		{
-			agent.GetComponent<Rigidbody>().AddForce((flyBackPos - agent.transform.position).normalized * flyBackSpeed, ForceMode.Force);
+			//agent.GetComponent<Rigidbody>().AddForce((flyBackPos - agent.transform.position).normalized * flyBackSpeed, ForceMode.Force);
+			agent.GetComponent<Rigidbody>().AddForce((master.transform.position - agent.transform.position).normalized * flyBackSpeed, ForceMode.Force);
 		}
 		else
 		{
@@ -420,11 +410,13 @@ public abstract class State
 	protected abstract void MasterInput();
 	protected bool GravityFlip()
 	{
-		if (Input.GetButtonDown("Fire2"))
+		if(master.GetComponent<FlipGravity>().GetSetFlippedGravity != invertedGravity)
+		//if (Input.GetButtonDown("Fire2"))
 		{
 			moveOnFixedUpdate = false;
 			agent.enabled = false;
 			invertedGravity = !invertedGravity;
+			agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
 			agent.GetComponent<Rigidbody>().isKinematic = false;
 			agent.GetComponent<Rigidbody>().useGravity = true;
 			//agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;

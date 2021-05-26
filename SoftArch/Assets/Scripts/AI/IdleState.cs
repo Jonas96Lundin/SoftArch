@@ -23,7 +23,7 @@ public class IdleState : State
 
 	public override void UpdateState()
 	{
-		if (!GravityFlip() || !isFalling)
+		if (!GravityFlip() && !isFalling)
 		{
 			MasterInput();
 

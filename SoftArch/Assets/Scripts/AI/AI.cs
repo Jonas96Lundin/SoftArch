@@ -19,7 +19,7 @@ public class AI : MonoBehaviour
 
     void Start()
     {
-        context = new Context(new IdleState(agent, master, moveToIndicator/*, attentionSpan, idleSpeed, catchUpSpeed*/));
+        context = new Context(new FollowState(agent, master, moveToIndicator));
     }
 
 
