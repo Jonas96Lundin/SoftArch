@@ -26,7 +26,7 @@ public class AlwaysVisible : MonoBehaviour
             }
             else
             {
-                target.transform.localScale = new Vector3(/*1.3f, 1.3f, 1.3f*/0.065f, 0.065f, 0.065f);
+                target.transform.localScale = new Vector3(0.085f, 0.085f, 0.085f);
             }
         }
     }
