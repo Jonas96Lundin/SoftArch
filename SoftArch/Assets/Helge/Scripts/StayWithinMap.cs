@@ -1,18 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class StayWithinMap : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] int minY = -25, maxY = 25;
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        if (transform.position.y < minY || transform.position.y > maxY)
+        {
+            if (TryGetComponent(out CheckpointCollector collector))
+            {
+                collector.ReturnToCheckpoint();
+            }
+        }
     }
 }
