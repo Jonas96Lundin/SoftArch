@@ -3,38 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : MonoBehaviour
+public class GameMenu : MonoBehaviour
 {
     [SerializeField]
     GameObject optionsMenu;
     // Start is called before the first frame update
     void Start()
     {
-        //optionsMenu.SetActive(true);
-        //optionsMenu.SetActive(false);
-        AudioManager.instance.Play("MenuMusic");
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (optionsMenu.activeInHierarchy)
+            {
+                optionsMenu.SetActive(false);
+            }
+            else
+            {
+                optionsMenu.SetActive(true);
+            }
+        }
     }
 
-    public void StartGame()
+    public void BackToStartMenu()
     {
-        SceneManager.LoadScene("JonasLevelNew", LoadSceneMode.Single);
-        AudioManager.instance.Stop("MenuMusic");
-        //AudioManager.instance.Play("LevelMusic");
-        AudioManager.instance.Play("DystopicSound");
-
-
-    }
-
-    public void QuitGame()
-    {
-        Application.Quit();
+        SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+        AudioManager.instance.Stop("DystopicSound");
     }
 
     public void SetVolume(float volume)
@@ -45,4 +43,5 @@ public class MainMenu : MonoBehaviour
     {
         AudioManager.instance.SetVolumeSFX(volume);
     }
+
 }
