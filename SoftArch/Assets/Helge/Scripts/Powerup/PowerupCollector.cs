@@ -24,6 +24,14 @@ public class PowerupCollector : MonoBehaviour
             ++flipAmount;
         }
     }
+
+    /// <summary>
+    /// Increases the amount of flips by one
+    /// </summary>
+    public void SetAmountOfFlips(int value)
+    {
+        flipAmount = value;
+    }
     /// <summary>
     /// Decrease the amount of flips by one
     /// </summary>
