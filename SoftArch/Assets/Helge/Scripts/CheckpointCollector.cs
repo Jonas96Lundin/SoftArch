@@ -13,11 +13,13 @@ public class CheckpointCollector : MonoBehaviour
      */
     int currentFlipCount = 0;
     bool currentIsGravityFlipped = false;
+    GameObject[] activePowerups = null;
     /*
      * Properties
      */
     public Vector2 GetCurrentCheckpoint => currentCheckpoint;
     public int GetCurrentPriority => currentPriority;
+
 
     /*
      * Methods
@@ -27,7 +29,7 @@ public class CheckpointCollector : MonoBehaviour
     /// </summary>
     /// <param name="point">Checkpoint position</param>
     /// <param name="priority">Checkpoint priority</param>
-    public void AddCheckPoint(ref Vector2 point, int priority, bool isGravityFlipped, int flipCount)
+    public void AddCheckPoint(ref Vector2 point, int priority, bool isGravityFlipped, int flipCount, ref GameObject[] powerupsActive)
     {
         if (priority >= currentPriority && !point.Equals(currentCheckpoint))
         {
@@ -35,6 +37,7 @@ public class CheckpointCollector : MonoBehaviour
             currentCheckpoint.Set(point.x, point.y);
             currentIsGravityFlipped = isGravityFlipped;
             currentFlipCount = flipCount;
+            activePowerups = powerupsActive;
         }
     }
 
@@ -44,7 +47,15 @@ public class CheckpointCollector : MonoBehaviour
         GetComponent<FlipGravity>().GetSetFlippedGravity = currentIsGravityFlipped;
         GetComponent<PowerupCollector>().SetAmountOfFlips(currentFlipCount);
         GetComponent<Rigidbody>().velocity = Vector3.zero;
+        foreach (GameObject go in activePowerups)
+        {
+            go.SetActive(true);
+        }
     }
 
-    private void Awake() => currentCheckpoint.Set(transform.position.x, transform.position.y);
+    private void Awake()
+    {
+        currentCheckpoint.Set(transform.position.x, transform.position.y);
+        activePowerups = GameObject.FindGameObjectsWithTag("Powerup");
+    }
 }

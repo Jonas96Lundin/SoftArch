@@ -24,11 +24,11 @@ public class AddCheckpointOffGround : MonoBehaviour
                         Vector2 checkpointPosition = transform.position;
                         bool isFlipped = GetComponent<FlipGravity>().GetSetFlippedGravity;
                         int flipCount = GetComponent<PowerupCollector>().GetFlipAmount;
-                        collector.AddCheckPoint(ref checkpointPosition, collector.GetCurrentPriority, isFlipped, flipCount);
+                        GameObject[] powerups = GameObject.FindGameObjectsWithTag("Powerup");
+                        collector.AddCheckPoint(ref checkpointPosition, collector.GetCurrentPriority, isFlipped, flipCount, ref powerups);
                     }
                 }
             }
         }
-        
     }
 }
