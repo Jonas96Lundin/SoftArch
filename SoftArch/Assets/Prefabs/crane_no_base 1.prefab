@@ -91,7 +91,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8233871422393678620}
   - component: {fileID: 9196522893567882689}
-  - component: {fileID: 3399948120071863571}
   m_Layer: 0
   m_Name: crane_no_base 1
   m_TagString: Untagged
@@ -126,21 +125,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3.4453888, y: 21.280697, z: 3.7466483}
-  m_Center: {x: -9.851137, y: -9.383528, z: 0.031199694}
---- !u!65 &3399948120071863571
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8723268809000198566}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 4.5591164, y: 2.445341, z: 5.0851874}
-  m_Center: {x: -9.902308, y: -21.278942, z: -0.024142504}
+  m_Size: {x: 3.4453888, y: 22.30027, z: 3.7466483}
+  m_Center: {x: -9.851137, y: -10.020136, z: 0.031199694}
 --- !u!1 &8940791559379712420
 GameObject:
   m_ObjectHideFlags: 0
