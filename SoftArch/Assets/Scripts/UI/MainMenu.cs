@@ -13,23 +13,14 @@ public class MainMenu : MonoBehaviour
         //optionsMenu.SetActive(true);
         //optionsMenu.SetActive(false);
         AudioManager.instance.Play("MenuMusic");
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void StartGame()
     {
-        SceneManager.LoadScene("JonasLevelNew", LoadSceneMode.Single);
+        SceneManager.LoadScene("LevelOne", LoadSceneMode.Single);
         AudioManager.instance.Stop("MenuMusic");
         //AudioManager.instance.Play("LevelMusic");
         AudioManager.instance.Play("DystopicSound");
-
-
     }
 
     public void QuitGame()

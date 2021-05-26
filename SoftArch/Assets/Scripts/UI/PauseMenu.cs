@@ -8,12 +8,11 @@ public class PauseMenu : MonoBehaviour
     [SerializeField]
     GameObject pauseMenu;
 
+    [SerializeField]
+    CharController cc;
+
     bool pauseMenuActive;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+   
 
     // Update is called once per frame
     void Update()
@@ -39,6 +38,9 @@ public class PauseMenu : MonoBehaviour
 
     public void ClosePauseMenu()
     {
+        cc.UnPause();
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.None;
         pauseMenuActive = false;
         pauseMenu.SetActive(pauseMenuActive);
     }
@@ -49,10 +51,14 @@ public class PauseMenu : MonoBehaviour
 
     public void BackToMain()
     {
+        Debug.Log("GOT CLICKED");
         SceneManager.LoadScene("Menu", LoadSceneMode.Single);
     }
     public void ActivatePauseMenu()
     {
+        cc.Pause();
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
         pauseMenuActive = !pauseMenuActive;
         pauseMenu.SetActive(pauseMenuActive);
     }

@@ -20,6 +20,9 @@ public class CharController : MonoBehaviour
     float maxVelocityHorizontal = defaultMaxVelocityHorizontal, // The character will not add force on movement if the absolute velocity would be higher than this variable
           forceJump = defaultForceJump;
 
+    [SerializeField]
+    bool paused;
+
     // If to add force variables
     bool jumpOnFixedUpdate = false,
          moveOnFixedUpdate = false,
@@ -97,67 +100,90 @@ public class CharController : MonoBehaviour
         addExtraForcesOnFixedUpdate = true;
         addedForces += force;
     }
+    /// <summary>
+    /// Pauses the game
+    /// </summary>
+    /// <param name="pause">Force to apply to Rigidbody</param>
+    public void Pause()
+    {
+        paused = true;
+    }
+    /// <summary>
+    /// UnPauses the game
+    /// </summary>
+    /// <param name="unpause">Force to apply to Rigidbody</param>
+    public void UnPause()
+    {
+        paused = false;
+    }
 
     /*
      * Update Methods
      */
     private void Update()
     {
-        //Jump
-        if (!jumpOnFixedUpdate)
+        if (!paused)
         {
-            if (sd.IsOnGround()) // Jump restrictions
+            //Jump
+            if (!jumpOnFixedUpdate)
             {
-                jumpOnFixedUpdate = Input.GetButtonDown("Jump"); // Jump on user input
+                if (sd.IsOnGround()) // Jump restrictions
+                {
+                    jumpOnFixedUpdate = Input.GetButtonDown("Jump"); // Jump on user input
+                }
             }
-        }
-        // Movement
-        float inputX = Input.GetAxisRaw("Horizontal"); // Read user input
-        if (!moveOnFixedUpdate && inputX != 0) // Move restrictions
-        {
-            moveOnFixedUpdate = true;
-            additionalVelocityHorizontal = inputX * maxVelocityHorizontal;
+            // Movement
+            float inputX = Input.GetAxisRaw("Horizontal"); // Read user input
+            if (!moveOnFixedUpdate && inputX != 0) // Move restrictions
+            {
+                moveOnFixedUpdate = true;
+                additionalVelocityHorizontal = inputX * maxVelocityHorizontal;
+            }
         }
     }
 
     void FixedUpdate()
     {
-        float movementAngle = sd.GetAngleOfSlope(additionalVelocityHorizontal > 0);
-        Vector2 velocityChange = Vector2.zero; // Velocity to add onto rigidbody
-        
-        // Movement
-        if (moveOnFixedUpdate)
+        if (!paused)
         {
-            GetMovement(ref velocityChange, rb.velocity, additionalVelocityHorizontal, movementAngle, maxVelocityHorizontal); // Add movement velocity
-            moveOnFixedUpdate = false;
-            additionalVelocityHorizontal = 0;
-        }
+            float movementAngle = sd.GetAngleOfSlope(additionalVelocityHorizontal > 0);
+            Vector2 velocityChange = Vector2.zero; // Velocity to add onto rigidbody
 
-        // Jump
-        jumpedLastFixedUpdate = false;
-        if (jumpOnFixedUpdate)
-        {
-            if (fg.GetSetFlippedGravity)
+            // Movement
+            if (moveOnFixedUpdate)
             {
-                velocityChange.y = Mathf.Min((-forceJump) - rb.velocity.y, 0); // Add jump velocity
+                GetMovement(ref velocityChange, rb.velocity, additionalVelocityHorizontal, movementAngle, maxVelocityHorizontal); // Add movement velocity
+                moveOnFixedUpdate = false;
+                additionalVelocityHorizontal = 0;
             }
-            else
-            {
-                velocityChange.y = Mathf.Max(forceJump - rb.velocity.y, 0); // Add jump velocity
-            }
-            jumpOnFixedUpdate = false;
-            jumpedLastFixedUpdate = true;
-        }
 
-        rb.AddForce(velocityChange, ForceMode.VelocityChange); // Add velocity change onto rigidbody
-        
-        // Extra forces
-        if (addExtraForcesOnFixedUpdate)
-        {
-            rb.AddForce(addedForces, ForceMode.Force); // Add force onto rigidbody
-            addedForces.Set(0, 0); // Clear added forces
-            addExtraForcesOnFixedUpdate = false;
+            // Jump
+            jumpedLastFixedUpdate = false;
+            if (jumpOnFixedUpdate)
+            {
+                if (fg.GetSetFlippedGravity)
+                {
+                    velocityChange.y = Mathf.Min((-forceJump) - rb.velocity.y, 0); // Add jump velocity
+                }
+                else
+                {
+                    velocityChange.y = Mathf.Max(forceJump - rb.velocity.y, 0); // Add jump velocity
+                }
+                jumpOnFixedUpdate = false;
+                jumpedLastFixedUpdate = true;
+            }
+
+            rb.AddForce(velocityChange, ForceMode.VelocityChange); // Add velocity change onto rigidbody
+
+            // Extra forces
+            if (addExtraForcesOnFixedUpdate)
+            {
+                rb.AddForce(addedForces, ForceMode.Force); // Add force onto rigidbody
+                addedForces.Set(0, 0); // Clear added forces
+                addExtraForcesOnFixedUpdate = false;
+            }
         }
+        
     }
 
     /*
