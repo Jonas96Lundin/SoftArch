@@ -420,7 +420,7 @@ public abstract class State
 	protected abstract void MasterInput();
 	protected bool GravityFlip()
 	{
-		if (Input.GetButtonDown("Fire2") || Input.GetKeyDown("g"))
+		if (Input.GetButtonDown("Fire2"))
 		{
 			moveOnFixedUpdate = false;
 			agent.enabled = false;
