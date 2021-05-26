@@ -26,9 +26,9 @@ public abstract class State
 						  followDistance = 4.0f,
 						  flyBackDistance = 20.0f,
 						  avoidOffset = 2.0f,
-						  rayDistance = 2.0f,
+						  rayDistance = 3.0f,
 						  longRayDistance = 4.0f,
-						  fallRayDistance = 20.0f,
+						  fallRayDistance = 10.0f,
 						  attentionSpan = 1.0f,
 						  indicationTime = 3.0f;
 	//Static variables
