@@ -268,12 +268,12 @@ public abstract class State
 		float distance = agent.transform.position.x - master.transform.position.x;
 		if (distance > 0)
 		{
-			targetPos = new Vector3(master.transform.position.x + avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
+			targetPos = new Vector3(master.transform.position.x + avoidOffset / 2, agent.transform.position.y, master.transform.position.z - avoidOffset);
 			//agent.velocity += (Vector3.right + Vector3.back).normalized * 0.3f;
 		}
 		else
 		{
-			targetPos = new Vector3(master.transform.position.x - avoidOffset, agent.transform.position.y, master.transform.position.z - avoidOffset);
+			targetPos = new Vector3(master.transform.position.x - avoidOffset / 2, agent.transform.position.y, master.transform.position.z - avoidOffset);
 			//agent.velocity += (Vector3.left + Vector3.back).normalized * 0.3f;
 		}
 		agent.stoppingDistance = 1.0f;
