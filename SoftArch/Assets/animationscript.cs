@@ -10,25 +10,44 @@ using UnityEngine;
  *
  */
 
- //TO DO: Clean up
+//TO DO: 
+// Use isOnGround to play run-animation if on slope, currently playing jump-animation
+
+// Fix ai idle animations 
+
+//Clean up
 
 public class animationscript : MonoBehaviour
 {
-    public float secondsIdle = 0.0f;
-    bool isFacingRight, gravityFlipped;
+    public float secondsIdle = 0.0f; // make private after debugging
+    bool gravityFlipped, moving;
 
-    public Rigidbody rb;
+    public enum charType { player, ai };
+
+    [Tooltip("Type of character")]
+    [SerializeField]
+    private charType thisCharType;
+
     Animator animator;
 
     float vX;
     float vY;
+
+    [Tooltip("Rigidbody")]
+    [SerializeField]
+    private Rigidbody rb;
+
+    [Tooltip("ai Agent")]
+    [SerializeField]
+    private UnityEngine.AI.NavMeshAgent aiAgent;
+    
 
     [Tooltip("Amount of seconds the character has to be idle before playing the animation")]
     [Range(0.0f, 20.0f)]
     [SerializeField]
     private float secondsIdleUntilWave = 10.0f; // Amount of seconds the character has to be idle before playing the animation
 
-  
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,8 +56,14 @@ public class animationscript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // if not moving with normal gravity
-        if (rb.velocity.x == 0 && rb.velocity.y == 0)
+        //isFacingRight = animator.GetBool("isFacingRight"); //
+
+        moving = CheckMovement();
+
+        UpdateParameters();
+
+        // if not moving
+        if (!moving)
         {
             secondsIdle += Time.deltaTime;
             secondsIdle = secondsIdle % 60;
@@ -51,43 +76,72 @@ public class animationscript : MonoBehaviour
         // if idle for the selected amount of seconds, play animation
         if (secondsIdle >= secondsIdleUntilWave)
         {
-            if (isFacingRight)
+            switch (thisCharType)
             {
-                animator.Play("wave_animation_mirrored"); //ÄNDRA
-            }
-            else
-            {
-                animator.Play("wave_animation");
-            }
+                case charType.player:
+                    if (animator.GetBool("isFacingRight"))
+                    {
+                        animator.Play("wave_animation_mirrored");
+                    }
+                    else
+                    {
+                        animator.Play("wave_animation");
+                    }
+                    secondsIdle = 0.0f;
+                    break;
 
-            secondsIdle = 0.0f;
+                case charType.ai:
+
+                    //Play sad 
+                    //animator.Play("ai_turning_to_sad");
+
+                    //Play happy
+                    //if (animator.GetBool("isFacingRight"))
+                    //{
+                    //    animator.Play("ai_turning_to_happy");
+                    //    //animator.Play("ai_happy_mirrored");
+                    //}
+                    //else
+                    //{
+                    //    animator.Play("ai_turning_to_happy");
+                    //}
+                    
+                    secondsIdle = 0.0f;
+                    break;
+            }
         }
-
-        UpdateParameters();
     }
 
     void UpdateParameters()
     {
-        if ((isFacingRight && rb.velocity.x < 0 )|| (!isFacingRight && rb.velocity.x > 0))
+        switch (thisCharType)
         {
-            ChangeDirection();
-        }
+            case charType.player:
 
-        // Set velocity X to always be positive, direction does not matter for selecting the correct animation
-        vX = (float)Math.Round(Mathf.Abs(rb.velocity.x) * 100f / 100f);
-        vY = (float)Math.Round(Mathf.Abs(rb.velocity.y) * 100f / 100f);
-       
-        // if gravity is currently set to normal
-        if (rb.useGravity)
-        {
-            gravityFlipped = false;
-            animator.SetBool("GravityFlipped", false);
-        }
-        else
-        {
-            gravityFlipped = true;
-            //Debug.Log((float)Math.Round(rb.velocity.y * 100f / 100f));
-            animator.SetBool("GravityFlipped", true);
+                vX = (float)Math.Round(rb.velocity.x * 100f / 100f);
+                vY = (float)Math.Round(rb.velocity.y * 100f / 100f);
+
+                if ((FacingRight() && vX < 0) || (!FacingRight() && vX > 0))
+                {
+                    ChangeDirection();
+                }
+
+                break;
+
+            case charType.ai:
+
+                vX = (float)Math.Round(aiAgent.velocity.x * 100f / 100f);
+                vY = (float)Math.Round(aiAgent.velocity.y * 100f / 100f);
+                // if needed change direction
+
+                // check where it's facing
+                if ((FacingRight() && vX < 0) || (!FacingRight() && vX > 0))                     // Fixa här
+                {
+                    ChangeDirection();
+                    //Debug.Log("AI facing right: " + FacingRight());
+                }
+                
+                break;
         }
 
         animator.SetFloat("VelocityX", vX);
@@ -104,9 +158,42 @@ public class animationscript : MonoBehaviour
         transform.localScale = newScale;
     }
 
-    void ChangeDirection() 
+    bool CheckMovement()
     {
-        // switches the bool
-        isFacingRight = !isFacingRight;
+        switch (thisCharType)
+        {
+            case charType.player:
+                if (rb.velocity.x != 0 && rb.velocity.y != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            case charType.ai:
+                if (aiAgent.velocity.x != 0 && aiAgent.velocity.y != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+        }
+        Debug.Log("No charType Selected");
+        return false;                       // ?
     }
+
+    // switches the bool
+    void ChangeDirection()
+    {
+        bool thisBool = animator.GetBool("isFacingRight");
+        animator.SetBool("isFacingRight", !thisBool);
+    }
+
+    // fetches bool form animator controller
+    bool FacingRight() { return animator.GetBool("isFacingRight"); }
+
 }
