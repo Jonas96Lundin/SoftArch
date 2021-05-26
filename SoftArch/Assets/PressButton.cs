@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class PressButton : MonoBehaviour
 {
+    [SerializeField]
+    GameObject leftDoor;
+    [SerializeField]
+    GameObject rightDoor;
+
     //private Material material;
     // Start is called before the first frame update
     void Start()
@@ -22,11 +27,16 @@ public class PressButton : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-        material.color = Color.green;
+        material.SetColor("_EmissionColor", Color.green * Mathf.Pow(2, 3 - 0.4169F));
+        leftDoor.transform.SetPositionAndRotation(leftDoor.transform.position, Quaternion.Euler(0, 0, 0));
+        rightDoor.transform.SetPositionAndRotation(rightDoor.transform.position, Quaternion.Euler(0, 0, 0));
+
     }
 
 	private void OnTriggerExit(Collider other)
 	{
-        material.color = Color.red;
+        material.SetColor("_EmissionColor", Color.red * Mathf.Pow(2, 3 - 0.4169F));
+        leftDoor.transform.SetPositionAndRotation(leftDoor.transform.position, Quaternion.Euler(0, 180, 0));
+        rightDoor.transform.SetPositionAndRotation(rightDoor.transform.position, Quaternion.Euler(0, 180, 0));
     }
 }
