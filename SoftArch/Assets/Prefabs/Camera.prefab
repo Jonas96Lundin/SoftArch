@@ -124,8 +124,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2244852322255430821}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -30, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalPosition: {x: 0, y: -36.3, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 2244852322612369585}
   m_RootOrder: 6
@@ -361,7 +361,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2244852322651309381}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -32.6, z: 0}
+  m_LocalPosition: {x: 0, y: -26.18, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 2244852322612369585}
@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.1, y: 0.2}
+  parallaxEffect: {x: 0.1, y: 0.4}
   infiniteHorizontal: 1
   infiniteVertical: 0
 --- !u!1 &2244852322801473247
@@ -460,7 +460,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2244852322801473247}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -10.57, z: 0}
+  m_LocalPosition: {x: 0, y: -5.2, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 2244852322612369585}
@@ -670,7 +670,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2244852323068412192}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -9.8, z: 0}
+  m_LocalPosition: {x: 0, y: -6.84, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 2244852322612369585}
@@ -717,7 +717,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -5
   m_Sprite: {fileID: 21300000, guid: 2e506351cf4425247912f7294748dbc3, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
@@ -739,7 +739,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.35, y: 0.6}
+  parallaxEffect: {x: 0.35, y: 0.7}
   infiniteHorizontal: 1
   infiniteVertical: 0
 --- !u!114 &4948830174540218981
@@ -781,8 +781,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2244852323344140367}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -23.5, z: 0}
-  m_LocalScale: {x: 3, y: 2, z: 1}
+  m_LocalPosition: {x: 0, y: -36.14, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 2244852322612369585}
   m_RootOrder: 8
@@ -1039,7 +1039,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -9
   m_Sprite: {fileID: 21300000, guid: e2ef6e55f5fb4d040b395fd59123ffd9, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.8352941}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
@@ -1061,7 +1061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 956c030ffc3514e40bf12deb369a8e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffect: {x: 0.1, y: 0.1}
+  parallaxEffect: {x: 0.2, y: 0.2}
   infiniteHorizontal: 1
   infiniteVertical: 1
 --- !u!114 &4948830174495343487
@@ -1076,7 +1076,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d92e09743389640a206f5bdebec713, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Movement: -0.21
+  Movement: -0.47
 --- !u!1 &6919926788289829607
 GameObject:
   m_ObjectHideFlags: 0
