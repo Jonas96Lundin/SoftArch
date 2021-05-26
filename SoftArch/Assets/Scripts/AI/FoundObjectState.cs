@@ -25,7 +25,7 @@ public class FoundObjectState : State
 		if (GravityFlip())
 		{
 			objectFound = false;
-			_context.TransitionTo(new IdleState(agent, master, moveToIndicator));
+			_context.TransitionTo(new CatchUpState(agent, master, moveToIndicator));
 		}
 
 		MasterInput();
@@ -65,7 +65,7 @@ public class FoundObjectState : State
 			objectFound = false;
 			_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
 		}
-		else if (Input.GetKeyDown("h"))
+		else if (Input.GetKeyDown("e"))
 		{
 			objectFound = false;
 			followMaster = false;

@@ -85,7 +85,7 @@ public class IdleState : State
 		{
 			_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
 		}
-		else if (Input.GetKeyDown("h"))
+		else if (Input.GetKeyDown("e"))
 		{
 			SetHoldPosition();
 			_context.TransitionTo(new HoldState(agent, master, moveToIndicator));

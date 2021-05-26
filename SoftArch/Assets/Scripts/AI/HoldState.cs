@@ -77,13 +77,13 @@ public class HoldState : State
 
 	protected override void MasterInput()
 	{
-		//if (Input.GetKeyDown("f"))
-		//{
-		//	moveToIndicator.enabled = false;
-		//	isHolding = false;
-		//	_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
-		//}
-		/*else */if (Input.GetKeyDown("e"))
+		if (Input.GetKeyDown("f"))
+		{
+			moveToIndicator.enabled = false;
+			isHolding = false;
+			_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
+		}
+		else if (Input.GetKeyDown("e"))
 		{
 			SetHoldPosition();
 			moveOnFixedUpdate = true;

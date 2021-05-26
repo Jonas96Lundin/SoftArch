@@ -36,23 +36,15 @@ public class CatchUpState : State
 			targetPos = master.transform.position;
 			moveOnFixedUpdate = true;
 		}
-		else if (followMaster)
-		{
-			_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
-		}
 		else
 		{
-			_context.TransitionTo(new IdleState(agent, master, moveToIndicator));
+			_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
 		}
 	}
 
 	protected override void MasterInput()
 	{
-		//if (Input.GetKeyDown("f"))
-		//{
-		//	_context.TransitionTo(new FollowState(agent, master, moveToIndicator));
-		//}
-		/*else */if (Input.GetKeyDown("e"))
+		if (Input.GetKeyDown("e"))
 		{
 			followMaster = false;
 			SetHoldPosition();
