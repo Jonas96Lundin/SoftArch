@@ -427,7 +427,7 @@ public abstract class State
 			invertedGravity = !invertedGravity;
 			agent.GetComponent<Rigidbody>().isKinematic = false;
 			agent.GetComponent<Rigidbody>().useGravity = true;
-			agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
+			//agent.GetComponent<AgentLinkMover>().invertedJump = !agent.GetComponent<AgentLinkMover>().invertedJump;
 			isFalling = true;
 		}
 		return isFalling;
@@ -443,6 +443,7 @@ public abstract class State
 			{
 				agent.GetComponent<Rigidbody>().isKinematic = true;
 				agent.GetComponent<Rigidbody>().useGravity = true;
+				agent.GetComponent<AgentLinkMover>().invertedJump = false;
 				agent.enabled = true;
 				isFalling = false;
 				isFlyBack = false;
@@ -451,6 +452,7 @@ public abstract class State
 			{
 				agent.GetComponent<Rigidbody>().isKinematic = true;
 				agent.GetComponent<Rigidbody>().useGravity = true;
+				agent.GetComponent<AgentLinkMover>().invertedJump = true;
 				agent.enabled = true;
 				isFalling = false;
 				isFlyBack = false;

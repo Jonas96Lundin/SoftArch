@@ -58,15 +58,15 @@ public class AgentLinkMover : MonoBehaviour
         Vector3 startPos = agent.transform.position;
         Vector3 endPos = data.endPos;
 
-        if (!invertedJump)
+		if (!invertedJump)
 		{
-            endPos += Vector3.up * agent.baseOffset;
-        }
+			endPos += Vector3.up * agent.baseOffset;
+		}
 		else
 		{
-            endPos += Vector3.down * agent.baseOffset;
-        }
-        
+			endPos += Vector3.down * agent.baseOffset;
+		}
+
         float normalizedTime = 0.0f;
         while (normalizedTime < 1.0f)
         {
