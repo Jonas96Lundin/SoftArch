@@ -7,19 +7,18 @@ using UnityEngine;
  * By Tinea Larsson
  * 
  * Script to update the parameters needed in the animation controller
- *
  */
 
-//TO DO: 
+// TO DO: 
 // Use isOnGround to play run-animation if on slope, currently playing jump-animation
 
-// Fix ai idle animations 
+// Fix ai idle animations to support both happy and sad
 
 //Clean up
 
 public class animationscript : MonoBehaviour
 {
-    public float secondsIdle = 0.0f; // make private after debugging
+    float secondsIdle = 0.0f; 
     bool gravityFlipped, moving;
 
     public enum charType { player, ai };
@@ -93,16 +92,7 @@ public class animationscript : MonoBehaviour
                     //Play sad 
                     //animator.Play("ai_turning_to_sad");
 
-                    //Play happy
-                    //if (animator.GetBool("isFacingRight"))
-                    //{
-                    //    animator.Play("ai_turning_to_happy");
-                    //    //animator.Play("ai_happy_mirrored");
-                    //}
-                    //else
-                    //{
-                    //    animator.Play("ai_turning_to_happy");
-                    //}
+                    animator.Play("ai_turning_to_happy");
                     
                     secondsIdle = 0.0f;
                     break;
