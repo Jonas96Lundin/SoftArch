@@ -142,6 +142,10 @@ PrefabInstance:
       propertyPath: secondsIdleUntilWave
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 8318402430010178804, guid: fa47e0a00d1095e4799a30a7e734c4de, type: 3}
+      propertyPath: infiniteFlips
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8822231921518017616, guid: fa47e0a00d1095e4799a30a7e734c4de, type: 3}
       propertyPath: m_Enabled
       value: 0
