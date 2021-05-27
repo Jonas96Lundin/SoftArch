@@ -9,21 +9,16 @@ public class PressButton : MonoBehaviour
     [SerializeField]
     GameObject rightDoor;
 
+    [SerializeField]
+    private Material material;
+
+
     //private Material material;
     // Start is called before the first frame update
     void Start()
     {
-        //material = GetComponent<Material>();
+        material.SetColor("_EmissionColor", Color.red * Mathf.Pow(2, 3 - 0.4169F));
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    [SerializeField]
-    private Material material;
 
 	private void OnTriggerEnter(Collider other)
 	{
